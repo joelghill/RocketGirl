@@ -1,6 +1,11 @@
 # RocketGirl
 CMPT 306 Game design project.
 
+## Where to get software
+
+* [Tiled2D](http://www.mapeditor.org/): Tile map editor for generating prefabs.
+* [SourceTree](https://www.sourcetreeapp.com/): An excellent GUI based version tracking app. Works with BitBucket and GitHub.
+
 ## Tiled2d settings
 
 Importing tile maps and levels from Tiled2D relies on setting the properties on a per tile basis. Currently, the properties for setting the cube faces and collision behaviours are customizable:
