@@ -73,6 +73,7 @@ public class Tiled2DImport : MonoBehaviour {
 						if(number != -1){
 							TileProperties properties = level.Tilesets[0].GetTileProperties(number);
 							GameObject newobj = Instantiate (Resources.Load (properties.Primitive ,typeof(GameObject)))as GameObject;
+							setCollisionType(newobj, properties);
 							newobj.transform.position = (new Vector3(column, row, z));
 							setMaterials(properties, newobj, number, level);
 							newobj.transform.SetParent(map.transform);
@@ -173,72 +174,6 @@ public class Tiled2DImport : MonoBehaviour {
 		return files [files.Length - 1];
 	}
 
-
-	private static GameObject GetPrimitiveForIndex(int index, int column, int row, int z){
-		GameObject o = null;
-		if (index == 3 || index == 6) {
-			o = Instantiate (Resources.Load ("CustomRampShallow" ,typeof(GameObject)))as GameObject;
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 0));
-			if (index == 6) {
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-				//o.transform.Translate (new Vector3 (0, 0, -1));
-			}
-		
-		} else if (index == 4 || index == 5) {
-			o = Instantiate (Resources.Load ("CustomRampShallow2", typeof(GameObject)))as GameObject;
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 0));
-			//o.transform.position = new Vector3 (0, 0, 0);
-			if (index == 5) {
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-				//o.transform.Translate (new Vector3 (0, 0, -1));
-			}
-		} else if (index == 7 || index == 8) {
-			o = Instantiate (Resources.Load ("CustomRampSteep", typeof(GameObject)))as GameObject;
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 0)); 
-			if (index == 8) {
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-			}
-		} else if (index == 25 || index == 28) {
-			o = Instantiate (Resources.Load ("CustomRampshallow", typeof(GameObject)))as GameObject;
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 180));
-
-			if (index == 28) {
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-				//o.transform.Translate (new Vector3 (0, 0, -1));
-			}
-		} else if (index == 26 || index == 27) {
-			o = Instantiate (Resources.Load ("CustomRampshallow2", typeof(GameObject)))as GameObject;
-			//o.transform.position = new Vector3 (0, 0, 0);
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 180));
-		
-			if (index == 27) {
-				//o.transform.Translate(new Vector3(column, row, z));
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-				//o.transform.Translate (new Vector3 (0, 0, -1));
-			}
-		} else if (index == 29 || index == 30) {
-			o = Instantiate (Resources.Load ("CustomRampSteep", typeof(GameObject)))as GameObject;
-			//o.transform.position = new Vector3 ((float)0.5, (float)0.0, (float)0.0);
-			o.transform.Translate(new Vector3(column, row, z));
-			o.transform.Rotate (new Vector3 (0, 90, 180));
-			if (index == 30) {
-				o.transform.Rotate (new Vector3 (0, 180, 0)); 
-				//o.transform.Translate (new Vector3 (0, 0, -1));
-			}
-		} else {
-			o = Instantiate (Resources.Load ("CustomCube", typeof(GameObject)))as GameObject;
-			o.transform.Translate(new Vector3(column, row, z));
-			//o.transform.position = new Vector3 (0, 0, 0);
-		}
-
-		return o;
-	}
-
 	private static void setMaterials(TileProperties properties, GameObject mapPrimitive, int number, TiledLevel level){
 		MapComponent primitve = mapPrimitive.GetComponent<MapComponent> ();
 		if (primitve == null)
@@ -274,6 +209,30 @@ public class Tiled2DImport : MonoBehaviour {
 		}
 		
 		
+	}
+
+	private static void setCollisionType(GameObject o, TileProperties properties){
+		CollisionType collisionType = o.GetComponent<CollisionType> ();
+		if(collisionType != null){
+			switch (properties.GetColliderType()) 
+			{
+				case "None":
+					collisionType.Type = CollisionType.ColliderType.None;
+					break;
+				case "Solid":
+					collisionType.Type = CollisionType.ColliderType.Solid;
+					break;
+				case "SemiSolid":
+					collisionType.Type = CollisionType.ColliderType.SemiSolid;
+					break;
+				case "Moveable":
+					collisionType.Type = CollisionType.ColliderType.Moveable;
+					break;
+				default:
+					collisionType.Type = CollisionType.ColliderType.None;
+					break;
+			}
+		}
 	}
 
 }
