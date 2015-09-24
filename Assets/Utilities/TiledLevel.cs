@@ -318,7 +318,7 @@ namespace Tiled{
 		public TileProperties GetTileProperties(int i){
 			string key = i.ToString ();
 			JSONNode node = this.tileproperties [key];
-			return new TileProperties (node);
+			return new TileProperties (node, i);
 		}
 
 		private void InitializeMetaData(){
@@ -476,28 +476,30 @@ namespace Tiled{
 		private int left;
 		private int right;
 		private string primitive;
+		private string collider;
+		private int index;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Tiled.TileProperties"/> class.
 		/// </summary>
 		/// <param name="jsondata">Jsondata. A JSONNode from the Tiled2D export. </param>
-		public TileProperties(JSONNode jsondata){
+		public TileProperties(JSONNode jsondata, int i){
+			this.index = i;
+			this.primitive = "cube";
+			this.collider = "None";
 			if (jsondata.ToString ().Equals( "")) {
-				this.back = -1;
-				this.bottom = -1;
-				this.top = -1;
-				this.left = -1;
-				this.right = -1;
-				this.primitive = "cube";
+				this.back = i;
+				this.bottom = i;
+				this.top = i;
+				this.left = i;
+				this.right = i;
 			} else {
 				this.back = this.getProperty("back", jsondata);
 				this.bottom = this.getProperty("bottom", jsondata);
 				this.top = this.getProperty("top", jsondata);
 				this.left = this.getProperty("left", jsondata);
 				this.right = this.getProperty("right", jsondata);
-				this.primitive = jsondata["primitive"];
-
-				if(this.primitive == null) this.primitive = "cube";
+				this.collider = jsondata["collider"];
 			}
 
 			Debug.Log ("Tile Properties Initialized");
@@ -506,9 +508,17 @@ namespace Tiled{
 
 		private int getProperty(string key, JSONNode data){
 			JSONNode prop = data [key];
-			if (prop.ToString().Equals (""))
-				return -1;
+			if (prop.ToString ().Equals (""))
+				Debug.Log ("Property not found. Returning " + this.index.ToString() + " instead...");
+				return this.index;
 			return data [key].AsInt;
+		}
+
+		public string GetColliderType(){
+			if (this.collider == null || this.collider.Equals ("")) {
+				return "None";
+			}
+			return this.collider;
 		}
 
 		public string Primitive {
