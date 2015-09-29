@@ -17,11 +17,11 @@ Importing tile maps and levels from Tiled2D relies on setting the properties on 
   * "Moveable" - Solid blocks, but can be moved by player.
 
 * To set the faces of the cubes to specific tiles, set each of the following to the index of the tile you want:
-  * "Top"
-  * "Bottom"
-  * "Left"
-  * "Right"
-  * "Back"
+  * "top"
+  * "bottom"
+  * "left"
+  * "right"
+  * "back"
 
 The front of the cubes are always set to the index of their tile.
 
