@@ -138,6 +138,16 @@ namespace Tiled{
 			}
 		}
 
+		public TileSet getTileSetForNumber(int number){
+			foreach (TileSet set in this.tilesets) {
+				if(number+1 >= set.Firstgid && number+1 < (set.Firstgid + set.Tilecount))
+					return set;
+				Debug.Log ("First ID in set:  " + set.Firstgid.ToString());
+			}
+			Debug.Log ("No tileset found for number:  " + number.ToString ());
+			return null;
+		}
+
 		private static string getTexturePath(string jsonPath, string imagepath){
 			string path = "";
 			Debug.Log ("Image path is:  " + imagepath);
@@ -373,6 +383,7 @@ namespace Tiled{
 			return destTex;
 		}
 		public Vector2 GetCoordinates(int index){
+			index = (index - this.firstgid)+1;
 			double row = (System.Math.Floor ((double)index / (double)this.columns));
 			row = this.rows - row - 1;
 			double coloumn = index - (row * this.columns);
@@ -399,7 +410,7 @@ namespace Tiled{
 				texture = value;
 			}
 		}
-		int Firstgid {
+		public int Firstgid {
 			get {
 				return this.firstgid;
 			}

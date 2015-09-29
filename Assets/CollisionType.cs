@@ -14,8 +14,7 @@ public class CollisionType : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (Type == null)
-			Type = ColliderType.None;
+
 	}
 	
 	// Update is called once per frame

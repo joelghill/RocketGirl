@@ -39,7 +39,6 @@ public class Tiled2DImport : MonoBehaviour {
 	[MenuItem ("Tiled2D/Import...")]
 	static void ImportJson () {
 
-		string directory;
 		TiledLevel level;
 		GameObject map;
 
@@ -65,20 +64,22 @@ public class Tiled2DImport : MonoBehaviour {
 
 		if (level != null) {
 			int z = 0;
+			Debug.Log("There are " + level.Tilesets.Length + " tilesets");
 			foreach(TiledLayer layer in level.Layers){
 				int count = 0;
 				for(int row = layer.Height-1; row >=0; row --){
 					for(int column = 0; column < layer.Width; column++){
 						int number = layer.Data[count] -1;
 						if(number != -1){
-							TileProperties properties = level.Tilesets[0].GetTileProperties(number);
-							GameObject newobj = Instantiate (Resources.Load (properties.Primitive ,typeof(GameObject)))as GameObject;
+							TileSet tileset = level.getTileSetForNumber(number);
+							TileProperties properties = tileset.GetTileProperties(number);
+							GameObject newobj = Instantiate (Resources.Load ("cube" ,typeof(GameObject)))as GameObject;
 							setCollisionType(newobj, properties);
 							newobj.transform.position = (new Vector3(column, row, z));
-							setMaterials(properties, newobj, number, level);
+							setMaterials(properties, newobj, number, level, tileset);
 							newobj.transform.SetParent(map.transform);
 						}else{
-							Debug.Log("ZERO ENCOUNTERED");
+							//Debug.Log("ZERO ENCOUNTERED");
 						}
 						count++;
 					}
@@ -174,20 +175,20 @@ public class Tiled2DImport : MonoBehaviour {
 		return files [files.Length - 1];
 	}
 
-	private static void setMaterials(TileProperties properties, GameObject mapPrimitive, int number, TiledLevel level){
+	private static void setMaterials(TileProperties properties, GameObject mapPrimitive, int number, TiledLevel level, TileSet set){
 		MapComponent primitve = mapPrimitive.GetComponent<MapComponent> ();
 		if (primitve == null)
 			return;
-		string name = level.Tilesets[0].Name;
+		string name = set.Name;
 		//Texture2D text = (Texture2D) level.Tilesets[0].Texture;
 		string texturepath = "Assets/Textures/" + name + ".asset";
 
-		string frontpath = SaveTileMaterial(name, number, texturepath, level.Tilesets[0]);
-		string backpath = SaveTileMaterial(name, properties.Back, texturepath, level.Tilesets[0]);
-		string toppath = SaveTileMaterial(name, properties.Top, texturepath, level.Tilesets[0]);
-		string bottompath = SaveTileMaterial(name, properties.Bottom, texturepath, level.Tilesets[0]);
-		string leftpath = SaveTileMaterial(name, properties.Left, texturepath, level.Tilesets[0]);
-		string rightpath = SaveTileMaterial(name, properties.Right, texturepath, level.Tilesets[0]);
+		string frontpath = SaveTileMaterial(name, number, texturepath, set);
+		string backpath = SaveTileMaterial(name, properties.Back, texturepath, set);
+		string toppath = SaveTileMaterial(name, properties.Top, texturepath, set);
+		string bottompath = SaveTileMaterial(name, properties.Bottom, texturepath, set);
+		string leftpath = SaveTileMaterial(name, properties.Left, texturepath, set);
+		string rightpath = SaveTileMaterial(name, properties.Right, texturepath, set);
 
 		if (!frontpath.Equals ("")) {
 			primitve.SetFrontMaterial((Material) AssetDatabase.LoadAssetAtPath(frontpath, typeof(Material)));
@@ -230,9 +231,11 @@ public class Tiled2DImport : MonoBehaviour {
 					break;
 				default:
 					collisionType.Type = CollisionType.ColliderType.None;
+					o.tag = "None";
 					break;
 			}
 		}
+		o.tag = properties.GetColliderType ();
 	}
 
 }
