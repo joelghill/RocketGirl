@@ -59,6 +59,9 @@ public class Player : MonoBehaviour {
 
 	void move(){
 
+		/*
+		 * Retrieves axis from analog stick, then checks for keyboard input
+		 */ 
 		float axis = Input.GetAxis ("Horizontal");
 		if (Input.GetKey ("a")) {
 			axis = 1.0f;
@@ -66,7 +69,11 @@ public class Player : MonoBehaviour {
 		} else if (Input.GetKey ("d")) {
 			axis = -1.0f;
 		}
-		
+
+		/*
+		 * checks whether the axis is positive or negative, sets the speed of the character. 
+		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
+		 */
 		if (axis > 0.1f) {
 
 			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
@@ -99,7 +106,12 @@ public class Player : MonoBehaviour {
 				//Quaternion.Euler(0, 180, 0);
 			}
 			
-		} else{
+		} 
+		/*
+		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
+		 * Animation Running is set to false, no change in rotation
+		 */ 
+		else{
 			body.velocity = new Vector3 (0, body.velocity.y,0);
 			anim.SetBool("Running", false);
 		}
@@ -108,6 +120,10 @@ public class Player : MonoBehaviour {
 
 	void jump(){
 
+		/*
+		 * Checks if the player is grounded. If yes, and the jump button is pressed, set animations accordingly
+		 * and set the y velocity upwards.
+		 */ 
 		if (grounded && Input.GetButtonDown ("Jump")) {
 
 			//print (grounded.ToString());
@@ -117,7 +133,13 @@ public class Player : MonoBehaviour {
 			anim.SetBool("jumping",true);
 			anim.SetFloat("jumpTime",0);
 
-		} else if (jumping == 0 || Input.GetButtonUp ("Jump")) {
+		} 
+
+		/*
+		 * Waits until the jump duration is expended or until the jump button is released to
+		 * set the y velocity to negative.
+		 */ 
+		else if (jumping == 0 || Input.GetButtonUp ("Jump")) {
 
 			//anim.SetBool("Running", false);
 			//grounded = 0;
@@ -127,6 +149,9 @@ public class Player : MonoBehaviour {
 
 		}
 
+		/*
+		 * If grounded and the jump animation is still happening, that needs to stop
+		 */ 
 		if(grounded && anim.GetFloat("jumpTime") == 1){
 
 			anim.SetBool("jumping",false);
