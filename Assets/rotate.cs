@@ -10,7 +10,7 @@ using Interpolation;
 
 public class rotate : MonoBehaviour {
 
-	public GameObject level;
+	public GameObject player;
 	//public double TransitionTime;
 	public GameObject[] entities;
 	public Camera camera;
@@ -23,21 +23,25 @@ public class rotate : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		//initialize dictionaries
-		level = this.gameObject;
 
 		rotationPoints = new float[4];
-		rotationPoints [0] = level.transform.rotation.y;
-		rotationPoints [1] = level.transform.rotation.y+90;
-		rotationPoints [2] = level.transform.rotation.y+180;
-		rotationPoints [3] = level.transform.rotation.y+270;
+		rotationPoints [0] = player.transform.rotation.y;
+		rotationPoints [1] = player.transform.rotation.y+90;
+		rotationPoints [2] = player.transform.rotation.y+180;
+		rotationPoints [3] = player.transform.rotation.y+270;
 	}
 
 	void Update () {
 		if (Input.GetMouseButton (0)) {
-			Quaternion newRotation 		= Quaternion.AngleAxis(getRotationGoal(), Vector3.up);
-			level.transform.rotation	= Quaternion.Slerp(transform.rotation, newRotation, .1f);
+			Vector3 pos = player.transform.position;
+			transform.RotateAround(player.transform.position, transform.up, 30 * Time.deltaTime);
+			transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
+			player.transform.LookAt (new Vector3(transform.position.x, player.transform.position.y, transform.position.z));
+
+			//Quaternion newRotation 		= Quaternion.AngleAxis(getRotationGoal(), Vector3.up);
+			//level.transform.rotation	= Quaternion.Slerp(transform.rotation, newRotation, .1f);
 		}
+
 	}
 
 	Quaternion CloneQuat(Quaternion q){
@@ -52,6 +56,6 @@ public class rotate : MonoBehaviour {
 	}
 
 	bool hasReachedGoal(){
-		return Mathf.Abs ((level.transform.rotation.y - getRotationGoal ())) <= 0.001;
+		return Mathf.Abs ((player.transform.rotation.y - getRotationGoal ())) <= 0.001;
 	}
 }

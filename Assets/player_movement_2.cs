@@ -83,6 +83,7 @@ public class player_movement_2 : MonoBehaviour {
 		} else {
 			r_body.velocity = new Vector3 (r_body.velocity.x + (h * this.x_accel), r_body.velocity.y, 0);
 		}
+		r_body.velocity = r_body.velocity.magnitude * (transform.TransformDirection (r_body.velocity.normalized));
 		//anim.SetFloat ("Speed", Mathf.Abs (h));
 	}
 
