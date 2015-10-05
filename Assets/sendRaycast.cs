@@ -32,24 +32,6 @@ public class sendRaycast : MonoBehaviour {
 
 		if (transform == null || this.rigid.velocity.magnitude == 0) {
 			Debug.Log ("No movement or transform.");
-
-			return;
-		}
-		if(isFloating())
-			Debug.Log ("FLOATING");
-		RaycastHit hit;
-		float distanceToGround = 0;
-		Vector3 pos = new Vector3 (transform.position.x, transform.position.y - 1, transform.position.z);
-		if (Physics.Raycast (pos, transform.forward, out hit)) {
-			distanceToGround = hit.distance;
-			this.collider.size = (new Vector3 (.2f, .35f, (distanceToGround + .4f) * 2));
-			return;
-		}
-			//Debug.Log(hit.ToString());
-			//Debug.Log("Object is " + distanceToGround.ToString() + " away");
-		if (Physics.Raycast (pos, -1*transform.forward, out hit)) {
-			distanceToGround = hit.distance;
-			this.collider.size = (new Vector3 (.2f, .35f, (distanceToGround + .35f) * 2));
 		} else {
 			AdjustCollider();
 		}
