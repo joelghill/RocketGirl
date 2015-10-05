@@ -23,6 +23,9 @@ public class Player : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 	}
 
+	/*
+	 * Tells the player they are grounded upon collision with another object
+	 */ 
 	void OnCollisionEnter(Collision col){
 
 		//col.enabled = false;
@@ -35,12 +38,18 @@ public class Player : MonoBehaviour {
 
 	}
 
+	/*
+	 * As long as the player stays collided, they are grounded
+	 */ 
 	void OnCollisionStay(Collision col){
 
 		grounded = true;
 
 	}
 
+	/*
+	 * When exiting another objects collider, grounded is set to false.
+	 */ 
 	void OnCollisionExit(Collision col){
 
 		grounded = false;
