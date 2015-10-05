@@ -32,7 +32,7 @@ public class sendRaycast : MonoBehaviour {
 
 		if (transform == null || this.rigid.velocity.magnitude == 0) {
 			Debug.Log ("No movement or transform.");
-<<<<<<< HEAD
+
 			return;
 		}
 		if(isFloating())
@@ -50,7 +50,6 @@ public class sendRaycast : MonoBehaviour {
 		if (Physics.Raycast (pos, -1*transform.forward, out hit)) {
 			distanceToGround = hit.distance;
 			this.collider.size = (new Vector3 (.2f, .35f, (distanceToGround + .35f) * 2));
-=======
 		} else {
 			AdjustCollider();
 		}
@@ -64,7 +63,6 @@ public class sendRaycast : MonoBehaviour {
 		bool xHit;
 		//nothing to do if no player movement
 		if (rigid.velocity.magnitude == 0.0f)
->>>>>>> 9afbd86366bf124b1a9a393b68f7127df796c488
 			return;
 		RaycastHit hit;
 		Vector3 xPos = getXRaycastPosition ();
@@ -95,12 +93,10 @@ public class sendRaycast : MonoBehaviour {
 			float d = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
 			return  Mathf.Abs(d - hit.distance);
 		}
-<<<<<<< HEAD
 		this.collider.size = (new Vector3(.2f, .35f, .4f));
-=======
+
 		//if no collisions, return 0
 		return -1;
->>>>>>> 9afbd86366bf124b1a9a393b68f7127df796c488
 	}
 
 	/// <summary>
