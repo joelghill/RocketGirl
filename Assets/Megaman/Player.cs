@@ -6,9 +6,9 @@ public class Player : MonoBehaviour {
 	Rigidbody body;
 	Animator anim;
 
-	public float ySpeed = 5;
-	public float xSpeed = 5;
-	public int jumpDuration = 15;
+	public float ySpeed = 8;
+	public float xSpeed = 6;
+	public int jumpDuration = 18;
 
 	//private float distToGround;
 	private bool grounded;
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour {
 		 */
 		if (axis > 0.1f) {
 
-			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
 
 			if(grounded){
 				anim.SetBool ("Running", true);
@@ -86,12 +86,13 @@ public class Player : MonoBehaviour {
 
 			anim.SetFloat ("runSpeed", axis);
 			//transform.rotation.y = 180;
-			if(transform.rotation.y == 1){
-				transform.rotation = Quaternion.Euler(0, 0, 0);
+			if(transform.rotation.y == 0){
+				transform.rotation = Quaternion.Euler(0, 180, 0);
+				//Quaternion.Euler(0, 180, 0);
 			}
 			
 		}else if (axis < -0.1f) {
-			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
 
 			anim.SetFloat("runSpeed", axis);
 
@@ -101,8 +102,8 @@ public class Player : MonoBehaviour {
 				anim.SetBool ("Running", false);
 			}
 			
-			if(transform.rotation.y == 0){
-				transform.rotation = Quaternion.Euler(0, 180, 0);
+			if(transform.rotation.y == 1){
+				transform.rotation = Quaternion.Euler(0, 0, 0);
 				//Quaternion.Euler(0, 180, 0);
 			}
 			
