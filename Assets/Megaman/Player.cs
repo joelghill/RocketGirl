@@ -11,14 +11,14 @@ public class Player : MonoBehaviour {
 	public int jumpDuration = 18;
 
 	//private float distToGround;
-	private bool grounded;
+	private int grounded;
 	private int jumping;
 
 	// Use this for initialization
 	void Start () {
 		//distToGround = transform.lossyScale.y;
 		jumping = 0;
-		grounded = false;
+		grounded = 0;
 		body = GetComponent<Rigidbody> ();
 		anim = GetComponent<Animator> ();
 	}
@@ -30,7 +30,7 @@ public class Player : MonoBehaviour {
 
 		//col.enabled = false;
 
-		grounded = true;
+		grounded = grounded+1;
 
 		if (col.gameObject.tag == "Bottom") {
 			transform.position = new Vector2(-3,-1);
@@ -43,7 +43,7 @@ public class Player : MonoBehaviour {
 	 */ 
 	void OnCollisionStay(Collision col){
 
-		grounded = true;
+		grounded = grounded;
 
 	}
 
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour {
 	 */ 
 	void OnCollisionExit(Collision col){
 
-		grounded = false;
+		grounded = grounded - 1;
 		anim.SetBool("jumping",true);
 
 	}
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour {
 
 			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
 
-			if(grounded){
+			if(grounded>0){
 				anim.SetBool ("Running", true);
 			}else{
 				anim.SetBool ("Running", false);
@@ -96,7 +96,7 @@ public class Player : MonoBehaviour {
 
 			anim.SetFloat("runSpeed", axis);
 
-			if(grounded){
+			if(grounded>0){
 				anim.SetBool ("Running", true);
 			}else{
 				anim.SetBool ("Running", false);
@@ -125,7 +125,7 @@ public class Player : MonoBehaviour {
 		 * Checks if the player is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
-		if (grounded && Input.GetButtonDown ("Jump")) {
+		if (grounded>0 && Input.GetButtonDown ("Jump")) {
 
 			//print (grounded.ToString());
 			anim.SetBool("Running", false);
@@ -153,7 +153,7 @@ public class Player : MonoBehaviour {
 		/*
 		 * If grounded and the jump animation is still happening, that needs to stop
 		 */ 
-		if(grounded && anim.GetFloat("jumpTime") == 1){
+		if(grounded>0 && anim.GetFloat("jumpTime") == 1){
 
 			anim.SetBool("jumping",false);
 			anim.SetFloat("jumpTime",2);
