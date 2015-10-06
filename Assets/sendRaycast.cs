@@ -7,6 +7,8 @@ public class sendRaycast : MonoBehaviour {
 	public Transform transform;
 	public Rigidbody rigid;
 
+	Vector3 initialColliderSize;
+
 	// Use this for initialization
 	void Start () {
 		if (transform == null) {
@@ -16,6 +18,9 @@ public class sendRaycast : MonoBehaviour {
 			this.collider = this.gameObject.GetComponent<BoxCollider> ();
 		if (rigid == null)
 			this.rigid = this.gameObject.GetComponent<Rigidbody> ();
+
+		//adjust megaman collider
+		initialColliderSize = this.gameObject.GetComponent<BoxCollider> ().size;
 
 	}
 
@@ -56,8 +61,8 @@ public class sendRaycast : MonoBehaviour {
 		float newDist = Mathf.Max (xDist, yDist);
 
 		if(newDist >= 0)
-			Debug.Log ("Setting COllider Size.");
-			this.collider.size = (new Vector3 (1, 1, (newDist + 1) * 2));
+			//Debug.Log ("Setting COllider Size.");
+			this.collider.size = (new Vector3 (initialColliderSize.x, initialColliderSize.y, (newDist + 1) * 2));
 
 	}
 	/// <summary>
@@ -70,12 +75,12 @@ public class sendRaycast : MonoBehaviour {
 		RaycastHit hit;
 		//send raycast towards screen from camera.
 		if (Physics.Raycast (position, Camera.main.transform.forward, out hit)) {
-			Debug.Log ("RAYCAST HIT");
-			Debug.Log ("Distance Was:  " + hit.distance.ToString());
+			//Debug.Log ("RAYCAST HIT");
+			//Debug.Log ("Distance Was:  " + hit.distance.ToString());
 			float d = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
 			return  Mathf.Abs(d - hit.distance);
 		}
-		this.collider.size = (new Vector3(.2f, .35f, .4f));
+		this.collider.size = initialColliderSize;
 
 		//if no collisions, return 0
 		return -1;
