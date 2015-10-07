@@ -1,19 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour {
-
-	Rigidbody body;
-	Animator anim;
-
-	public float ySpeed = 8;
-	public float xSpeed = 6;
-	public int jumpDuration = 18;
-
-	//private float distToGround;
-	private int grounded;
-	private int jumping;
-
+public class Player : Avatar {
+	
 	// Use this for initialization
 	void Start () {
 		//distToGround = transform.lossyScale.y;
@@ -21,43 +10,10 @@ public class Player : MonoBehaviour {
 		grounded = 0;
 		body = GetComponent<Rigidbody> ();
 		anim = GetComponent<Animator> ();
-	}
-
-	/*
-	 * Tells the player they are grounded upon collision with another object
-	 */ 
-	void OnCollisionEnter(Collision col){
-
-		//col.enabled = false;
-
-		grounded = grounded+1;
-
-		if (col.gameObject.tag == "Bottom") {
-			transform.position = new Vector2(-3,-1);
-		}
 
 	}
-
-	/*
-	 * As long as the player stays collided, they are grounded
-	 */ 
-	void OnCollisionStay(Collision col){
-
-		grounded = grounded;
-
-	}
-
-	/*
-	 * When exiting another objects collider, grounded is set to false.
-	 */ 
-	void OnCollisionExit(Collision col){
-
-		grounded = grounded - 1;
-		anim.SetBool("jumping",true);
-
-	}
-
-	void move(){
+	
+	void playerMove(){
 
 		/*
 		 * Retrieves axis from analog stick, then checks for keyboard input
@@ -70,107 +26,25 @@ public class Player : MonoBehaviour {
 			axis = -1.0f;
 		}
 
-		/*
-		 * checks whether the axis is positive or negative, sets the speed of the character. 
-		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
-		 */
-		if (axis > 0.1f) {
-
-			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
-
-			if(grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-
-			anim.SetFloat ("runSpeed", axis);
-			//transform.rotation.y = 180;
-			if(transform.rotation.y == 0){
-				transform.rotation = Quaternion.Euler(0, 180, 0);
-				//Quaternion.Euler(0, 180, 0);
-			}
-			
-		}else if (axis < -0.1f) {
-			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
-
-			anim.SetFloat("runSpeed", axis);
-
-			if(grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-			
-			if(transform.rotation.y == 1){
-				transform.rotation = Quaternion.Euler(0, 0, 0);
-				//Quaternion.Euler(0, 180, 0);
-			}
-			
-		} 
-		/*
-		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
-		 * Animation Running is set to false, no change in rotation
-		 */ 
-		else{
-			body.velocity = new Vector3 (0, body.velocity.y,0);
-			anim.SetBool("Running", false);
-		}
+		move (axis);
 
 	}
 
-	void jump(){
+	/*
+	 * Tells when jump starts based on when the jump button is pressed, and when the 
+	 * jump ends based on when the jump button is released.
+	 */ 
+	void playerJump(){
 
-		/*
-		 * Checks if the player is grounded. If yes, and the jump button is pressed, set animations accordingly
-		 * and set the y velocity upwards.
-		 */ 
-		if (grounded>0 && Input.GetButtonDown ("Jump")) {
-
-			//print (grounded.ToString());
-			anim.SetBool("Running", false);
-			jumping = jumpDuration;
-			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
-			anim.SetBool("jumping",true);
-			anim.SetFloat("jumpTime",0);
-
-		} 
-
-		/*
-		 * Waits until the jump duration is expended or until the jump button is released to
-		 * set the y velocity to negative.
-		 */ 
-		else if (jumping == 0 || Input.GetButtonUp ("Jump")) {
-
-			//anim.SetBool("Running", false);
-			//grounded = 0;
-			jumping = 0;
-			body.velocity = new Vector3 (body.velocity.x, -ySpeed, 0);
-			anim.SetFloat("jumpTime",1);
-
-		}
-
-		/*
-		 * If grounded and the jump animation is still happening, that needs to stop
-		 */ 
-		if(grounded>0 && anim.GetFloat("jumpTime") == 1){
-
-			anim.SetBool("jumping",false);
-			anim.SetFloat("jumpTime",2);
-
-		}
-		
-		if (jumping > 0) {
-			jumping--;
-		}
+		jump (Input.GetButtonDown ("Jump"), Input.GetButtonUp ("Jump"));
 
 	}
 
 	// Update is called once per frame
 	void Update () {
 
-		move ();
-		jump ();
+		playerMove ();
+		playerJump ();
 
 	}
 }
