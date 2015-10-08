@@ -5,28 +5,86 @@ using System.Collections.Generic;
 public class LevelEditor : EditorWindow
 {
 	private Vector3[] prevPositions;
-	private bool doSnap = true;
+	private bool doSnap = false;
 	private bool doCopy = false;
+	private bool LevelEditorActive = true;
 	private float snapValue = 1;
 	
-	[MenuItem( "Edit/Auto Snap %_l" )]
-	
+	[MenuItem( "Window/Level Editor %_l" )]
 	static void Init()
 	{
 		var window = (LevelEditor)EditorWindow.GetWindow( typeof( LevelEditor ) );
 		window.maxSize = new Vector2( 200, 100 );
 	}
+
+	void OnEnable(){
+		SceneView.onSceneGUIDelegate += OnSceneGUI;
+	}
+
+	void OnDisable(){
+		SceneView.onSceneGUIDelegate -= OnSceneGUI;
+	}
 	
 	public void OnGUI()
 	{
-		doSnap = EditorGUILayout.Toggle( "Auto Snap", doSnap );
-		doCopy = EditorGUILayout.Toggle ("Create Copy", doCopy);
-		snapValue = EditorGUILayout.FloatField( "Snap Value", snapValue );
+
+		this.LevelEditorActive = EditorGUILayout.Toggle( "Level Editor Active", LevelEditorActive);
+
+		GUILayout.Label("Hold Left Control to Snap Object to Grid");
+		GUILayout.Label("Hold Left Ctrl & Space to Draw with selection");
+
+	}
+
+	public void OnSceneGUI(SceneView sceneView){
+		if (!this.LevelEditorActive)
+			return;
+		Event e = Event.current;
+		switch (e.type) {
+		case EventType.KeyDown:
+			if (Event.current.keyCode == (KeyCode.LeftControl)){
+				doSnap = true;
+				//EditorGUILayout.Toggle( "Auto Snap", doSnap);
+			}
+			if(Event.current.keyCode == (KeyCode.Space)){
+				Debug.Log("SHIFT KEY DOWN");
+				doCopy = true;
+			}
+			break;
+			
+		case EventType.keyUp:
+			if (Event.current.keyCode == (KeyCode.LeftControl)) {
+				doSnap = false;
+				//EditorGUILayout.Toggle( "Auto Snap", doSnap);
+			}
+			if(Event.current.keyCode == (KeyCode.Space)){
+				doCopy = false;
+			}
+			break;
+		}
+
+	}
+
+	private void setSnapSettings(){
+		if (Input.GetKey (KeyCode.LeftControl)) {
+			doSnap = true;
+		} else {
+			doSnap = false;
+		}
+		if (doSnap && Input.GetKey (KeyCode.LeftShift)) {
+			doCopy = true;
+		} else {
+			doCopy = false;
+		}
 	}
 
 	public void OnSelectionChange(){
+		if (!this.LevelEditorActive)
+			return;
+		Debug.Log ("SELECTION CHANGED");
+		if(Selection.activeTransform == null) return;
 		if (Selection.transforms.Length > 0) {
 			prevPositions = new Vector3[Selection.transforms.Length];
+			Debug.Log("Current number of selected Transforms:  " + Selection.transforms.Length.ToString());
 		}
 		for (int i = 0; i < prevPositions.Length; i++){
 			prevPositions [i] = Selection.transforms [i].position;
@@ -35,6 +93,12 @@ public class LevelEditor : EditorWindow
 
 	public void Update()
 	{
+		if (!this.LevelEditorActive)
+			return;
+		if (prevPositions == null) {
+			Debug.Log ("Previous Positions is null");
+			return;
+		}
 		if ( doSnap
 		    && !EditorApplication.isPlaying
 		    && Selection.transforms.Length > 0
@@ -49,6 +113,10 @@ public class LevelEditor : EditorWindow
 			if(o != null){
 				GameObject n = (GameObject)PrefabUtility.InstantiatePrefab(o);
 				n.transform.position = pos;
+				if(item.parent != null){
+
+				}
+				n.transform.SetParent(item.parent);
 			}else{
 				Debug.LogError("There is no resource by the name " + item.gameObject.name);
 			}
@@ -56,6 +124,10 @@ public class LevelEditor : EditorWindow
 	}
 	private void Snap()
 	{
+		Debug.Log ("SNAP");
+		if (doCopy) {
+			Debug.Log("CREATING COPY");
+		}
 		for(int i = 0; i < Selection.transforms.Length; i++)
 		{
 			var t = Selection.transforms[i].position;
@@ -66,9 +138,20 @@ public class LevelEditor : EditorWindow
 			Selection.transforms[i].position = t;
 			if(!Selection.transforms[i].position.Equals(prevPositions[i]) 
 			   && doCopy){
+				//If there are any objects already there, delete them before creating copy
 				Collider[] hitColliders = Physics.OverlapSphere(prevPositions[i], 0.4f);
 				foreach(Collider c in hitColliders){
-					DestroyImmediate(c.gameObject);
+					Debug.Log ("COLLIDER HIT AT PREVIOUS LOCATION");
+					if(isTrile(c.gameObject))
+						Debug.Log ("THING TO DELETE IS A TRILE");
+						DestroyImmediate(c.gameObject);
+				}
+				//if there are any objects in new spot that are not the object we are moving, delete
+				Collider[] newspotColliders = Physics.OverlapSphere(Selection.transforms[i].position, 0.4f);
+				foreach(Collider c in newspotColliders){
+					if(isTrile(c.gameObject) && 
+					   	!c.gameObject.Equals( Selection.transforms[i].gameObject))
+						DestroyImmediate(c.gameObject);
 				}
 				createCopy(Selection.transforms[i], prevPositions[i]);
 			}
@@ -76,6 +159,13 @@ public class LevelEditor : EditorWindow
 			//createCopy(transform);
 			prevPositions[i] = Selection.transforms[i].position;
 		}
+	}
+
+	private bool isTrile(GameObject o){
+		return (o.tag == "None" ||
+			o.tag == "Solid" ||
+			o.tag == "SemiSolid" ||
+			o.tag == "Moveable");
 	}
 
 	private Vector3 getRoundedVector(Vector3 v){
