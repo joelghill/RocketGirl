@@ -42,6 +42,11 @@ public class Player : Avatar {
 	// Update is called once per frame
 	void Update () {
 
+        if(grounded == 0 && !jumpPressed) {
+            body.velocity = new Vector3(body.velocity.x, -ySpeed, body.velocity.z);
+            anim.SetBool("Falling", true);
+        }
+
 		playerMove ();
 		playerJump ();
 

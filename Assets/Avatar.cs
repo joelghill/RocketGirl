@@ -13,14 +13,16 @@ public class Avatar : MonoBehaviour {
 	//private float distToGround;
 	protected int grounded;
 	protected float jumping;
+    protected bool jumpPressed;
 	
 	// Use this for initialization
 	void Start () {
-		//distToGround = transform.lossyScale.y;
-		//jumping = 0;
-		//grounded = 0;
-		//body = GetComponent<Rigidbody> ();
-		//anim = GetComponent<Animator> ();
+        //distToGround = transform.lossyScale.y;
+        //jumping = 0;
+        //grounded = 0;
+        //body = GetComponent<Rigidbody> ();
+        //anim = GetComponent<Animator> ();
+        jumpPressed = false;
 		
 	}
 	
@@ -102,7 +104,7 @@ public class Avatar : MonoBehaviour {
 			jumping = 0;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
-			
+            jumpPressed = true;
 		} 
 		
 		/*
@@ -117,6 +119,7 @@ public class Avatar : MonoBehaviour {
 			body.velocity = new Vector3 (body.velocity.x, -ySpeed, 0);
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", true);
+            jumpPressed = false;
 			
 		}
 		
@@ -132,13 +135,6 @@ public class Avatar : MonoBehaviour {
 
         jumping += Time.deltaTime;
 
-        print(jumping.ToString());
-
-		//if (jumping > 0) {
-			//jumping = jumping - 1*Time.deltaTime;
-            //print(Time.deltaTime.ToString());
-		//}
-		
 	}
 
 	// Update is called once per frame
