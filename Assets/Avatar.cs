@@ -8,11 +8,11 @@ public class Avatar : MonoBehaviour {
 	
 	public float ySpeed = 8;
 	public float xSpeed = 6;
-	public int jumpDuration = 18;
+	public float jumpDuration = 0.4f;
 	
 	//private float distToGround;
 	protected int grounded;
-	protected int jumping;
+	protected float jumping;
 	
 	// Use this for initialization
 	void Start () {
@@ -59,13 +59,7 @@ public class Avatar : MonoBehaviour {
 			
 			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
             anim.SetBool("Running", true);
-            /*
-            if (grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-			*/
+
 			anim.SetFloat ("runSpeed", axis);
 			//transform.rotation.y = 180;
 			if(transform.rotation.y == 0){
@@ -79,13 +73,6 @@ public class Avatar : MonoBehaviour {
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
 
-            /*
-			if(grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-			*/
             if (transform.rotation.y == 1){
 				transform.rotation = Quaternion.Euler(0, 0, 0);
 				//Quaternion.Euler(0, 180, 0);
@@ -97,7 +84,7 @@ public class Avatar : MonoBehaviour {
 		 * Animation Running is set to false, no change in rotation
 		 */ 
 		else{
-			body.velocity = new Vector3 (0, body.velocity.y,0);
+			body.velocity = new Vector3 (0, body.velocity.y, 0);
 			anim.SetBool("Running", false);
 		}
 	}
@@ -112,7 +99,7 @@ public class Avatar : MonoBehaviour {
 			
 			//print (grounded.ToString());
 			//anim.SetBool("Running", false);
-			jumping = jumpDuration;
+			jumping = 0;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
 			
@@ -122,7 +109,7 @@ public class Avatar : MonoBehaviour {
 		 * Waits until the jump duration is expended or until the jump button is released to
 		 * set the y velocity to negative.
 		 */ 
-		if ((jumping == 0 || doneJump)) {
+		if ((jumping >= jumpDuration || doneJump)) {
 			
 			//anim.SetBool("Running", false);
 			//grounded = 0;
@@ -143,9 +130,14 @@ public class Avatar : MonoBehaviour {
 			
 		}
 
-		if (jumping > 0) {
-			jumping--;
-		}
+        jumping += Time.deltaTime;
+
+        print(jumping.ToString());
+
+		//if (jumping > 0) {
+			//jumping = jumping - 1*Time.deltaTime;
+            //print(Time.deltaTime.ToString());
+		//}
 		
 	}
 
