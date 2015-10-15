@@ -5,7 +5,7 @@ public class Player : Avatar {
 	
 	// Use this for initialization
 	void Start () {
-		//distToGround = transform.lossyScale.y;
+
 		jumping = 0;
 		grounded = 0;
 		body = GetComponent<Rigidbody> ();
@@ -21,7 +21,6 @@ public class Player : Avatar {
 		float axis = Input.GetAxis ("Horizontal");
 		if (Input.GetKey ("a")) {
 			axis = 1.0f;
-			print (axis.ToString());
 		} else if (Input.GetKey ("d")) {
 			axis = -1.0f;
 		}
@@ -43,8 +42,13 @@ public class Player : Avatar {
 	// Update is called once per frame
 	void Update () {
 
+        if(grounded == 0 && !jumpPressed) {
+            body.velocity = new Vector3(body.velocity.x, -ySpeed, body.velocity.z);
+            anim.SetBool("Falling", true);
+        }
+
 		playerMove ();
 		playerJump ();
 
-	}
+    }
 }

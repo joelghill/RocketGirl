@@ -78,15 +78,15 @@ public class rotate : MonoBehaviour {
 	}
 
 	bool hasReachedGoal(){
-		Debug.Log ("Goal check");
-		Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
-		Debug.Log ("Goal Rotation:  " + getRotationGoal().ToString());
+		//Debug.Log ("Goal check");
+		//Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
+		//Debug.Log ("Goal Rotation:  " + getRotationGoal().ToString());
 		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal ()) < 10;
 	}
 
 	void snapToGoal(){
-		Debug.Log("Snap to goal called");
-		Debug.Log ("Rotation goal is:  " + getRotationGoal ());
+		//Debug.Log("Snap to goal called");
+		//Debug.Log ("Rotation goal is:  " + getRotationGoal ());
 		float levelsnap = getRotationGoal () - this.transform.rotation.eulerAngles.y;
 		//float playerSnap = (-1*getRotationGoal ()) + this.player.transform.rotation.eulerAngles.y;
 		this.transform.RotateAround (player.transform.position, transform.up, levelsnap);

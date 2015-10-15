@@ -8,19 +8,21 @@ public class Avatar : MonoBehaviour {
 	
 	public float ySpeed = 8;
 	public float xSpeed = 6;
-	public int jumpDuration = 18;
+	public float jumpDuration = 0.4f;
 	
 	//private float distToGround;
 	protected int grounded;
-	protected int jumping;
+	protected float jumping;
+    protected bool jumpPressed;
 	
 	// Use this for initialization
 	void Start () {
-		//distToGround = transform.lossyScale.y;
-		//jumping = 0;
-		//grounded = 0;
-		//body = GetComponent<Rigidbody> ();
-		//anim = GetComponent<Animator> ();
+        //distToGround = transform.lossyScale.y;
+        //jumping = 0;
+        //grounded = 0;
+        //body = GetComponent<Rigidbody> ();
+        //anim = GetComponent<Animator> ();
+        jumpPressed = false;
 		
 	}
 	
@@ -58,13 +60,8 @@ public class Avatar : MonoBehaviour {
 		if (axis > 0.1f) {
 			
 			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
-			
-			if(grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-			
+            anim.SetBool("Running", true);
+
 			anim.SetFloat ("runSpeed", axis);
 			//transform.rotation.y = 180;
 			if(transform.rotation.y == 0){
@@ -76,25 +73,20 @@ public class Avatar : MonoBehaviour {
 			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
 			
 			anim.SetFloat("runSpeed", axis);
-			
-			if(grounded>0){
-				anim.SetBool ("Running", true);
-			}else{
-				anim.SetBool ("Running", false);
-			}
-			
-			if(transform.rotation.y == 1){
+            anim.SetBool("Running", true);
+
+            if (transform.rotation.y == 1){
 				transform.rotation = Quaternion.Euler(0, 0, 0);
 				//Quaternion.Euler(0, 180, 0);
 			}
 			
-		} 
+        } 
 		/*
 		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
 		 * Animation Running is set to false, no change in rotation
 		 */ 
 		else{
-			body.velocity = new Vector3 (0, body.velocity.y,0);
+			body.velocity = new Vector3 (0, body.velocity.y, 0);
 			anim.SetBool("Running", false);
 		}
 	}
@@ -108,42 +100,41 @@ public class Avatar : MonoBehaviour {
 		if (grounded>0 && jump) {
 			
 			//print (grounded.ToString());
-			anim.SetBool("Running", false);
-			jumping = jumpDuration;
+			//anim.SetBool("Running", false);
+			jumping = 0;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
-			anim.SetFloat("jumpTime",0);
-			
+            jumpPressed = true;
 		} 
 		
 		/*
 		 * Waits until the jump duration is expended or until the jump button is released to
 		 * set the y velocity to negative.
 		 */ 
-		else if (jumping == 0 || doneJump) {
+		if ((jumping >= jumpDuration || doneJump)) {
 			
 			//anim.SetBool("Running", false);
 			//grounded = 0;
 			jumping = 0;
 			body.velocity = new Vector3 (body.velocity.x, -ySpeed, 0);
-			anim.SetFloat("jumpTime",1);
+            anim.SetBool("jumping", false);
+            anim.SetBool("Falling", true);
+            jumpPressed = false;
 			
 		}
 		
 		/*
 		 * If grounded and the jump animation is still happening, that needs to stop
 		 */ 
-		if(grounded>0 && anim.GetFloat("jumpTime") == 1){
+		if(grounded>0){
 			
-			anim.SetBool("jumping",false);
-			anim.SetFloat("jumpTime",2);
+			anim.SetBool("Falling",false);
+			anim.SetBool("Landing",true);
 			
 		}
-		
-		if (jumping > 0) {
-			jumping--;
-		}
-		
+
+        jumping += Time.deltaTime;
+
 	}
 
 	// Update is called once per frame
