@@ -19,9 +19,9 @@ public class Player : Avatar {
 		 * Retrieves axis from analog stick, then checks for keyboard input
 		 */ 
 		float axis = Input.GetAxis ("Horizontal");
-		if (Input.GetKey ("a")) {
+		if (Input.GetKey ("d")) {
 			axis = 1.0f;
-		} else if (Input.GetKey ("d")) {
+		} else if (Input.GetKey ("a")) {
 			axis = -1.0f;
 		}
 
@@ -39,13 +39,17 @@ public class Player : Avatar {
 
 	}
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
 
-        if(grounded == 0 && !jumpPressed) {
+        print(isGrounded().ToString());
+
+        if(!isGrounded() && !jumpPressed) {
             body.velocity = new Vector3(body.velocity.x, -ySpeed, body.velocity.z);
             anim.SetBool("Falling", true);
-        }
+        }//else if (isGrounded() && !jumpPressed) {
+           // body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
+       // }
 
 		playerMove ();
 		playerJump ();

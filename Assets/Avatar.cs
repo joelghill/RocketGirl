@@ -32,6 +32,12 @@ public class Avatar : MonoBehaviour {
 	void addGrounded(){
 		grounded = grounded + 1;
 	}
+
+    void stayGrounded(){
+        if(grounded == 0) {
+            grounded = grounded + 1;
+        }
+    }
 	
 	/*
 	 * Subtracts one to grounded; to be called with the send message function
@@ -47,11 +53,34 @@ public class Avatar : MonoBehaviour {
 		anim.SetBool("jumping",true);
 	}
 
-	/*
+    /*
 	 * Object movement script. Speed is base of the set xSpeed, axis is the direction/scale 
 	 * (negative axis means reverse movement, 1.0f will give full xSpeed)
-	 */ 
-	public void move (float axis){
+	 */
+
+    public bool isGrounded()
+    {
+        Vector3 pos = this.transform.position;
+
+        Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
+        RaycastHit hit;
+
+        bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit);
+
+
+        if (downCenter) {
+            transform.position = new Vector3 (pos.x, pos.y, hit.collider.gameObject.transform.position.z);
+            return true;
+        }
+        else {
+            
+            return false;
+        }
+
+        //return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
+    }
+
+    public void move (float axis){
 
 		/*
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
@@ -59,27 +88,28 @@ public class Avatar : MonoBehaviour {
 		 */
 		if (axis > 0.1f) {
 			
-			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
+			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
-			//transform.rotation.y = 180;
-			if(transform.rotation.y == 0){
-				transform.rotation = Quaternion.Euler(0, 180, 0);
-				//Quaternion.Euler(0, 180, 0);
-			}
+            //transform.rotation.y = 180;
+
+           // if (transform.rotation.y == 1)
+            //{
+              //  transform.rotation = Quaternion.Euler(0, 0, 0);
+                //Quaternion.Euler(0, 180, 0);
+           // }
 			
 		}else if (axis < -0.1f) {
-			body.velocity = new Vector3 (-axis * xSpeed, body.velocity.y,0);
+			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
 
-            if (transform.rotation.y == 1){
-				transform.rotation = Quaternion.Euler(0, 0, 0);
-				//Quaternion.Euler(0, 180, 0);
-			}
-			
+            //if (transform.rotation.y == 0) {
+                //transform.rotation = Quaternion.Euler(0, 180, 0);
+                //Quaternion.Euler(0, 180, 0);
+            //}
         } 
 		/*
 		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
@@ -97,7 +127,7 @@ public class Avatar : MonoBehaviour {
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
-		if (grounded>0 && jump) {
+		if (isGrounded() && jump) {
 			
 			//print (grounded.ToString());
 			//anim.SetBool("Running", false);
@@ -126,12 +156,14 @@ public class Avatar : MonoBehaviour {
 		/*
 		 * If grounded and the jump animation is still happening, that needs to stop
 		 */ 
-		if(grounded>0){
+		if(isGrounded()){
 			
 			anim.SetBool("Falling",false);
 			anim.SetBool("Landing",true);
-			
-		}
+            if (!jumpPressed) {
+                body.velocity = new Vector3(body.velocity.x, 0, 0);
+            }
+        }
 
         jumping += Time.deltaTime;
 
