@@ -53,6 +53,51 @@ public class Avatar : MonoBehaviour {
 		anim.SetBool("jumping",true);
 	}
 
+	public bool collideTop()
+	{
+		Vector3 pos = this.transform.position;
+		
+		Vector3 rayBottom = new Vector3(pos.x, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
+		
+		RaycastHit hit1;
+		RaycastHit hit2;
+		RaycastHit hit3;
+		
+		bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit1);
+		bool downLeft = Physics.Raycast(rayBottomLeft, Camera.main.transform.forward, out hit2);
+		bool downRight = Physics.Raycast(rayBottomRight, Camera.main.transform.forward, out hit3);
+		
+		
+		if (downCenter) {
+
+			print ("lol");
+			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+			return sc.getVertCollision(this.gameObject, transform.position.y);
+			
+		} else if (downLeft) {
+			
+			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+			return sc.getVertCollision(this.gameObject, transform.position.y);
+			
+		} else if (downRight) {
+			
+			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
+			return sc.getVertCollision(this.gameObject, transform.position.y);
+			
+		} else {
+			
+			return false;
+			
+		}
+		
+		//return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
+	}
+
 	public bool collideLeft(){
 		
 		Vector3 pos = this.transform.position;
@@ -247,7 +292,7 @@ public class Avatar : MonoBehaviour {
 		 * Waits until the jump duration is expended or until the jump button is released to
 		 * set the y velocity to negative.
 		 */ 
-		if ((jumping >= jumpDuration || doneJump)) {
+		if ((jumping >= jumpDuration || doneJump || collideTop())) {
 			
 			//anim.SetBool("Running", false);
 			//grounded = 0;
