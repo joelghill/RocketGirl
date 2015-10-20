@@ -20,8 +20,8 @@ public class SpriteCollider : MonoBehaviour {
 	/// </summary>
 	/// <returns><c>true</c>, if vert collision was gotten, <c>false</c> otherwise.</returns>
 	/// <param name="other"> The other game objct to check collsion against.</param>
-	/// <param name="position">Position of the raycast that collided with this object</param>
-	bool getVertCollision(GameObject other, Vector3 position){
+	/// <param name="y">y position of the raycast that collided with this object</param>
+	bool getVertCollision(GameObject other, float y){
 		//get tag
 		string tag = other.tag;
 		//based on tag, check if collision with other at point occured
@@ -45,7 +45,7 @@ public class SpriteCollider : MonoBehaviour {
 			if(rb.velocity.y > 0)
 				return false;
 			//if moving not up, and near top, collide
-			else if(position.y > (getTopY()))
+			else if(y > (getTopY()))
 				return true;
 			else
 				//else no collision
@@ -60,6 +60,11 @@ public class SpriteCollider : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Gets the horz collision.
+	/// </summary>
+	/// <returns><c>true</c>, if horz collision, <c>false</c> otherwise.</returns>
+	/// <param name="other">The other game objct to check collsion against.</param>
 	bool getHorzCollision(GameObject other){
 		//get tag
 		string tag = other.tag;
@@ -89,7 +94,7 @@ public class SpriteCollider : MonoBehaviour {
 
 	private float getTopY(){
 		//middle position plus half it's size minus the margin
-		return this.transform.position + (this.transform.lossyScale.y / 2) - this.margin;
+		return this.transform.position.y + (this.transform.lossyScale.y / 2) - this.margin;
 	}
 	
 	// Update is called once per frame
