@@ -7,6 +7,8 @@ using System.Collections;
 /// 
 /// checks if game object is directly above another object.
 /// If not, moves in Z direction to position over nearest object.
+/// 
+/// Favours positions closer to camera.
 /// </summary>
 /// 
 public class isFloating : MonoBehaviour {
