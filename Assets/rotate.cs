@@ -57,8 +57,8 @@ public class rotate : MonoBehaviour {
 		}
 		if (transitionFlag) {
 			Vector3 pos = player.transform.position;
-			level.transform.RotateAround (player.transform.position, transform.up, 250 * Time.deltaTime);
-			player.transform.RotateAround (player.transform.position, transform.up, -250 * Time.deltaTime);
+			level.transform.RotateAround (player.transform.position, transform.up, 200 * Time.deltaTime);
+			player.transform.RotateAround (player.transform.position, transform.up, -200 * Time.deltaTime);
 
 			if(hasReachedGoal()){
 				transitionFlag = false;
