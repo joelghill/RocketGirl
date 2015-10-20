@@ -53,54 +53,131 @@ public class Avatar : MonoBehaviour {
 		anim.SetBool("jumping",true);
 	}
 
-    /*
-	 * Object movement script. Speed is base of the set xSpeed, axis is the direction/scale 
-	 * (negative axis means reverse movement, 1.0f will give full xSpeed)
-	 */
+	public bool collideLeft(){
+		
+		Vector3 pos = this.transform.position;
+		
+		Vector3 rayLeft = new Vector3(pos.x - 0.5f, pos.y, pos.z-1000);
+		RaycastHit hit;
+		
+		bool left = Physics.Raycast(rayLeft, Camera.main.transform.forward, out hit);
+		
+		
+		if (left) {
+			
+			transform.position = new Vector3 (pos.x, pos.y, hit.collider.gameObject.transform.position.z);
+			return true;
+		}
+		else {
+			
+			return false;
+		}
+		
+	}
 
+	public bool collideRight(){
+
+		Vector3 pos = this.transform.position;
+		
+		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, pos.z-1000);
+		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.7f, pos.z-1000);
+		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.7f, pos.z-1000);
+
+		RaycastHit hit1;
+		RaycastHit hit2;
+		RaycastHit hit3;
+		
+		bool right = Physics.Raycast(rayRight, Camera.main.transform.forward, out hit1);
+		bool rightUp = Physics.Raycast(rayRightUp, Camera.main.transform.forward, out hit2);
+		bool rightDown = Physics.Raycast(rayRightDown, Camera.main.transform.forward, out hit3);
+		
+		
+		if (right) {
+			
+			transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+			return true;
+		} else if (rightUp) {
+			
+			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+			return true;
+			
+		} else if (rightDown) {
+			
+			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
+			return true;
+			
+		} else {
+			
+			return false;
+			
+		}
+
+	}
+
+	/*
+	 * Sends raycast bellow the character. If it hits an object, the character is grounded
+	 */
     public bool isGrounded()
     {
         Vector3 pos = this.transform.position;
 
         Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-        RaycastHit hit;
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.5f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.5f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
+        
+		RaycastHit hit1;
+		RaycastHit hit2;
+		RaycastHit hit3;
 
-        bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit);
+        bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit1);
+		bool downLeft = Physics.Raycast(rayBottomLeft, Camera.main.transform.forward, out hit2);
+		bool downRight = Physics.Raycast(rayBottomRight, Camera.main.transform.forward, out hit3);
 
 
         if (downCenter) {
-            transform.position = new Vector3 (pos.x, pos.y, hit.collider.gameObject.transform.position.z);
-            return true;
-        }
-        else {
-            
-            return false;
-        }
+
+			transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+			//hit1.collider.SendMessage("
+			return true;
+
+		} else if (downLeft) {
+
+			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+			return true;
+
+		} else if (downRight) {
+			
+			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
+			return true;
+			
+		} else {
+
+			return false;
+
+		}
 
         //return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
     }
 
+
+	/*
+	 * Object movement script. Speed is base of the set xSpeed, axis is the direction/scale 
+	 * (negative axis means reverse movement, 1.0f will give full xSpeed)
+	 */
     public void move (float axis){
 
 		/*
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-		if (axis > 0.1f) {
+		if (axis > 0.1f && !collideRight()) {
 			
 			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
-            //transform.rotation.y = 180;
 
-           // if (transform.rotation.y == 1)
-            //{
-              //  transform.rotation = Quaternion.Euler(0, 0, 0);
-                //Quaternion.Euler(0, 180, 0);
-           // }
-			
-		}else if (axis < -0.1f) {
+		}else if (axis < -0.1f && !collideLeft()) {
 			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			
 			anim.SetFloat("runSpeed", axis);
