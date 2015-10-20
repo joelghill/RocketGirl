@@ -58,19 +58,40 @@ public class Avatar : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayLeft = new Vector3(pos.x - 0.5f, pos.y, pos.z-1000);
-		RaycastHit hit;
+		Vector3 rayLeftUp = new Vector3(pos.x - 0.5f, pos.y+0.5f, pos.z-1000);
+		Vector3 rayLeftDown = new Vector3(pos.x - 0.5f, pos.y-0.5f, pos.z-1000);
 		
-		bool left = Physics.Raycast(rayLeft, Camera.main.transform.forward, out hit);
+		RaycastHit hit1;
+		RaycastHit hit2;
+		RaycastHit hit3;
+		
+		bool left = Physics.Raycast(rayLeft, Camera.main.transform.forward, out hit1);
+		bool leftUp = Physics.Raycast(rayLeftUp, Camera.main.transform.forward, out hit2);
+		bool leftDown = Physics.Raycast(rayLeftDown, Camera.main.transform.forward, out hit3);
 		
 		
 		if (left) {
 			
-			transform.position = new Vector3 (pos.x, pos.y, hit.collider.gameObject.transform.position.z);
-			return true;
-		}
-		else {
+			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+			return sc.getHorzCollision(this.gameObject);
+			
+		} else if (leftUp) {
+			
+			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+			return sc.getHorzCollision(this.gameObject);
+			
+		} else if (leftDown) {
+			
+			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
+			return sc.getHorzCollision(this.gameObject);
+			
+		} else {
 			
 			return false;
+			
 		}
 		
 	}
@@ -80,8 +101,8 @@ public class Avatar : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, pos.z-1000);
-		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.7f, pos.z-1000);
-		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.7f, pos.z-1000);
+		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f, pos.z-1000);
+		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f, pos.z-1000);
 
 		RaycastHit hit1;
 		RaycastHit hit2;
@@ -93,18 +114,24 @@ public class Avatar : MonoBehaviour {
 		
 		
 		if (right) {
-			
-			transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
-			return true;
+
+
+			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+			print(sc.getHorzCollision(this.gameObject).ToString());
+			//transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+			return sc.getHorzCollision(this.gameObject);
+
 		} else if (rightUp) {
 			
+			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
 			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
-			return true;
+			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (rightDown) {
-			
+
+			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
 			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
-			return true;
+			return sc.getHorzCollision(this.gameObject);
 			
 		} else {
 			
@@ -122,8 +149,8 @@ public class Avatar : MonoBehaviour {
         Vector3 pos = this.transform.position;
 
         Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.5f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.5f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
         
 		RaycastHit hit1;
 		RaycastHit hit2;
@@ -142,13 +169,13 @@ public class Avatar : MonoBehaviour {
 
 		} else if (downLeft) {
 
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
 			transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
 			return sc.getVertCollision(this.gameObject, transform.position.y);
 
 		} else if (downRight) {
 			
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
 			transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
 			return sc.getVertCollision(this.gameObject, transform.position.y);
 			

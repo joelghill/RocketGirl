@@ -19,7 +19,7 @@ public class SpriteCollider : MonoBehaviour {
 	/// Gets the Vertical collision state.
 	/// </summary>
 	/// <returns><c>true</c>, if vert collision was gotten, <c>false</c> otherwise.</returns>
-	/// <param name="other"> The other game objct to check collsion against.</param>
+	/// <param name="other"> The other game object to check collsion against.</param>
 	/// <param name="y">y position of the raycast that collided with this object</param>
 	public bool getVertCollision(GameObject other, float y){
 		//get tag
@@ -33,7 +33,7 @@ public class SpriteCollider : MonoBehaviour {
 			break;
 		case "Solid": 
 			//always collides
-			Debug.Log ("Vert collision detected");
+			//Debug.Log ("Vert collision detected");
 			return true;
 			break;
 		case "SemiSolid":
@@ -68,7 +68,7 @@ public class SpriteCollider : MonoBehaviour {
 	/// <param name="other">The other game objct to check collsion against.</param>
 	public bool getHorzCollision(GameObject other){
 		//get tag
-		string tag = other.tag;
+		string tag = this.gameObject.tag;
 		//based on tag, check if collision with other at point occured
 		switch (tag) {
 			
@@ -78,6 +78,7 @@ public class SpriteCollider : MonoBehaviour {
 			break;
 		case "Solid": 
 			//always collides
+			Debug.Log ("Horizontal collision detected");
 			return true;
 			break;
 		case "SemiSolid":
