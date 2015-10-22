@@ -12,7 +12,7 @@ public class zPosition : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (rb.velocity.magnitude == 0) return;
+        //if (rb.velocity.magnitude == 0) return;
 
         //get game object bounds
         float height = GetComponent<SpriteRenderer>().bounds.size.y;
@@ -21,75 +21,32 @@ public class zPosition : MonoBehaviour {
 
         //points to send rays from 
         Vector3 top = new Vector3(pos.x, pos.y + (height / 2), Camera.main.transform.position.z);
-        Vector3 bottom = new Vector3(pos.x, pos.y - (height / 2), Camera.main.transform.position.z);
-        Vector3 left = new Vector3(pos.x - 0.4f, pos.y, Camera.main.transform.position.z);
-        Vector3 right = new Vector3(pos.x + 0.4f, pos.y, Camera.main.transform.position.z);
-
-        Vector3 rayDir = Camera.main.transform.forward;
-
-        RaycastHit hit1;
-        RaycastHit hit2;
+        Vector3 bottom = new Vector3(pos.x, pos.y - (height / 2),Camera.main.transform.position.z);
+        Vector3 left = new Vector3(pos.x - 0.4f, pos.y,Camera.main.transform.position.z);
+        Vector3 right = new Vector3(pos.x + 0.4f, pos.y,Camera.main.transform.position.z);
 
         //movement cases...
         //if moving right
         if(rb.velocity.x > 0)
         {
-            //... and colliding on the right but not the left
-            if(Physics.Raycast(right, rayDir, out hit1) &&
-                !Physics.Raycast(new Vector3(right.x - (float)0.4, right.y, right.z), rayDir, out hit2))
-            {
-                //.... and is behind the object
-                if(hit1.collider.transform.position.z < transform.position.z)
-                {
-                    //then move to a point in fron of that z
-                    transform.position = new Vector3(pos.x, pos.y, hit1.collider.transform.position.z - 1);
-                }
-            }
+            adjustDepth(right, new Vector3(right.x - (float)0.4, right.y, right.z));
         }
         //else if moving left
         else if(rb.velocity.x < 0)
         {
-            //... and colliding on the right but not the left
-            if (Physics.Raycast(left, rayDir, out hit1) &&
-                !Physics.Raycast(new Vector3(left.x + (float)0.4, left.y, left.z), rayDir, out hit2))
-            {
-                //.... and is behind the object
-                if (hit1.collider.transform.position.z < transform.position.z)
-                {
-                    //then move to a point in fron of that z
-                    transform.position = new Vector3(pos.x, pos.y, hit1.collider.transform.position.z - 1);
-                }
-            }
+            adjustDepth(left, new Vector3(left.x + (float)0.4, left.y, left.z));
         }
 
+        //if moving up
         if (rb.velocity.y > 0)
         {
-            //... and colliding on the right but not the left
-            if (Physics.Raycast(top, rayDir, out hit1) &&
-                !Physics.Raycast(new Vector3(top.x, top.y - (float)0.4, top.z), rayDir, out hit2))
-            {
-                //.... and is behind the object
-                if (hit1.collider.transform.position.z < transform.position.z)
-                {
-                    //then move to a point in fron of that z
-                    transform.position = new Vector3(pos.x, pos.y, hit1.collider.transform.position.z - 1);
-                }
-            }
+            adjustDepth(top, new Vector3(top.x, top.y - (float)0.4, top.z));
         }
-        //if moving up
+        //if moving down
         else if (rb.velocity.y < 0)
         {
-            //... and colliding on the right but not the left
-            if (Physics.Raycast(bottom, rayDir, out hit1) &&
-                !Physics.Raycast(new Vector3(bottom.x, bottom.y + (float)0.4, bottom.z), rayDir, out hit2))
-            {
-                //.... and is behind the object
-                if (hit1.collider.transform.position.z < transform.position.z)
-                {
-                    //then move to a point in fron of that z
-                    transform.position = new Vector3(pos.x, pos.y, hit1.collider.transform.position.z - 1);
-                }
-            }
+            adjustDepth(bottom, new Vector3(bottom.x, bottom.y + (float)0.4, bottom.z));
+
         }
 
         RaycastHit hit;
@@ -101,6 +58,33 @@ public class zPosition : MonoBehaviour {
 			}
 		}
 	}
+
+    /// <summary>
+    /// Function that Adjusts the Z position of the parent object based on whether it is behind colliable objects or not.
+    /// </summary>
+    /// <param name="outside"> Point furthest from center of object in direction of travel.</param>
+    /// <param name="inside">Point closest to center of object in direction of travel</param>
+    void adjustDepth(Vector3 outside, Vector3 inside)
+    {
+        Vector3 rayDir = Camera.main.transform.forward;
+        RaycastHit hit1;
+        RaycastHit hit2;
+        // If colliding at the outside point
+        if (Physics.Raycast(outside, rayDir, out hit1))
+        {
+            // check for collision closer to center of game object
+            bool otherCollide = Physics.Raycast(inside, rayDir, out hit2);
+            // if there is a collision and the player is not front, then return;
+            if (otherCollide && hit2.collider.transform.position.z < transform.position.z) return;
+
+            //else continue and check if outside point is behind object
+            if (hit1.collider.transform.position.z < transform.position.z)
+            {
+                //then game object is about to move behind an object, so adjust z depth
+                transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z - 1);
+            }
+        }
+    }
 
 	/// <summary>
 	/// Is the Object floating in mid air?
