@@ -27,26 +27,6 @@ public class Avatar : MonoBehaviour {
 	}
 	
 	/*
-	 * Adds one to grounded; to be called with the send message function
-	 */ 
-	void addGrounded(){
-		grounded = grounded + 1;
-	}
-
-    void stayGrounded(){
-        if(grounded == 0) {
-            grounded = grounded + 1;
-        }
-    }
-	
-	/*
-	 * Subtracts one to grounded; to be called with the send message function
-	 */
-	void minusGrounded(){
-		grounded = grounded - 1;
-	}
-	
-	/*
 	 * Sets the jumping animation boolean to true.
 	 */ 
 	void setJumpingAnim(){
@@ -98,7 +78,11 @@ public class Avatar : MonoBehaviour {
 		//return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
 	}
 
-	public bool collideLeft(){
+    /*
+     * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
+     * collision is detected.
+     */
+    public bool collideLeft(){
 		
 		Vector3 pos = this.transform.position;
 		
@@ -141,6 +125,10 @@ public class Avatar : MonoBehaviour {
 		
 	}
 
+    /*
+     * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
+     * collision is detected.
+     */
 	public bool collideRight(){
 
 		Vector3 pos = this.transform.position;
@@ -272,6 +260,10 @@ public class Avatar : MonoBehaviour {
 		}
 	}
 
+    /*
+     * Parameters are whether the jump action is executed (like the jump button, or when the AI wants to jump)
+     * and when the jump is completed ( upward collision, jump button released, jump duration expended)
+     */
 	public void jump(bool jump,bool doneJump){
 		
 		/*
