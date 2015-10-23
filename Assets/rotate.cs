@@ -14,14 +14,13 @@ public class rotate : MonoBehaviour {
 	public GameObject player;
 	//public double TransitionTime;
 	public GameObject[] entities;
-	public Camera camera;
-	public double cameraMovementY;
 
 	public float[] rotationPoints;
 
 	public bool transitionFlag = false;
 	public int currentPoint = 0;
 	public int currentGoal;
+    public int direction;
 
 	// Use this for initialization
 	void Start () {
@@ -34,80 +33,101 @@ public class rotate : MonoBehaviour {
 	}
 
 	void Update () {
-		/*if (Input.GetMouseButtonDown (0)) {
-			if (!transitionFlag) {
-				transitionFlag = true;
-				incrementGoal ();
-			}
-		}
-		if (transitionFlag) {
-			if (hasReachedGoal ()) {
-				snapToGoal ();
-				transitionFlag = false;
-			} else {
-				Vector3 pos = player.transform.position;
-				level.transform.RotateAround (player.transform.position, transform.up, 50 * Time.deltaTime);
-				player.transform.RotateAround (player.transform.position, transform.up, -50 * Time.deltaTime);
-			}
-		}*/
-		if (Input.GetMouseButtonDown (0)) {
+
+		if (Input.GetKeyDown(KeyCode.B)) {
 			if(!transitionFlag){
 				transitionFlag = true;
+                this.direction = -1;
 			}
 		}
-		if (transitionFlag) {
-			Vector3 pos = player.transform.position;
-			level.transform.RotateAround (player.transform.position, transform.up, 200 * Time.deltaTime);
-			player.transform.RotateAround (player.transform.position, transform.up, -200 * Time.deltaTime);
 
-			if(hasReachedGoal()){
-				transitionFlag = false;
-				snapToGoal();
-				incrementCurrentIndex();
-			}
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            if (!transitionFlag)
+            {
+                transitionFlag = true;
+                this.direction = 1;
+            }
+        }
+
+        if (transitionFlag) {
+            rotateLevel(this.direction);
 		}
 	}
 
-	Quaternion CloneQuat(Quaternion q){
-		Quaternion n = new Quaternion(q.x, q.y, q.z, q.w);
-		return n;
+    /// <summary>
+    /// Rotates the "Level object" to it's next roational point (0, 90, 180 or 270 degrees) in the direction specified.
+    /// </summary>
+    /// <param name="dir">Direction of rotation. 1 or 0 are only valid paramters.</param>
+    public void rotateLevel(int dir)
+    {
+        if (dir != -1 && dir != 1) return;
+        Vector3 pos = player.transform.position;
+        level.transform.RotateAround(player.transform.position, transform.up, 200 * Time.deltaTime * dir);
+        player.transform.RotateAround(player.transform.position, transform.up, -200 * Time.deltaTime * dir);
+
+        if (hasReachedGoal(dir))
+        {
+            transitionFlag = false;
+            snapToGoal(dir);
+            incrementCurrentIndex(dir);
+        }
+    }
+
+    /// <summary>
+    /// Returns the next rotational goal in the direction specified.
+    /// </summary>
+    /// <param name="dir"> Can be 1 or 0</param>
+    /// <returns> Next rotational goal in the direction specified.</returns>
+	float getRotationGoal(int dir){
+		return rotationPoints [getGoalIndex(dir)];
 	}
 
-	float getRotationGoal(){
-		return rotationPoints [getGoalIndex()];
-	}
-
-	bool hasReachedGoal(){
+    /// <summary>
+    /// If the current 
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns> True if close to goal rotatoin, false otherise</returns>
+	bool hasReachedGoal(int direction){
 		//Debug.Log ("Goal check");
 		//Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
-		//Debug.Log ("Goal Rotation:  " + getRotationGoal().ToString());
-		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal ()) < 10;
+		//Debug.Log ("Goal Rotation:  " + getRotationGoal(direction).ToString());
+		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < 10;
 	}
 
-	void snapToGoal(){
+    /// <summary>
+    /// Takes current object rotation and sets it to goal rotation.
+    /// </summary>
+    /// <param name="direction">Direction of rotation. 1 or 0</param>
+	void snapToGoal(int direction){
 		//Debug.Log("Snap to goal called");
 		//Debug.Log ("Rotation goal is:  " + getRotationGoal ());
-		float levelsnap = getRotationGoal () - this.transform.rotation.eulerAngles.y;
-		//float playerSnap = (-1*getRotationGoal ()) + this.player.transform.rotation.eulerAngles.y;
+		float levelsnap = getRotationGoal (direction) - this.transform.rotation.eulerAngles.y;
 		this.transform.RotateAround (player.transform.position, transform.up, levelsnap);
 		player.transform.RotateAround(player.transform.position, transform.up, (-1*levelsnap));
-		//this.transform.Rotate (new Vector3 (0, 1, 0),level.transform.rotation.y - getRotationGoal(), Space.World);
-		//this.player.transform.Rotate(new Vector3 (0, 1, 0),player.transform.rotation.y - (-1*getRotationGoal()), Space.World);
-		//this.player.transform.rotation.Set(0, -1*getRotationGoal (), 0, player.transform.rotation.w);
-	}
-	void incrementCurrentIndex(){
-		if (currentPoint == 3) {
-			this.currentPoint = 0;
-		}else{
-			currentPoint ++;
-		}
 	}
 
-	int getGoalIndex(){
-		if (currentPoint == 3) {
-			return 0;
-		}else{
-			return currentPoint + 1;
-		}
+
+	void incrementCurrentIndex(int direction){
+        currentPoint = currentPoint + direction;
+        currentPoint = rollPoint(currentPoint);
 	}
+
+	int getGoalIndex(int dir){
+        int point = currentPoint + dir;
+        return rollPoint(point);
+	}
+
+    /// <summary>
+    /// If the number is outside of the array bounds, rolls over to start or end of list.
+    /// </summary>
+    /// <param name="point">The point to check if out of bounds</param>
+    /// <returns>Index of begining or end of rotational points list</returns>
+    int rollPoint(int point)
+    {
+        if (point < 0) return 3;
+        if (point >= 4) return 0;
+
+        return point;
+    }
 }
