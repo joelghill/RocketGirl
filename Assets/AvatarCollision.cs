@@ -3,6 +3,8 @@ using System.Collections;
 
 public class AvatarCollision : MonoBehaviour {
 
+	protected Vector3 collisionPosition;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -31,7 +33,7 @@ public class AvatarCollision : MonoBehaviour {
 		if (downCenter) {
 
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+
 			return sc.getVertCollision(this.gameObject, transform.position.y);
 			
 		} else if (downLeft) {
@@ -79,7 +81,8 @@ public class AvatarCollision : MonoBehaviour {
 		if (left) {
 			
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+
+
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (leftUp) {
@@ -91,8 +94,15 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (leftDown) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
-			return sc.getHorzCollision(this.gameObject);
+			if(sc.gameObject.transform.position == collisionPosition){
+				transform.Translate(0.05f,0,0);
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}else{
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}
+			//return sc.getHorzCollision(this.gameObject);
 			
 		} else {
 			
@@ -140,8 +150,20 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (rightDown) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
-			return sc.getHorzCollision(this.gameObject);
+
+			/*
+			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
+			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
+			 * back slightly and be told to keep falling
+			 */ 
+			if(sc.gameObject.transform.position == collisionPosition){
+				transform.Translate(-0.05f,0,0);
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}else{
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}
 			
 		} else {
 			
@@ -180,14 +202,32 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (downLeft) {
 			
 			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
-			return sc.getVertCollision(this.gameObject, transform.position.y);
+			if(sc.gameObject.transform.position == collisionPosition){
+				//transform.Translate(-0.1f,0,0);
+				//collisionPosition = sc.transform.position;
+				return false;
+			}else{
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}
 			
 		} else if (downRight) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
-			return sc.getVertCollision(this.gameObject, transform.position.y);
+
+			/*
+			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
+			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
+			 * back slightly and be told to keep falling
+			 */ 
+			if(sc.gameObject.transform.position == collisionPosition){
+				//transform.Translate(-0.1f,0,0);
+				//collisionPosition = sc.transform.position;
+				return false;
+			}else{
+				collisionPosition = sc.transform.position;
+				return sc.getHorzCollision(this.gameObject);
+			}
 			
 		} else {
 			
