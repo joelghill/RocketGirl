@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Player : Avatar {
-	
+
 	// Use this for initialization
 	void Start () {
 
@@ -10,6 +10,8 @@ public class Player : Avatar {
 		grounded = 0;
 		body = GetComponent<Rigidbody> ();
 		anim = GetComponent<Animator> ();
+		avaCol = GetComponent<AvatarCollision> ();
+
 
 	}
 	
@@ -42,9 +44,7 @@ public class Player : Avatar {
     // Update is called once per frame
     void Update () {
 
-        print(isGrounded().ToString());
-
-        if(!isGrounded() && !jumpPressed) {
+        if(!this.avaCol.isGrounded() && !jumpPressed) {
             body.velocity = new Vector3(body.velocity.x, -ySpeed, body.velocity.z);
             anim.SetBool("Falling", true);
         }//else if (isGrounded() && !jumpPressed) {
