@@ -3,7 +3,8 @@ using System.Collections;
 
 public class AvatarCollision : MonoBehaviour {
 
-	protected Vector3 collisionPosition;
+	protected Vector3 VertColPos;
+	protected Vector3 HorColPos;
 
 	// Use this for initialization
 	void Start () {
@@ -94,18 +95,19 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (leftDown) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-			if(sc.gameObject.transform.position == collisionPosition){
+			if(sc.gameObject.transform.position == VertColPos && sc.tag== "solid"){
 				transform.Translate(0.05f,0,0);
-				collisionPosition = sc.transform.position;
+				HorColPos = sc.transform.position;
 				return sc.getHorzCollision(this.gameObject);
 			}else{
-				collisionPosition = sc.transform.position;
+				HorColPos = sc.transform.position;
 				return sc.getHorzCollision(this.gameObject);
 			}
 			//return sc.getHorzCollision(this.gameObject);
 			
 		} else {
-			
+
+			HorColPos = new Vector3(0,0,-10000);
 			return false;
 			
 		}
@@ -156,17 +158,18 @@ public class AvatarCollision : MonoBehaviour {
 			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
 			 * back slightly and be told to keep falling
 			 */ 
-			if(sc.gameObject.transform.position == collisionPosition){
+			if(sc.gameObject.transform.position == VertColPos && sc.tag== "solid"){
 				transform.Translate(-0.05f,0,0);
-				collisionPosition = sc.transform.position;
+				HorColPos = sc.transform.position;
 				return sc.getHorzCollision(this.gameObject);
 			}else{
-				collisionPosition = sc.transform.position;
+				HorColPos = sc.transform.position;
 				return sc.getHorzCollision(this.gameObject);
 			}
 			
 		} else {
-			
+
+			HorColPos = new Vector3(0,0,-10000);
 			return false;
 			
 		}
@@ -202,14 +205,25 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (downLeft) {
 			
 			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			if(sc.gameObject.transform.position == collisionPosition){
-				//transform.Translate(-0.1f,0,0);
+			 
+			if(sc.tag == "SemiSolid" && transform.position.y - 1f < sc.transform.position.y){
+				print ("Player position: " + transform.position.y.ToString());
+				print ("Object position: " + sc.transform.position.y.ToString());
+				print ("Player lossy y: " + transform.lossyScale.y.ToString());
+
+
+				return false;
+			}
+
+			if(sc.gameObject.transform.position == HorColPos){
+				transform.Translate(0.1f,0,0);
 				//collisionPosition = sc.transform.position;
 				return false;
 			}else{
-				collisionPosition = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
+				VertColPos = sc.transform.position;
+				return sc.getVertCollision(this.gameObject, transform.position.y);
 			}
+			//return sc.getVertCollision(this.gameObject, transform.position.y);
 			
 		} else if (downRight) {
 			
@@ -220,17 +234,19 @@ public class AvatarCollision : MonoBehaviour {
 			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
 			 * back slightly and be told to keep falling
 			 */ 
-			if(sc.gameObject.transform.position == collisionPosition){
-				//transform.Translate(-0.1f,0,0);
+			if(sc.gameObject.transform.position == HorColPos){
+				transform.Translate(-0.1f,0,0);
 				//collisionPosition = sc.transform.position;
 				return false;
 			}else{
-				collisionPosition = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
+				VertColPos = sc.transform.position;
+				return sc.getVertCollision(this.gameObject, transform.position.y);
 			}
+			//return sc.getVertCollision(this.gameObject, transform.position.y);
 			
 		} else {
-			
+
+
 			return false;
 			
 		}
