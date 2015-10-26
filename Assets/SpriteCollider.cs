@@ -41,16 +41,23 @@ public class SpriteCollider : MonoBehaviour {
 			Transform otherT =other.transform;
 			//get rigidbody
 			Rigidbody rb = other.GetComponent<Rigidbody>();
+			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
 			//if moving up, no collision
-			if(rb.velocity.y > 0)
+			if(rb.velocity.y > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
+				print ("Player position: "+y.ToString());
+				print ("Player height: " + otherHeight.ToString());
+				print ("Tile position: " + transform.position.y.ToString());
+				print ("Tile size: " + GetComponent<BoxCollider>().bounds.extents.y.ToString());
+
 				return false;
+			}
 			//if moving not up, and near top, collide
-			else if(y > (getTopY()))
-				return true;
+			//else if(y > (getTopY()))
+			//	return true;
 			else
 				//else no collision
-				return false;
+				return true;
 
 		case "Moveable":
 			//like solid

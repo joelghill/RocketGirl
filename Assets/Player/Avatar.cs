@@ -24,7 +24,7 @@ public class Avatar : MonoBehaviour {
         //body = GetComponent<Rigidbody> ();
         //anim = GetComponent<Animator> ();
         jumpPressed = false;
-		avaCol = GetComponent<AvatarCollision> ();
+		//avaCol = GetComponent<AvatarCollision> ();
 		
 	}
 	
@@ -97,7 +97,7 @@ public class Avatar : MonoBehaviour {
 		 * Waits until the jump duration is expended or until the jump button is released to
 		 * set the y velocity to negative.
 		 */ 
-		if ((jumping >= jumpDuration || doneJump || avaCol.collideTop())) {
+		if ((jumping >= jumpDuration || doneJump || avaCol.collideTop()) || (!avaCol.isGrounded() && !jump && !jumpPressed)) {
 			
 			//anim.SetBool("Running", false);
 			//grounded = 0;

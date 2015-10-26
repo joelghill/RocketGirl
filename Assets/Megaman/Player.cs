@@ -44,13 +44,6 @@ public class Player : Avatar {
     // Update is called once per frame
     void Update () {
 
-        if(!this.avaCol.isGrounded() && !jumpPressed) {
-            body.velocity = new Vector3(body.velocity.x, -ySpeed, body.velocity.z);
-            anim.SetBool("Falling", true);
-        }//else if (isGrounded() && !jumpPressed) {
-           // body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
-       // }
-
 		playerMove ();
 		playerJump ();
 

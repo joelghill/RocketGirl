@@ -5,10 +5,11 @@ public class AvatarCollision : MonoBehaviour {
 
 	protected Vector3 VertColPos;
 	protected Vector3 HorColPos;
+	protected float height;
 
 	// Use this for initialization
 	void Start () {
-	
+		height = gameObject.GetComponent<SpriteRenderer> ().bounds.size.y;
 	}
 
 	/*
@@ -139,8 +140,7 @@ public class AvatarCollision : MonoBehaviour {
 			
 			
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
-			print(sc.getHorzCollision(this.gameObject).ToString());
-			//transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (rightUp) {
@@ -199,21 +199,22 @@ public class AvatarCollision : MonoBehaviour {
 		if (downCenter) {
 			
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit1.collider.gameObject.transform.position.z);
+
+			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
+				
+			//	return false;
+			//}
+
 			return sc.getVertCollision(this.gameObject, transform.position.y);
 			
 		} else if (downLeft) {
 			
 			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
 			 
-			if(sc.tag == "SemiSolid" && transform.position.y - 1f < sc.transform.position.y){
-				print ("Player position: " + transform.position.y.ToString());
-				print ("Object position: " + sc.transform.position.y.ToString());
-				print ("Player lossy y: " + transform.lossyScale.y.ToString());
+			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
 
-
-				return false;
-			}
+			//	return false;
+			//}
 
 			if(sc.gameObject.transform.position == HorColPos){
 				transform.Translate(0.1f,0,0);
@@ -228,6 +229,11 @@ public class AvatarCollision : MonoBehaviour {
 		} else if (downRight) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+
+			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
+
+			//	return false;
+			//}
 
 			/*
 			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
