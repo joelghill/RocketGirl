@@ -1,19 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : Avatar, IDamageable<float>, IKillable {
 
+public class Player : MonoBehaviour, IDamageable<float>, IKillable {
+
+    public IControllable avatar;
     public float health = 100;
+    float direction = 1f;
     // Use this for initialization
     void Start () {
-
-		jumping = 0;
-		grounded = 0;
-		body = GetComponent<Rigidbody> ();
-		anim = GetComponent<Animator> ();
-		avaCol = GetComponent<AvatarCollision> ();
-
-
+        if(avatar == null)
+        {
+            avatar = gameObject.GetComponent<IControllable>();
+        }
 	}
 	
 	void playerMove(){
@@ -28,7 +27,8 @@ public class Player : Avatar, IDamageable<float>, IKillable {
 			axis = -1.0f;
 		}
 
-		move (axis);
+		avatar.move (axis);
+        direction = axis;
 
 	}
 
@@ -37,14 +37,21 @@ public class Player : Avatar, IDamageable<float>, IKillable {
 	 * jump ends based on when the jump button is released.
 	 */ 
 	void playerJump(){
+        if (Input.GetButtonDown("Jump"))
+        {
+            avatar.jump();
+        }
 
-		jump (Input.GetButtonDown ("Jump"), Input.GetButtonUp ("Jump"));
+        if (Input.GetButtonUp("Jump"))
+        {
+            avatar.doneJump();
+        }
+		//jump (Input.GetButtonDown ("Jump"), Input.GetButtonUp ("Jump"));
 
 	}
 
     // Update is called once per frame
     void Update () {
-
 		playerMove ();
 		playerJump ();
 
