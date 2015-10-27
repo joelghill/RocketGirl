@@ -4,6 +4,7 @@ using System.Collections;
 public class zPosition : MonoBehaviour {
 
 	Rigidbody rb;
+    public bool allowFloat = false;
 
 	// Use this for initialization
 	void Start () {
@@ -51,6 +52,7 @@ public class zPosition : MonoBehaviour {
 
         RaycastHit hit;
 		if (this.isFloating()) {
+            if (allowFloat) return;
 			//send out raycast into screen from feet of player
 			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
 			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
