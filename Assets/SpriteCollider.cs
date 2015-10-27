@@ -30,12 +30,10 @@ public class SpriteCollider : MonoBehaviour {
 		case "None":
 			//never register collision
 			return false;
-			break;
 		case "Solid": 
 			//always collides
 			//Debug.Log ("Vert collision detected");
 			return true;
-			break;
 		case "SemiSolid":
 			//get transform
 			Transform otherT =other.transform;
@@ -82,13 +80,12 @@ public class SpriteCollider : MonoBehaviour {
 		case "None":
 			//never register collision
 			return false;
-			break;
 		case "Solid": 
 			//always collides
 			Debug.Log ("Horizontal collision detected");
 			return true;
-			break;
-		case "SemiSolid":
+
+        case "SemiSolid":
 			//semisolid no not collid in horz directions
 			return false;
 			
