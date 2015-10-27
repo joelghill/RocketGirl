@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : Avatar {
+public class Player : Avatar, IDamageable<float>, IKillable {
 
-	// Use this for initialization
-	void Start () {
+    public float health = 100;
+    // Use this for initialization
+    void Start () {
 
 		jumping = 0;
 		grounded = 0;
@@ -47,5 +48,23 @@ public class Player : Avatar {
 		playerMove ();
 		playerJump ();
 
+    }
+
+    public void takeDamage(float damage)
+    {
+        health = health - damage;
+        if(health <= 0)
+        {
+            health = 0;
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        //animate
+        //make sound
+        //reset scene?
+        Destroy(this.gameObject);
     }
 }
