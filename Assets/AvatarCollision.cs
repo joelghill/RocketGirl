@@ -84,18 +84,42 @@ public class AvatarCollision : MonoBehaviour {
 			
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
 
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
+				print ("bawls");
+				transform.Translate(0.01f,0,0);
+			}
 
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (leftUp) {
 			
 			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
+				print ("bawls");
+				transform.Translate(0.01f,0,0);
+			}
+
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (leftDown) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
+				print ("bawls");
+				transform.Translate(0.01f,0,0);
+			}
+
 			if(sc.gameObject.transform.position == VertColPos && sc.tag== "solid"){
 				transform.Translate(0.05f,0,0);
 				HorColPos = sc.transform.position;
@@ -141,17 +165,41 @@ public class AvatarCollision : MonoBehaviour {
 			
 			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
 
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
+				print ("bawls");
+				transform.Translate(-0.01f,0,0);
+			}
+
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (rightUp) {
 			
 			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
+
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
+				print ("bawls");
+				transform.Translate(-0.01f,0,0);
+			}
+
 			return sc.getHorzCollision(this.gameObject);
 			
 		} else if (rightDown) {
 			
 			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+
+			/*
+			 * Position correction for the collision
+			 */ 
+			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
+				print ("bawls");
+				transform.Translate(-0.01f,0,0);
+			}
 
 			/*
 			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
