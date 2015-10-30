@@ -19,6 +19,8 @@ public class Avatar : MonoBehaviour, IControllable {
 	protected int grounded;
 	protected float jumping;
     protected bool jumpPressed;
+	protected float runInput;
+	protected bool wallGlide;
 
     private bool donejumping;
 	
@@ -30,6 +32,7 @@ public class Avatar : MonoBehaviour, IControllable {
         anim = GetComponent<Animator>();
         avaCol = GetComponent<AvatarCollision>();
         jumpPressed = false;
+		wallGlide = false;
 		//avaCol = GetComponent<AvatarCollision> ();
 		
 	}
@@ -52,15 +55,22 @@ public class Avatar : MonoBehaviour, IControllable {
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
 		if (axis > 0.1f && !avaCol.collideRight()) {
-			
-			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+
+			if(body.velocity.x < axis*xSpeed){
+				body.velocity = new Vector3 (body.velocity.x + accel, body.velocity.y,0);
+			}else{
+				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+			}
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
-			body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
-			
+			if(body.velocity.x > axis*xSpeed){
+				body.velocity = new Vector3 (body.velocity.x - accel, body.velocity.y,0);
+			}else{
+				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+			}
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
 
@@ -77,6 +87,8 @@ public class Avatar : MonoBehaviour, IControllable {
 			body.velocity = new Vector3 (0, body.velocity.y, 0);
 			anim.SetBool("Running", false);
 		}
+
+		runInput = axis;
 	}
 
     public void doneJump()
@@ -93,9 +105,19 @@ public class Avatar : MonoBehaviour, IControllable {
     void adjustFallSpeed()
     {
         body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel, 0);
-        if(body.velocity.y < maxFall)
+
+		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
+
+			if(body.velocity.y < maxFall/2)
+			{
+				body.velocity = new Vector3(body.velocity.x, maxFall/2, 0);
+				wallGlide = true;
+			}
+			
+		}else if(body.velocity.y < maxFall)
         {
             body.velocity = new Vector3(body.velocity.x, maxFall, 0);
+			wallGlide = false;
         }
 
         if (avaCol.isGrounded())
@@ -124,6 +146,15 @@ public class Avatar : MonoBehaviour, IControllable {
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
 		} 
+
+		/*
+		 * If the player is gliding down a wall the jump will not be as high and add a bit of horizontal speed
+		 */ 
+		else if (wallGlide) {
+			donejumping = false;
+			body.velocity = new Vector3 ((xSpeed)*(-runInput), ySpeed, 0);
+			anim.SetBool("jumping",true);
+		}
 	}
 
     public void shoot(float direction)
