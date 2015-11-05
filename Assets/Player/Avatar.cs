@@ -170,19 +170,13 @@ public class Avatar : MonoBehaviour, IControllable {
 
     public void shoot(float direction)
     {
-
         //TODO
 		Vector3 fireSpot = new Vector3 (transform.position.x + (0.5f)*facing, transform.position.y, transform.position.z);
 		spawnedBullet = GameObject.Instantiate(bulletPrefab, fireSpot, transform.rotation) as GameObject;
 		//add force to bullet
 		bullet bill = spawnedBullet.GetComponent<bullet> ();
 		bill.setBody(bill.GetComponent<Rigidbody> ());
-		if (facing == 1) {
-			bill.setVelocity (10, 0);
-		} else {
-			bill.setVelocity (10, 180);
-		}
-
+		bill.setVelocity (10*facing, 0);
     }
 
     void setAnimations()

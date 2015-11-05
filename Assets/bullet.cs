@@ -9,12 +9,12 @@ public class bullet : MonoBehaviour , IKillable {
 	public SpriteRenderer render;
 	// Use this for initialization
 	void Start () {
-        if (rb == null)
-            rb = gameObject.GetComponent<Rigidbody>();
+        //if (rb == null)
+            //rb = gameObject.GetComponent<Rigidbody>();
         //put bullet close to camera
-        Vector3 pos = this.transform.position;
-        this.transform.position = new Vector3(pos.x, pos.y, Camera.main.transform.position.z + 1);
-        setVelocity(speed, 0);
+        //Vector3 pos = this.transform.position;
+        //this.transform.position = new Vector3(pos.x, pos.y, Camera.main.transform.position.z + 1);
+        //setVelocity(speed, 0);
 		if(render == null)
 			render = gameObject.GetComponent<SpriteRenderer>();
 	}
@@ -34,12 +34,7 @@ public class bullet : MonoBehaviour , IKillable {
 	
 	public void setVelocity(float speed, float rotation)
     {
-		rb.transform.Rotate (0, rotation, 0);
-		if (rotation == 180) {
-			rb.velocity = new Vector3 (-speed, 0, 0);
-		} else {
-			rb.velocity = new Vector3 (speed, 0, 0);
-		}
+		rb.velocity = new Vector3 (speed, 0, 0);
     }
 
     public void makeHostile(bool value)
