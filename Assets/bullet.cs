@@ -5,6 +5,7 @@ public class bullet : MonoBehaviour , IKillable {
     public float speed = 5;
     bool hostile = false;
     public float power = 10;
+    public SpriteRenderer render;
     Rigidbody rb;
 	// Use this for initialization
 	void Start () {
@@ -14,12 +15,24 @@ public class bullet : MonoBehaviour , IKillable {
         Vector3 pos = this.transform.position;
         this.transform.position = new Vector3(pos.x, pos.y, Camera.main.transform.position.z + 1);
         setVelocity(speed, 0);
+        if(render == null)
+        {
+            render = gameObject.GetComponent<SpriteRenderer>();
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
         onHit();
+
 	}
+
+    void OnBecameInvisible()
+    {
+
+        Destroy(gameObject);
+
+    }
 
     public void setVelocity(float speed, float rotation)
     {
