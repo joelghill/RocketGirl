@@ -43,10 +43,6 @@ public class SpriteCollider : MonoBehaviour {
 
 			//if moving up, no collision
 			if(rb.velocity.y > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
-				print ("Player position: "+y.ToString());
-				print ("Player height: " + otherHeight.ToString());
-				print ("Tile position: " + transform.position.y.ToString());
-				print ("Tile size: " + GetComponent<BoxCollider>().bounds.extents.y.ToString());
 
 				return false;
 			}
@@ -82,7 +78,6 @@ public class SpriteCollider : MonoBehaviour {
 			return false;
 		case "Solid": 
 			//always collides
-			Debug.Log ("Horizontal collision detected");
 			return true;
 
         case "SemiSolid":
