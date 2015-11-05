@@ -180,7 +180,7 @@ public class Avatar : MonoBehaviour, IControllable {
 		if (facing == 1) {
 			bill.setVelocity (10, 0);
 		} else {
-			bill.setVelocity (10, 1);
+			bill.setVelocity (10, 180);
 		}
 
     }

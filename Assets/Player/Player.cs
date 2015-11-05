@@ -52,7 +52,6 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 
 	void playerShoot(){
 		if (Input.GetKeyDown ("e")) {
-			print ("Shots Fired!");
 			avatar.shoot(0);
 		}
 	}
@@ -62,7 +61,6 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 		playerMove ();
 		playerJump ();
 		playerShoot ();
-		print (transform.rotation.ToString());
     }
 
     public void takeDamage(float damage)
