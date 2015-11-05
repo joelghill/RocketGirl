@@ -169,7 +169,6 @@ public class AvatarCollision : MonoBehaviour {
 			 * Position correction for the collision
 			 */ 
 			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
-				print ("bawls");
 				transform.Translate(-0.01f,0,0);
 			}
 
@@ -183,7 +182,6 @@ public class AvatarCollision : MonoBehaviour {
 			 * Position correction for the collision
 			 */ 
 			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
-				print ("bawls");
 				transform.Translate(-0.01f,0,0);
 			}
 

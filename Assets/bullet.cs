@@ -5,7 +5,7 @@ public class bullet : MonoBehaviour , IKillable {
     public float speed = 5;
     bool hostile = false;
     public float power = 10;
-    Rigidbody rb;
+    public Rigidbody rb;
 	// Use this for initialization
 	void Start () {
         if (rb == null)
@@ -21,10 +21,15 @@ public class bullet : MonoBehaviour , IKillable {
         onHit();
 	}
 
+	public void setBody(Rigidbody x){
+		rb = x;
+	}
+
     public void setVelocity(float speed, float rotation)
     {
+		rb.transform.Rotate (0, 180, 0);
         rb.velocity = new Vector3(speed, 0, 0);
-        rb.transform.Rotate(0, 0, rotation);
+        //rb.transform.Rotate(0, 180, 0);
     }
 
     public void makeHostile(bool value)
@@ -46,7 +51,7 @@ public class bullet : MonoBehaviour , IKillable {
         if (Physics.Raycast(hitCheck, Camera.main.transform.forward, out hit))
         {
             IDamageable<float> damageable = hit.collider.gameObject.GetComponent<IDamageable<float>>();
-            if (damageable != null)
+			if (damageable != null && hit.collider.gameObject.tag != "Player");
             {
                 damageable.takeDamage(power);
                 Die();

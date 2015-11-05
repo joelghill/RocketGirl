@@ -21,8 +21,16 @@ public class Avatar : MonoBehaviour, IControllable {
     protected bool jumpPressed;
 	protected float runInput;
 	protected bool wallGlide;
+	protected int facing;
 
     private bool donejumping;
+
+	//prefab to spawn
+	public GameObject bulletPrefab;
+	
+	//the bullet that has been spawned
+	public GameObject spawnedBullet;
+
 	
 	// Use this for initialization
 	void Start () {
@@ -33,6 +41,7 @@ public class Avatar : MonoBehaviour, IControllable {
         avaCol = GetComponent<AvatarCollision>();
         jumpPressed = false;
 		wallGlide = false;
+		facing = 1;
 		//avaCol = GetComponent<AvatarCollision> ();
 		
 	}
@@ -64,6 +73,7 @@ public class Avatar : MonoBehaviour, IControllable {
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
+			facing = 1;
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
 			if(body.velocity.x > axis*xSpeed){
@@ -73,6 +83,7 @@ public class Avatar : MonoBehaviour, IControllable {
 			}
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
+			facing = -1;
 
             //if (transform.rotation.y == 0) {
                 //transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -161,6 +172,16 @@ public class Avatar : MonoBehaviour, IControllable {
     {
 
         //TODO
+		Vector3 fireSpot = new Vector3 (transform.position.x + (0.5f)*facing, transform.position.y, transform.position.z);
+		spawnedBullet = GameObject.Instantiate(bulletPrefab, fireSpot, transform.rotation) as GameObject;
+		//add force to bullet
+		bullet bill = spawnedBullet.GetComponent<bullet> ();
+		bill.setBody(bill.GetComponent<Rigidbody> ());
+		if (facing == 1) {
+			bill.setVelocity (10, 0);
+		} else {
+			bill.setVelocity (10, 1);
+		}
 
     }
 
