@@ -3,7 +3,9 @@ using System.Collections;
 using Blocks;
 
 public class Trile : MonoBehaviour {
-		
+
+    public Shader shader;
+
 	public GameObject Top;
 	public GameObject Bottom;
 	public GameObject Front;
@@ -83,6 +85,13 @@ public class Trile : MonoBehaviour {
 		if (sp != null)
 			sp.sprite = s;
 	}
+
+    public void ApplyShader()
+    {
+
+        Debug.Log("Apply Shader called...");
+
+    }
 }
 
 
