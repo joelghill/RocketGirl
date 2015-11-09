@@ -46,7 +46,6 @@ public class LevelEditor : EditorWindow
 				//EditorGUILayout.Toggle( "Auto Snap", doSnap);
 			}
 			if(Event.current.keyCode == (KeyCode.Space)){
-				Debug.Log("SHIFT KEY DOWN");
 				doCopy = true;
 			}
 			break;
@@ -54,7 +53,6 @@ public class LevelEditor : EditorWindow
 		case EventType.keyUp:
 			if (Event.current.keyCode == (KeyCode.LeftControl)) {
 				doSnap = false;
-				//EditorGUILayout.Toggle( "Auto Snap", doSnap);
 			}
 			if(Event.current.keyCode == (KeyCode.Space)){
 				doCopy = false;
@@ -62,19 +60,6 @@ public class LevelEditor : EditorWindow
 			break;
 		}
 
-	}
-
-	private void setSnapSettings(){
-		if (Input.GetKey (KeyCode.LeftControl)) {
-			doSnap = true;
-		} else {
-			doSnap = false;
-		}
-		if (doSnap && Input.GetKey (KeyCode.LeftShift)) {
-			doCopy = true;
-		} else {
-			doCopy = false;
-		}
 	}
 
 	public void OnSelectionChange(){
@@ -124,10 +109,6 @@ public class LevelEditor : EditorWindow
 	}
 	private void Snap()
 	{
-		Debug.Log ("SNAP");
-		if (doCopy) {
-			Debug.Log("CREATING COPY");
-		}
 		for(int i = 0; i < Selection.transforms.Length; i++)
 		{
 			var t = Selection.transforms[i].position;
@@ -136,27 +117,16 @@ public class LevelEditor : EditorWindow
 			t.z = Round( t.z );
 
 			Selection.transforms[i].position = t;
-			if(!Selection.transforms[i].position.Equals(prevPositions[i]) 
-			   && doCopy){
-				//If there are any objects already there, delete them before creating copy
-				Collider[] hitColliders = Physics.OverlapSphere(prevPositions[i], 0.4f);
-				foreach(Collider c in hitColliders){
-					Debug.Log ("COLLIDER HIT AT PREVIOUS LOCATION");
-					if(isTrile(c.gameObject))
-						Debug.Log ("THING TO DELETE IS A TRILE");
-						DestroyImmediate(c.gameObject);
-				}
-				//if there are any objects in new spot that are not the object we are moving, delete
+			if(!Selection.transforms[i].position.Equals(prevPositions[i])){
 				Collider[] newspotColliders = Physics.OverlapSphere(Selection.transforms[i].position, 0.4f);
 				foreach(Collider c in newspotColliders){
 					if(isTrile(c.gameObject) && 
 					   	!c.gameObject.Equals( Selection.transforms[i].gameObject))
 						DestroyImmediate(c.gameObject);
 				}
-				createCopy(Selection.transforms[i], prevPositions[i]);
+                if(doCopy)
+				    createCopy(Selection.transforms[i], prevPositions[i]);
 			}
-				
-			//createCopy(transform);
 			prevPositions[i] = Selection.transforms[i].position;
 		}
 	}
