@@ -30,10 +30,16 @@ public class LevelEditor : EditorWindow
 
 		this.LevelEditorActive = EditorGUILayout.Toggle( "Level Editor Active", LevelEditorActive);
 
-		GUILayout.Label("Hold Left Control to Snap Object to Grid");
-		GUILayout.Label("Hold Left Ctrl & Space to Draw with selection");
+        ///Showing instructions....
+        GUILayout.Label("###### ON WINDOWS ######");
+        GUILayout.Label("Hold Left Control to Snap object to grid & erase");
+		GUILayout.Label("Hold Left Ctrl & Space to draw with selection");
+        GUILayout.Label("...");
+        GUILayout.Label("###### ON MAC OSX ######");
+        GUILayout.Label("Hold \"s\" to snap object to grid & erase");
+        GUILayout.Label("Hold \"s\" & \"c\" to draw with selection");
 
-	}
+    }
 
 	public void OnSceneGUI(SceneView sceneView){
 		if (!this.LevelEditorActive)
@@ -41,20 +47,26 @@ public class LevelEditor : EditorWindow
 		Event e = Event.current;
 		switch (e.type) {
 		case EventType.KeyDown:
-			if (Event.current.keyCode == (KeyCode.LeftControl)){
+			if (Event.current.keyCode == (KeyCode.LeftControl) ||
+                    Event.current.keyCode == (KeyCode.S)){
 				doSnap = true;
 				//EditorGUILayout.Toggle( "Auto Snap", doSnap);
 			}
-			if(Event.current.keyCode == (KeyCode.Space)){
+			if(Event.current.keyCode == (KeyCode.Space) ||
+                    Event.current.keyCode == (KeyCode.C))
+                {
 				doCopy = true;
 			}
 			break;
 			
 		case EventType.keyUp:
-			if (Event.current.keyCode == (KeyCode.LeftControl)) {
+			if (Event.current.keyCode == (KeyCode.LeftControl) ||
+                    Event.current.keyCode == (KeyCode.S)) {
 				doSnap = false;
 			}
-			if(Event.current.keyCode == (KeyCode.Space)){
+			if(Event.current.keyCode == (KeyCode.Space) ||
+                    Event.current.keyCode == (KeyCode.C))
+                {
 				doCopy = false;
 			}
 			break;
