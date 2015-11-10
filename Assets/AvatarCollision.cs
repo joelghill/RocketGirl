@@ -120,10 +120,11 @@ public class AvatarCollision : MonoBehaviour {
     /// <param name="pointList">List of points to send rays to.</param>
     /// <param name="direction">Direction to send the ray in.</param>
     /// <param name="distance">Optional. Usually distance from center of object to border in direction of collision check.</param>
-    /// <returns>The Sprite collider of the other object.</returns>
-    public SpriteCollider checkCollisionList(Vector3[] pointList, Vector3 direction, float distance = 0.0f)
+    /// <returns>A list of sprite colliders of the other object.</returns>
+    public object[] checkCollisionList(Vector3[] pointList, Vector3 direction, float distance = 0.0f)
     {
         RaycastHit hit;
+        ArrayList colliders = new ArrayList();
         for (int i = 0; i < pointList.Length; i++)
         {
             bool collide;
@@ -137,10 +138,10 @@ public class AvatarCollision : MonoBehaviour {
             }
             if (collide)
             {
-                return hit.collider.gameObject.GetComponent<SpriteCollider>();
+                colliders.Add(hit.collider.gameObject.GetComponent<SpriteCollider>());
             }
         }
-        return null;
+        return colliders.ToArray();
     }
 
     /// <summary>
@@ -170,25 +171,44 @@ public class AvatarCollision : MonoBehaviour {
         }
 
         //check intial point list for valid collsion
-        SpriteCollider sc = checkCollisionList(firstPoints, Camera.main.transform.forward);
+        object[] o = checkCollisionList(firstPoints, Camera.main.transform.forward);
         bool collide = false;
 
         //
-        if (sc != null)
+        if (o != null)
         {
             //resolve if there was a valid collision with other sprite.
-            collide = sc.getVertCollision(this.gameObject, transform.position.y);
+            for(int i = 0; i < o.Length; i++)
+            {
+                SpriteCollider sc = (SpriteCollider)o[i];
+                if (sc.getVertCollision(this.gameObject, transform.position.y))
+                {
+                    collide = true;
+                    break;
+                }
+                    
+            }
         }
         //if there was no valid collision, check secondary
         //this is to avoid player falling through platforms when behind non-colliding objects.
-        if (sc == null || !collide)
+        if (o == null || !collide)
         {
-            sc = checkCollisionList(secondPoints, secondaryDirection, distance);
-            if (sc != null)
+            o = checkCollisionList(secondPoints, secondaryDirection, distance);
+            if (o != null)
             {
-                collide = sc.getVertCollision(this.gameObject, transform.position.y);
+                //resolve if there was a valid collision with other sprite.
+                for (int i = 0; i < o.Length; i++)
+                {
+                    SpriteCollider sc = (SpriteCollider)o[i];
+                    if (sc.getVertCollision(this.gameObject, transform.position.y))
+                    {
+                        collide = true;
+                        break;
+                    }
+
+                }
             }
-            if (sc == null || !collide)
+            if (o == null || !collide)
             {
                 return false;
             }
