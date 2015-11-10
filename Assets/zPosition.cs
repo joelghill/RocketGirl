@@ -6,6 +6,9 @@ public class zPosition : MonoBehaviour {
 	Rigidbody rb;
     public bool allowFloat = false;
 
+    private float height;
+    private float width;
+
 	// Use this for initialization
 	void Start () {
 		this.rb = gameObject.GetComponent<Rigidbody> ();
@@ -16,8 +19,8 @@ public class zPosition : MonoBehaviour {
         //if (rb.velocity.magnitude == 0) return;
 
         //get game object bounds
-        float height = GetComponent<SpriteRenderer>().bounds.size.y;
-        float width = GetComponent<SpriteRenderer>().bounds.size.x;
+        height = GetComponent<SpriteRenderer>().bounds.size.y;
+        width = GetComponent<SpriteRenderer>().bounds.size.x;
         Vector3 pos = transform.position;
 
         //points to send rays from 
@@ -88,17 +91,32 @@ public class zPosition : MonoBehaviour {
         }
     }
 
-	/// <summary>
-	/// Is the Object floating in mid air?
-	/// </summary>
-	/// <returns><c>true</c>, if floating, <c>false</c> otherwise.</returns>
-	bool isFloating(){
-		RaycastHit hit;
-		//if the player is falling or jumping, don't bother with all this noise.
-		if (rb.velocity.y != 0)
+    /// <summary>
+    /// Is the Object floating in mid air?
+    /// </summary>
+    /// <returns><c>true</c>, if floating, <c>false</c> otherwise.</returns>
+    bool isFloating() {
+        RaycastHit hit;
+        bool floating = false;
+        Vector3 pos = transform.position;
+
+        Vector3 left = new Vector3(pos.x - (width / 2), pos.y, pos.z);
+        Vector3 right = new Vector3(pos.x + (width / 2), pos.y, pos.z);
+
+        Vector3[] points = { left, pos, right };
+        //if the player is falling or jumping, don't bother with all this noise.
+        if (rb.velocity.y != 0)
 			return false;
+
+        for(int i = 0; i < points.Length; i++)
+        {
+            if(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, 1.0f))
+            {
+                floating = true;
+            }
+        }
 		//Send raycast down, one unit long. If no collision, player is floating in mid air
-		return !(Physics.Raycast (this.transform.position, new Vector3 (0, -1, 0),out hit ,1.0f));
+		return floating;
 	}
 
     bool rayCheck(Vector3 point)
