@@ -12,52 +12,27 @@ public class AvatarCollision : MonoBehaviour {
 		height = gameObject.GetComponent<SpriteRenderer> ().bounds.size.y;
 	}
 
-	/*
-	 * 
-	 */
+
 	public bool collideTop()
 	{
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayBottom = new Vector3(pos.x, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y + (transform.lossyScale.y)/5, pos.z-1000);
-		
-		RaycastHit hit1;
-		RaycastHit hit2;
-		RaycastHit hit3;
-		
-		bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit1);
-		bool downLeft = Physics.Raycast(rayBottomLeft, Camera.main.transform.forward, out hit2);
-		bool downRight = Physics.Raycast(rayBottomRight, Camera.main.transform.forward, out hit3);
-		
-		
-		if (downCenter) {
+		Vector3 rayTop = new Vector3(pos.x, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayTopLeft = new Vector3(pos.x-0.4f, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayTopRight = new Vector3(pos.x+0.4f, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
 
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+        Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
 
-			return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else if (downLeft) {
-			
-			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit2.collider.gameObject.transform.position.z);
-			return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else if (downRight) {
-			
-			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-			//transform.position = new Vector3 (pos.x, pos.y, hit3.collider.gameObject.transform.position.z);
-			return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else {
-			
-			return false;
-			
-		}
-		
-		//return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
-	}
+        Vector3 rayTop2 = new Vector3(pos.x, pos.y + (transform.lossyScale.y) / 5, pos.z);
+        Vector3 rayTopLeft2 = new Vector3(pos.x - 0.4f, pos.y + (transform.lossyScale.y) / 5, pos.z);
+        Vector3 rayTopRight2 = new Vector3(pos.x + 0.4f, pos.y + (transform.lossyScale.y) / 5, pos.z);
+
+        Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
+
+        //check collision
+        return twoLevelCollisionCheck(points, points2, transform.up);
+    }
+
 	
 	/*
      * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
@@ -67,74 +42,21 @@ public class AvatarCollision : MonoBehaviour {
 		
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayLeft = new Vector3(pos.x - 0.5f, pos.y, pos.z-1000);
-		Vector3 rayLeftUp = new Vector3(pos.x - 0.5f, pos.y+0.5f, pos.z-1000);
-		Vector3 rayLeftDown = new Vector3(pos.x - 0.5f, pos.y-0.5f, pos.z-1000);
-		
-		RaycastHit hit1;
-		RaycastHit hit2;
-		RaycastHit hit3;
-		
-		bool left = Physics.Raycast(rayLeft, Camera.main.transform.forward, out hit1);
-		bool leftUp = Physics.Raycast(rayLeftUp, Camera.main.transform.forward, out hit2);
-		bool leftDown = Physics.Raycast(rayLeftDown, Camera.main.transform.forward, out hit3);
-		
-		
-		if (left) {
-			
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+		Vector3 rayLeft = new Vector3(pos.x - 0.5f, pos.y, Camera.main.transform.position.z);
+		Vector3 rayLeftUp = new Vector3(pos.x - 0.5f, pos.y+0.5f, Camera.main.transform.position.z);
+		Vector3 rayLeftDown = new Vector3(pos.x - 0.5f, pos.y-0.5f, Camera.main.transform.position.z);
 
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
-				transform.Translate(0.01f,0,0);
-			}
+        Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
 
-			return sc.getHorzCollision(this.gameObject);
-			
-		} else if (leftUp) {
-			
-			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
+        Vector3 rayLeft2 = new Vector3(pos.x - 0.5f, pos.y, pos.z);
+        Vector3 rayLeftUp2 = new Vector3(pos.x - 0.5f, pos.y + 0.5f, pos.z);
+        Vector3 rayLeftDown2 = new Vector3(pos.x - 0.5f, pos.y - 0.5f,pos.z);
 
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
-				transform.Translate(0.01f,0,0);
-			}
+        Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
 
-			return sc.getHorzCollision(this.gameObject);
-			
-		} else if (leftDown) {
-			
-			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x + 0.5f > pos.x -0.5f){
-				transform.Translate(0.01f,0,0);
-			}
-
-			if(sc.gameObject.transform.position == VertColPos && sc.tag== "solid"){
-				transform.Translate(0.05f,0,0);
-				HorColPos = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
-			}else{
-				HorColPos = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
-			}
-			//return sc.getHorzCollision(this.gameObject);
-			
-		} else {
-
-			HorColPos = new Vector3(0,0,-10000);
-			return false;
-			
-		}
-		
-	}
+        //check collision
+        return twoLevelCollisionCheck(points, points2, transform.right*(-1));
+    }
 	
 	/*
      * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
@@ -144,165 +66,137 @@ public class AvatarCollision : MonoBehaviour {
 		
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, pos.z-1000);
-		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f, pos.z-1000);
-		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f, pos.z-1000);
-		
-		RaycastHit hit1;
-		RaycastHit hit2;
-		RaycastHit hit3;
-		
-		bool right = Physics.Raycast(rayRight, Camera.main.transform.forward, out hit1);
-		bool rightUp = Physics.Raycast(rayRightUp, Camera.main.transform.forward, out hit2);
-		bool rightDown = Physics.Raycast(rayRightDown, Camera.main.transform.forward, out hit3);
-		
-		
-		if (right) {
-			
-			
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, Camera.main.transform.position.z);
+		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f, Camera.main.transform.position.z);
+		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f, Camera.main.transform.position.z);
 
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
-				transform.Translate(-0.01f,0,0);
-			}
+        Vector3[] points = { rayRight, rayRightUp, rayRightDown};
 
-			return sc.getHorzCollision(this.gameObject);
-			
-		} else if (rightUp) {
-			
-			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
+        //second set of points
+        Vector3 rayRight2 = new Vector3(pos.x + 0.5f, pos.y, pos.z);
+        Vector3 rayRightUp2 = new Vector3(pos.x + 0.5f, pos.y + 0.5f,pos.z);
+        Vector3 rayRightDown2 = new Vector3(pos.x + 0.5f, pos.y - 0.5f, pos.z);
 
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
-				transform.Translate(-0.01f,0,0);
-			}
+        Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
 
-			return sc.getHorzCollision(this.gameObject);
-			
-		} else if (rightDown) {
-			
-			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
+        //check collision
+        return twoLevelCollisionCheck(points, points2, transform.right);
 
-			/*
-			 * Position correction for the collision
-			 */ 
-			if((sc.getHorzCollision(this.gameObject)) && sc.transform.position.x - 0.5f < pos.x +0.5f){
-				transform.Translate(-0.01f,0,0);
-			}
-
-			/*
-			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
-			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
-			 * back slightly and be told to keep falling
-			 */ 
-			if(sc.gameObject.transform.position == VertColPos && sc.tag== "solid"){
-				transform.Translate(-0.05f,0,0);
-				HorColPos = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
-			}else{
-				HorColPos = sc.transform.position;
-				return sc.getHorzCollision(this.gameObject);
-			}
-			
-		} else {
-
-			HorColPos = new Vector3(0,0,-10000);
-			return false;
-			
-		}
-		
-	}
+    }
 	
 	/*
 	 * Sends raycast bellow the character. If it hits an object, the character is grounded
 	 */
+     /// <summary>
+     /// Determines whether or not the player os grounded. Checks for collision with sprite, then uses Sprite collider to resolved collision.
+     /// </summary>
+     /// <returns>True or false</returns>
 	public bool isGrounded()
 	{
+        //avatar position
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y - (transform.lossyScale.y)/5, pos.z-1000);
-		
-		RaycastHit hit1;
-		RaycastHit hit2;
-		RaycastHit hit3;
-		
-		bool downCenter = Physics.Raycast(rayBottom, Camera.main.transform.forward, out hit1);
-		bool downLeft = Physics.Raycast(rayBottomLeft, Camera.main.transform.forward, out hit2);
-		bool downRight = Physics.Raycast(rayBottomRight, Camera.main.transform.forward, out hit3);
-		
-		
-		if (downCenter) {
-			
-			SpriteCollider sc = hit1.collider.gameObject.GetComponent<SpriteCollider>();
+        //first set of points
+		Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
 
-			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
-				
-			//	return false;
-			//}
+        Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
 
-			return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else if (downLeft) {
-			
-			SpriteCollider sc = hit2.collider.gameObject.GetComponent<SpriteCollider>();
-			 
-			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
+        //second set of points
+        Vector3 rayBottom2 = new Vector3(pos.x, pos.y, pos.z);
+        Vector3 rayBottomLeft2 = new Vector3(pos.x - 0.4f, pos.y, pos.z);
+        Vector3 rayBottomRight2 = new Vector3(pos.x + 0.4f, pos.y, pos.z);
 
-			//	return false;
-			//}
+        Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
 
-			if(sc.gameObject.transform.position == HorColPos){
-				transform.Translate(0.1f,0,0);
-				//collisionPosition = sc.transform.position;
-				return false;
-			}else{
-				VertColPos = sc.transform.position;
-				return sc.getVertCollision(this.gameObject, transform.position.y);
-			}
-			//return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else if (downRight) {
-			
-			SpriteCollider sc = hit3.collider.gameObject.GetComponent<SpriteCollider>();
-
-			//if(sc.tag == "SemiSolid" && transform.position.y - height/2 < sc.transform.position.y + sc.gameObject.GetComponent<BoxCollider>().bounds.size.y/2){
-
-			//	return false;
-			//}
-
-			/*
-			 * A check for the rare occasion in which the character collides twice with the same object (bottom and top
-			 * collision) causing it to hang up on the corner of a tile. If this happens the character will be translated 
-			 * back slightly and be told to keep falling
-			 */ 
-			if(sc.gameObject.transform.position == HorColPos){
-				transform.Translate(-0.1f,0,0);
-				//collisionPosition = sc.transform.position;
-				return false;
-			}else{
-				VertColPos = sc.transform.position;
-				return sc.getVertCollision(this.gameObject, transform.position.y);
-			}
-			//return sc.getVertCollision(this.gameObject, transform.position.y);
-			
-		} else {
-
-
-			return false;
-			
-		}
-		
-		//return !(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, rayDistance)); 
+        //check collision
+        return twoLevelCollisionCheck(points, points2, transform.up * (-1));
 	}
 
-	
+    /// <summary>
+    /// Function to check for collision using a series of check points.
+    /// </summary>
+    /// <param name="pointList">List of points to send rays to.</param>
+    /// <param name="direction">Direction to send the ray in.</param>
+    /// <param name="distance">Optional. Usually distance from center of object to border in direction of collision check.</param>
+    /// <returns>The Sprite collider of the other object.</returns>
+    public SpriteCollider checkCollisionList(Vector3[] pointList, Vector3 direction, float distance = 0.0f)
+    {
+        RaycastHit hit;
+        for (int i = 0; i < pointList.Length; i++)
+        {
+            bool collide;
+            if(distance != 0.0)
+            {
+                collide = Physics.Raycast(pointList[i], direction, out hit, distance);
+            }
+            else
+            {
+                collide = Physics.Raycast(pointList[i], direction, out hit);
+            }
+            if (collide)
+            {
+                return hit.collider.gameObject.GetComponent<SpriteCollider>();
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// A collision check with 2 level verification.
+    /// The First check uses rays from camera to player.
+    /// If first check returns false, use alternative rays from player.
+    /// This is to ensure the player still collides with objects when hidden from view.
+    /// </summary>
+    /// <param name="firstPoints">First set of points to send rays from. Usually at camera</param>
+    /// <param name="secondPoints">Second set. Usually at player</param>
+    /// <param name="secondaryDirection"> Direction to send secondary rays from. Usually left, right, up or down.</param>
+    /// <returns></returns>
+    public bool twoLevelCollisionCheck(Vector3[] firstPoints, Vector3[] secondPoints, Vector3 secondaryDirection)
+    {
+        //The allowed distance of the ray for secondary collision check.
+        float distance;
+        //if it's not up or down it's left or right
+        if(secondaryDirection == transform.up || secondaryDirection == -1 * transform.up)
+        {
+            //vertical collision from center to bottom or top of sprite
+            distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+        }
+        else
+        {
+            //horizontal collision is distance from center to left or right side.
+            distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        }
+
+        //check intial point list for valid collsion
+        SpriteCollider sc = checkCollisionList(firstPoints, Camera.main.transform.forward);
+        bool collide = false;
+
+        //
+        if (sc != null)
+        {
+            //resolve if there was a valid collision with other sprite.
+            collide = sc.getVertCollision(this.gameObject, transform.position.y);
+        }
+        //if there was no valid collision, check secondary
+        //this is to avoid player falling through platforms when behind non-colliding objects.
+        if (sc == null || !collide)
+        {
+            sc = checkCollisionList(secondPoints, secondaryDirection, distance);
+            if (sc != null)
+            {
+                collide = sc.getVertCollision(this.gameObject, transform.position.y);
+            }
+            if (sc == null || !collide)
+            {
+                return false;
+            }
+        }
+        //shouldn't actually get to this point....
+        return collide;
+    }
+
 	// Update is called once per frame
 	void Update () {
 	
