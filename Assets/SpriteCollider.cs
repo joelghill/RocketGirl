@@ -21,19 +21,23 @@ public class SpriteCollider : MonoBehaviour {
 	/// <returns><c>true</c>, if vert collision was gotten, <c>false</c> otherwise.</returns>
 	/// <param name="other"> The other game object to check collsion against.</param>
 	/// <param name="y">y position of the raycast that collided with this object</param>
+    /// <remarks>Note: In case of collision, will also correct position of other object</remarks>
 	public bool getVertCollision(GameObject other, float y){
 		//get tag
 		string tag = this.gameObject.tag;
+        bool collide;
 		//based on tag, check if collision with other at point occured
 		switch (tag) {
 
 		case "None":
 			//never register collision
-			return false;
+			collide = false;
+            break;
 		case "Solid": 
 			//always collides
-			//Debug.Log ("Vert collision detected");
-			return true;
+			collide =  true;
+            break;
+
 		case "SemiSolid":
 			//get transform
 			Transform otherT =other.transform;
@@ -43,23 +47,27 @@ public class SpriteCollider : MonoBehaviour {
 
 			//if moving up, no collision
 			if(rb.velocity.y > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
-
-				return false;
+				collide = false;
+                break;
 			}
 			//if moving not up, and near top, collide
 			//else if(y > (getTopY()))
 			//	return true;
 			else
 				//else no collision
-				return true;
+				collide = true;
+                break;
 
 		case "Moveable":
 			//like solid
-			return true;
+			collide = true;
+            break;
 		default:
 			//if untagged no collision
-			return false;
+			collide  = false;
+            break;
 		}
+        return collide;
 	}
 
 	/// <summary>
@@ -92,6 +100,36 @@ public class SpriteCollider : MonoBehaviour {
 			return false;
 		}
 	}
+
+    public void correctVerticalPosition(GameObject other)
+    {
+        Rigidbody otherRigid = other.GetComponent<Rigidbody>();
+        SpriteRenderer otherRender = other.GetComponent<SpriteRenderer>();
+        //SpriteRenderer thisRender = gameObject.GetComponent<SpriteRenderer>();
+
+        if (otherRigid == null | otherRender == null)
+        {
+            Debug.Log("Returning from position correction....");
+            return;
+        }
+
+        Vector3 otherPos = other.transform.position;
+        Vector3 thisPos = transform.position;
+
+        float otherheight = otherRender.bounds.size.y;
+        float thisHeight = 1.0f;
+        //If moving up....
+        if(otherRigid.velocity.y > 0)
+        {
+            Debug.Log("Correcting Vertical position...");
+            other.transform.position = new Vector3(otherPos.x, thisPos.y - (otherheight / 2 + thisHeight / 2), otherPos.z);
+        }else if(otherRigid.velocity.y < 0)
+        {
+            Debug.Log("Correcting Vertical position...");
+            other.transform.position = new Vector3(otherPos.x, thisPos.y + (otherheight / 2 + thisHeight / 2), otherPos.z);
+        }
+
+    }
 
 	private float getTopY(){
 		//middle position plus half it's size minus the margin
