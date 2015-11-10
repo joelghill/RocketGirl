@@ -139,6 +139,11 @@ public class Avatar : MonoBehaviour, IControllable {
             }
         }
 
+        if(avaCol.collideTop() && body.velocity.y > 0)
+        {
+            body.velocity = new Vector3(body.velocity.x, 0, 0);
+        }
+
     }
 
     /*
