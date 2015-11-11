@@ -3,7 +3,7 @@ using System.Collections;
 
 public class zPosition : MonoBehaviour {
 
-	Rigidbody rb;
+    Avatar avatar;
     AvatarCollision ac;
     public bool allowFloat = false;
 
@@ -12,14 +12,14 @@ public class zPosition : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		this.rb = gameObject.GetComponent<Rigidbody> ();
+		avatar = gameObject.GetComponent<Avatar> ();
         ac = gameObject.GetComponent<AvatarCollision>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         //if (rb.velocity.magnitude == 0) return;
-
+        if (avatar == null) return;
         //get game object bounds
         height = GetComponent<SpriteRenderer>().bounds.size.y;
         width = GetComponent<SpriteRenderer>().bounds.size.x;
@@ -33,23 +33,23 @@ public class zPosition : MonoBehaviour {
 
         //movement cases...
         //if moving right
-        if(rb.velocity.x > 0)
+        if(avatar.DeltaX() > 0)
         {
             adjustDepth(right, new Vector3(right.x - (float)0.4, right.y, right.z));
         }
         //else if moving left
-        else if(rb.velocity.x < 0)
+        else if(avatar.DeltaX() < 0)
         {
             adjustDepth(left, new Vector3(left.x + (float)0.4, left.y, left.z));
         }
 
         //if moving up
-        if (rb.velocity.y > 0)
+        if (avatar.DeltaY() > 0)
         {
             adjustDepth(top, new Vector3(top.x, top.y - (float)0.4, top.z));
         }
         //if moving down
-        else if (rb.velocity.y < 0)
+        else if (avatar.DeltaY() < 0)
         {
             adjustDepth(bottom, new Vector3(bottom.x, bottom.y + (float)0.4, bottom.z));
 
@@ -120,7 +120,7 @@ public class zPosition : MonoBehaviour {
         else
         {
             //if for some reason the avatar collision is not there, us velocity. Not as reliable though.
-            if (rb.velocity.y != 0)
+            if (avatar.DeltaY() != 0)
                 return false;
         }
 

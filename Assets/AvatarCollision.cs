@@ -50,8 +50,8 @@ public class AvatarCollision : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayTop = new Vector3(pos.x, Top(), Camera.main.transform.position.z);
-		Vector3 rayTopLeft = new Vector3(Left(), Top(), Camera.main.transform.position.z);
-		Vector3 rayTopRight = new Vector3(Right(), Top(), Camera.main.transform.position.z);
+		Vector3 rayTopLeft = new Vector3(Left()-0.3f, Top(), Camera.main.transform.position.z);
+		Vector3 rayTopRight = new Vector3(Right()+ 0.3f, Top(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
 
@@ -98,9 +98,9 @@ public class AvatarCollision : MonoBehaviour {
 		
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, Camera.main.transform.position.z);
-		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f - 0.2f, Camera.main.transform.position.z);
-		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f +0.2f, Camera.main.transform.position.z);
+		Vector3 rayRight = new Vector3(Right(), pos.y, Camera.main.transform.position.z);
+		Vector3 rayRightUp = new Vector3(Right(), Top() - 0.2f, Camera.main.transform.position.z);
+		Vector3 rayRightDown = new Vector3(Right(), Top() +0.2f, Camera.main.transform.position.z);
 
         Vector3[] points = { rayRight, rayRightUp, rayRightDown};
 
@@ -130,8 +130,8 @@ public class AvatarCollision : MonoBehaviour {
 		
         //first set of points
 		Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.4f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.4f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.3f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.3f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
 
         Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
 

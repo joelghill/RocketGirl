@@ -124,9 +124,7 @@ public class Avatar : MonoBehaviour, IControllable {
     /// </summary>
     private void adjustFallSpeed()
     {
-        if (!grounded)
-        {
-            deltaY = deltaY - accelY;
+            deltaY = deltaY - (accelY * Time.deltaTime);
             if ((avaCol.collideRight() && runInput > 0) || (avaCol.collideLeft() && runInput < 0))
             {
 
@@ -142,16 +140,12 @@ public class Avatar : MonoBehaviour, IControllable {
                 deltaY = maxFall;
                 wallGlide = false;
             }
-        }
-        else {
-            deltaY = 0;
-        } 
     }
 
     public void adjustPosition()
     {
-        float newX = transform.position.x + deltaX * Time.deltaTime;
-        float newY = transform.position.y + deltaY * Time.deltaTime;
+        float newX = transform.position.x + (deltaX * Time.deltaTime);
+        float newY = transform.position.y + (deltaY * Time.deltaTime);
         float z = transform.position.z;
         transform.position = new Vector3(newX, newY, z);
     }
@@ -168,34 +162,35 @@ public class Avatar : MonoBehaviour, IControllable {
         float thisHeight = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
         float thisWidth = gameObject.GetComponent<SpriteRenderer>().bounds.size.x;
 
-        if (topCollide != null)
+        if (topCollide != null && deltaY > 0)
         {
             if(deltaY > 0)
             {
                 deltaY = 0;
             }
         }
-        if (bottomCollide != null)
+        if (bottomCollide != null && deltaY < 0)
         {
             if(deltaY < 0)
             {
                 deltaY = 0;
                 grounded = true;
-                transform.position = new Vector3(pos.x, thisHeight / 2 + 0.5f + bottomCollide.transform.position.y - 0.1f, pos.z);
+                transform.position = new Vector3(transform.position.x, thisHeight / 2 + 0.5f + bottomCollide.transform.position.y, pos.z);
             }
         }
         else
         {
             grounded = false;
         }
-        if (leftCollide != null)
+        if (leftCollide != null && deltaX < 0)
         {
             deltaX = 0;
-            transform.position = new Vector3(thisWidth/2 + 0.5f + leftCollide.transform.position.x -0.1f, pos.y, pos.z);
+            transform.position = new Vector3(thisWidth/2 + 0.5f + leftCollide.transform.position.x, transform.position.y, transform.position.z);
         }
-        if (rightCollide != null)
+        if (rightCollide != null && deltaX > 0)
         {
             deltaX = 0;
+            transform.position = new Vector3(rightCollide.transform.position.x - thisWidth/2 - 0.5f, transform.position.y, transform.position.z);
         }
     }
 
@@ -211,7 +206,6 @@ public class Avatar : MonoBehaviour, IControllable {
 		 */ 
 		if (avaCol.collideBottom()) {
             donejumping = false;
-            grounded = false;
             deltaY = jumpSpeed;
 			anim.SetBool("jumping",true);
 		} 
@@ -263,10 +257,10 @@ public class Avatar : MonoBehaviour, IControllable {
 
 	// Update is called once per frame
 	void Update () {
-        adjustFallSpeed();
-        adjustPosition();
         resolveCollisions();
-        setAnimations();
+        adjustPosition();
+        adjustFallSpeed();
+        //setAnimations();
 	}
 
     void FixedUpdate()
