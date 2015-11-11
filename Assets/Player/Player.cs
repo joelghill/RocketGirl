@@ -70,6 +70,11 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 		playerShoot ();
     }
 
+    void FixedUpdate() {
+        //playerMove();
+        //playerJump();
+    }
+
     public void takeDamage(float damage)
     {
         health = health - damage;

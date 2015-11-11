@@ -63,8 +63,9 @@ public class rotate : MonoBehaviour {
     {
         if (dir != -1 && dir != 1) return;
         Vector3 pos = player.transform.position;
-        level.transform.RotateAround(player.transform.position, transform.up, 200 * Time.deltaTime * dir);
-        player.transform.RotateAround(player.transform.position, transform.up, -200 * Time.deltaTime * dir);
+        //Debug.Log("Rotating around point:  " + pos.ToString());
+        level.transform.RotateAround(pos, transform.up, 200 * Time.deltaTime * dir);
+        player.transform.RotateAround(pos, transform.up, -200 * Time.deltaTime * dir);
 
         if (hasReachedGoal(dir))
         {

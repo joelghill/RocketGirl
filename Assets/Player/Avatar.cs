@@ -210,7 +210,12 @@ public class Avatar : MonoBehaviour, IControllable {
 
 	// Update is called once per frame
 	void Update () {
-        adjustFallSpeed();
+        //adjustFallSpeed();
         setAnimations();
 	}
+
+    void FixedUpdate()
+    {
+        adjustFallSpeed();
+    }
 }
