@@ -4,19 +4,22 @@ using System.Collections;
 [RequireComponent (typeof(AvatarCollision))]
 public class Avatar : MonoBehaviour, IControllable {
 
-	protected Rigidbody body;
+	//protected Rigidbody body;
 	protected Animator anim;
 
 	public AvatarCollision avaCol;
-	public float ySpeed = 8;
-	public float xSpeed = 6;
-    public float accel = 0.5f;
+	public float deltaY = 0;
+	public float deltaX = 0;
+    public float xSpeed = 8;
+    public float accelY = 0.5f;
+    public float accelX = 0.5f;
     public float maxFall = -8.0f;
+    public float jumpSpeed = 8.0f;
 
     public GameObject amunition;
 	
 	//private float distToGround;
-	protected int grounded;
+	protected bool grounded;
 	protected float jumping;
     protected bool jumpPressed;
 	protected float runInput;
@@ -35,8 +38,8 @@ public class Avatar : MonoBehaviour, IControllable {
 	// Use this for initialization
 	void Start () {
         jumping = 0;
-        grounded = 0;
-        body = GetComponent<Rigidbody>();
+        grounded = false;
+        //body = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         avaCol = GetComponent<AvatarCollision>();
         jumpPressed = false;
@@ -63,103 +66,142 @@ public class Avatar : MonoBehaviour, IControllable {
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-		if (axis > 0.1f && !avaCol.collideRight()) {
+		if (axis > 0.1f) {
 
-			if(body.velocity.x < axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x + accel, body.velocity.y,0);
+			if(deltaX < axis*xSpeed){
+				deltaX = deltaX + accelX;
 			}else{
-				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+                deltaX = axis * xSpeed;
 			}
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
 			facing = 1;
 
-		}else if (axis < -0.1f && !avaCol.collideLeft()) {
-			if(body.velocity.x > axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x - accel, body.velocity.y,0);
+		}else if (axis < -0.1f){
+			if(deltaX > axis*xSpeed){
+				deltaX = deltaX - accelX;
 			}else{
-				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+                deltaX = axis * xSpeed;
 			}
-			anim.SetFloat("runSpeed", axis);
+            anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
-			facing = -1;
-
-            //if (transform.rotation.y == 0) {
-                //transform.rotation = Quaternion.Euler(0, 180, 0);
-                //Quaternion.Euler(0, 180, 0);
-            //}
-        } 
+            facing = -1;
+        }
 		/*
 		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
 		 * Animation Running is set to false, no change in rotation
 		 */ 
 		else{
-			body.velocity = new Vector3 (0, body.velocity.y, 0);
-			anim.SetBool("Running", false);
-		}
+            deltaX = 0;
+            anim.SetFloat("runSpeed", axis);
+            anim.SetBool("Running", false);
+        }
 
 		runInput = axis;
 	}
 
     public void doneJump()
     {
-        if(body.velocity.y > 0)
+        if(deltaY > 0)
         {
-            body.velocity = new Vector3(body.velocity.x, 0, 0);
+            deltaY = 0;
         }
     }
 
     /// <summary>
     /// Helper function to adjust fall speed.
     /// </summary>
-    void adjustFallSpeed()
+    private void adjustFallSpeed()
     {
-        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel, 0);
-
-		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
-
-			if(body.velocity.y < maxFall/2)
-			{
-				body.velocity = new Vector3(body.velocity.x, maxFall/2, 0);
-				wallGlide = true;
-			}
-			
-		}else if(body.velocity.y < maxFall)
+        if (!grounded)
         {
-            body.velocity = new Vector3(body.velocity.x, maxFall, 0);
-			wallGlide = false;
-        }
-
-        if (avaCol.isGrounded())
-        {
-            if(body.velocity.y < 0)
+            deltaY = deltaY - accelY;
+            if ((avaCol.collideRight() && runInput > 0) || (avaCol.collideLeft() && runInput < 0))
             {
-                body.velocity = new Vector3(body.velocity.x, 0, 0);
+
+                if (deltaY < maxFall / 2)
+                {
+                    deltaY = maxFall / 2;
+                    wallGlide = true;
+                }
+
+            }
+            else if (deltaY < maxFall)
+            {
+                deltaY = maxFall;
+                wallGlide = false;
             }
         }
+        else {
+            deltaY = 0;
+        } 
+    }
 
-        if(avaCol.collideTop() && body.velocity.y > 0)
+    public void adjustPosition()
+    {
+        float newX = transform.position.x + deltaX * Time.deltaTime;
+        float newY = transform.position.y + deltaY * Time.deltaTime;
+        float z = transform.position.z;
+        transform.position = new Vector3(newX, newY, z);
+    }
+
+    private void resolveCollisions()
+    {
+        GameObject topCollide = avaCol.collideTop();
+        GameObject bottomCollide = avaCol.collideBottom();
+        GameObject leftCollide = avaCol.collideLeft();
+        GameObject rightCollide = avaCol.collideRight();
+
+        Vector3 pos = transform.position;
+
+        float thisHeight = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
+        float thisWidth = gameObject.GetComponent<SpriteRenderer>().bounds.size.x;
+
+        if (topCollide != null)
         {
-            body.velocity = new Vector3(body.velocity.x, 0, 0);
+            if(deltaY > 0)
+            {
+                deltaY = 0;
+            }
         }
-
+        if (bottomCollide != null)
+        {
+            if(deltaY < 0)
+            {
+                deltaY = 0;
+                grounded = true;
+                transform.position = new Vector3(pos.x, thisHeight / 2 + 0.5f + bottomCollide.transform.position.y - 0.1f, pos.z);
+            }
+        }
+        else
+        {
+            grounded = false;
+        }
+        if (leftCollide != null)
+        {
+            deltaX = 0;
+        }
+        if (rightCollide != null)
+        {
+            deltaX = 0;
+        }
     }
 
     /*
      * Parameters are whether the jump action is executed (like the jump button, or when the AI wants to jump)
      * and when the jump is completed ( upward collision, jump button released, jump duration expended)
      */
-	public void jump(){
+    public void jump(){
 		
 		/*
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
-		if (avaCol.isGrounded()) {
-			
+		if (avaCol.collideBottom()) {
             donejumping = false;
-			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
+            grounded = false;
+            deltaY = jumpSpeed;
 			anim.SetBool("jumping",true);
 		} 
 
@@ -168,7 +210,7 @@ public class Avatar : MonoBehaviour, IControllable {
 		 */ 
 		else if (wallGlide) {
 			donejumping = false;
-			body.velocity = new Vector3 ((xSpeed)*(-runInput), ySpeed, 0);
+            deltaX = xSpeed * (-runInput);
 			anim.SetBool("jumping",true);
 		}
 	}
@@ -187,19 +229,19 @@ public class Avatar : MonoBehaviour, IControllable {
     void setAnimations()
     {
 
-        if(body.velocity.y > 0)
+        if(deltaY > 0)
         {
             anim.SetBool("jumping", true);
             anim.SetBool("Falling", false);
         }
 
-        if(body.velocity.y < 0)
+        if(deltaY < 0)
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", true);
         }
 
-        if (avaCol.isGrounded())
+        if (avaCol.collideBottom())
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", false);
@@ -210,12 +252,17 @@ public class Avatar : MonoBehaviour, IControllable {
 
 	// Update is called once per frame
 	void Update () {
-        //adjustFallSpeed();
+        adjustFallSpeed();
+        adjustPosition();
+        resolveCollisions();
         setAnimations();
 	}
 
     void FixedUpdate()
     {
-        adjustFallSpeed();
+        //adjustFallSpeed();
+        //adjustPosition();
+        //adjustYPosition();
+        //adjustXPosition();
     }
 }

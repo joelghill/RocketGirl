@@ -4,6 +4,7 @@ using System.Collections;
 public class zPosition : MonoBehaviour {
 
 	Rigidbody rb;
+    AvatarCollision ac;
     public bool allowFloat = false;
 
     private float height;
@@ -12,6 +13,7 @@ public class zPosition : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		this.rb = gameObject.GetComponent<Rigidbody> ();
+        ac = gameObject.GetComponent<AvatarCollision>();
 	}
 	
 	// Update is called once per frame
@@ -104,9 +106,23 @@ public class zPosition : MonoBehaviour {
         Vector3 right = new Vector3(pos.x + (width / 2), pos.y, pos.z);
 
         Vector3[] points = {pos, left, right };
-        //if the player is falling or jumping, don't bother with all this noise.
-        if (rb.velocity.y != 0)
-			return false;
+
+        //if we have the avatar collider
+        if(ac != null)
+        {
+            //... and if the collider is grounded
+            if (!ac.collideBottom())
+            {
+                //then end function
+                return false;
+            }
+        }
+        else
+        {
+            //if for some reason the avatar collision is not there, us velocity. Not as reliable though.
+            if (rb.velocity.y != 0)
+                return false;
+        }
 
         for(int i = 0; i < points.Length; i++)
         {

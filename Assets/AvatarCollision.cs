@@ -7,25 +7,57 @@ public class AvatarCollision : MonoBehaviour {
 	protected Vector3 HorColPos;
 	protected float height;
 
+    private SpriteRenderer spriteRenderer;
+    private Vector3 position;
+
+    public float xMargin = 0;
+    public float yMargin = 0;
+
 	// Use this for initialization
 	void Start () {
 		height = gameObject.GetComponent<SpriteRenderer> ().bounds.size.y;
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        position = transform.position;
 	}
 
+    public float Right()
+    {
+        return transform.position.x + (spriteRenderer.bounds.size.x / 2) - xMargin;
 
-	public bool collideTop()
+    }
+
+    public float Left()
+    {
+        return transform.position.x - (spriteRenderer.bounds.size.x / 2) + xMargin;
+
+    }
+
+    public float Top()
+    {
+        return transform.position.y + (spriteRenderer.bounds.size.y / 2) - yMargin;
+
+    }
+
+    public float Bottom()
+    {
+        return transform.position.y - (spriteRenderer.bounds.size.y / 2) + yMargin;
+
+    }
+
+
+    public GameObject collideTop()
 	{
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayTop = new Vector3(pos.x, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayTopLeft = new Vector3(pos.x-0.4f, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayTopRight = new Vector3(pos.x+0.4f, pos.y + (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayTop = new Vector3(pos.x, Top(), Camera.main.transform.position.z);
+		Vector3 rayTopLeft = new Vector3(Left(), Top(), Camera.main.transform.position.z);
+		Vector3 rayTopRight = new Vector3(Right(), Top(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
 
-        Vector3 rayTop2 = new Vector3(pos.x, pos.y + (transform.lossyScale.y) / 5, pos.z);
-        Vector3 rayTopLeft2 = new Vector3(pos.x - 0.4f, pos.y + (transform.lossyScale.y) / 5, pos.z);
-        Vector3 rayTopRight2 = new Vector3(pos.x + 0.4f, pos.y + (transform.lossyScale.y) / 5, pos.z);
+        Vector3 rayTop2 = new Vector3(pos.x, Top(), pos.z);
+        Vector3 rayTopLeft2 = new Vector3(Left(), Top(), pos.z);
+        Vector3 rayTopRight2 = new Vector3(Right(), Top(), pos.z);
 
         Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
 
@@ -38,19 +70,19 @@ public class AvatarCollision : MonoBehaviour {
      * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
      * collision is detected.
      */
-	public bool collideLeft(){
+	public GameObject collideLeft(){
 		
 		Vector3 pos = this.transform.position;
 		
-		Vector3 rayLeft = new Vector3(pos.x - 0.5f, pos.y, Camera.main.transform.position.z);
-		Vector3 rayLeftUp = new Vector3(pos.x - 0.5f, pos.y+0.5f, Camera.main.transform.position.z);
-		Vector3 rayLeftDown = new Vector3(pos.x - 0.5f, pos.y-0.5f, Camera.main.transform.position.z);
+		Vector3 rayLeft = new Vector3(Left(), pos.y, Camera.main.transform.position.z);
+		Vector3 rayLeftUp = new Vector3(Left(), Top(), Camera.main.transform.position.z);
+		Vector3 rayLeftDown = new Vector3(Left(), Bottom(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
 
-        Vector3 rayLeft2 = new Vector3(pos.x - 0.5f, pos.y, pos.z);
-        Vector3 rayLeftUp2 = new Vector3(pos.x - 0.5f, pos.y + 0.5f, pos.z);
-        Vector3 rayLeftDown2 = new Vector3(pos.x - 0.5f, pos.y - 0.5f,pos.z);
+        Vector3 rayLeft2 = new Vector3(Left(), pos.y, pos.z);
+        Vector3 rayLeftUp2 = new Vector3(Left(), Top(), pos.z);
+        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() ,pos.z);
 
         Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
 
@@ -62,7 +94,7 @@ public class AvatarCollision : MonoBehaviour {
      * Creates three arrays to the right of the player. Returns true if there is an object, therefore a 
      * collision is detected.
      */
-	public bool collideRight(){
+	public GameObject collideRight(){
 		
 		Vector3 pos = this.transform.position;
 		
@@ -91,7 +123,7 @@ public class AvatarCollision : MonoBehaviour {
      /// Determines whether or not the player os grounded. Checks for collision with sprite, then uses Sprite collider to resolved collision.
      /// </summary>
      /// <returns>True or false</returns>
-	public bool isGrounded()
+	public GameObject collideBottom()
 	{
         //avatar position
 		Vector3 pos = this.transform.position;
@@ -138,7 +170,7 @@ public class AvatarCollision : MonoBehaviour {
             }
             if (collide)
             {
-                colliders.Add(hit.collider.gameObject.GetComponent<SpriteCollider>());
+                colliders.Add(hit.collider.gameObject);
             }
         }
         return colliders.ToArray();
@@ -154,7 +186,7 @@ public class AvatarCollision : MonoBehaviour {
     /// <param name="secondPoints">Second set. Usually at player</param>
     /// <param name="secondaryDirection"> Direction to send secondary rays from. Usually left, right, up or down.</param>
     /// <returns></returns>
-    public bool twoLevelCollisionCheck(Vector3[] firstPoints, Vector3[] secondPoints, Vector3 secondaryDirection)
+    public GameObject twoLevelCollisionCheck(Vector3[] firstPoints, Vector3[] secondPoints, Vector3 secondaryDirection)
     {
         //The allowed distance of the ray for secondary collision check.
         float distance;
@@ -172,7 +204,7 @@ public class AvatarCollision : MonoBehaviour {
 
         //check intial point list for valid collsion
         object[] o = checkCollisionList(firstPoints, Camera.main.transform.forward);
-        bool collide = false;
+        GameObject collide = null;
 
         //
         if (o != null)
@@ -180,10 +212,11 @@ public class AvatarCollision : MonoBehaviour {
             //resolve if there was a valid collision with other sprite.
             for(int i = 0; i < o.Length; i++)
             {
-                SpriteCollider sc = (SpriteCollider)o[i];
-                if (sc.getVertCollision(this.gameObject, transform.position.y))
+                GameObject ob = (GameObject)o[i];
+                SpriteCollider sc = ob.GetComponent<SpriteCollider>();
+                if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
                 {
-                    collide = true;
+                    collide = ob;
                     break;
                 }
                     
@@ -199,10 +232,11 @@ public class AvatarCollision : MonoBehaviour {
                 //resolve if there was a valid collision with other sprite.
                 for (int i = 0; i < o.Length; i++)
                 {
-                    SpriteCollider sc = (SpriteCollider)o[i];
+                    GameObject ob = (GameObject)o[i];
+                    SpriteCollider sc = ob.GetComponent<SpriteCollider>();
                     if (sc.getVertCollision(this.gameObject, transform.position.y))
                     {
-                        collide = true;
+                        collide = ob;
                         break;
                     }
 
@@ -210,7 +244,7 @@ public class AvatarCollision : MonoBehaviour {
             }
             if (o == null || !collide)
             {
-                return false;
+                return null;
             }
         }
         //shouldn't actually get to this point....
