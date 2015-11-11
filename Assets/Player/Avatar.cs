@@ -48,6 +48,16 @@ public class Avatar : MonoBehaviour, IControllable {
 		//avaCol = GetComponent<AvatarCollision> ();
 		
 	}
+
+    public float DeltaY()
+    {
+        return deltaY;
+    }
+
+    public float DeltaX() {
+        return deltaX;
+    }
+
 	
 	/*
 	 * Sets the jumping animation boolean to true.
@@ -181,6 +191,7 @@ public class Avatar : MonoBehaviour, IControllable {
         if (leftCollide != null)
         {
             deltaX = 0;
+            transform.position = new Vector3(thisWidth/2 + 0.5f + leftCollide.transform.position.x -0.1f, pos.y, pos.z);
         }
         if (rightCollide != null)
         {

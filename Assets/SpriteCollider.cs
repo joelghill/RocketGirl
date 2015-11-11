@@ -23,7 +23,11 @@ public class SpriteCollider : MonoBehaviour {
 	/// <param name="y">y position of the raycast that collided with this object</param>
     /// <remarks>Note: In case of collision, will also correct position of other object</remarks>
 	public bool getVertCollision(GameObject other, float y){
-		//get tag
+        //get tag
+        Avatar otherAvatar = other.GetComponent<Avatar>();
+
+        if (otherAvatar == null) return false;
+
 		string tag = this.gameObject.tag;
         bool collide;
 		//based on tag, check if collision with other at point occured
@@ -46,7 +50,7 @@ public class SpriteCollider : MonoBehaviour {
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
 			//if moving up, no collision
-			if(rb.velocity.y > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
+			if(otherAvatar.DeltaY() > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
 				collide = false;
                 break;
 			}
