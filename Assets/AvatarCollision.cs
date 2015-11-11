@@ -75,8 +75,8 @@ public class AvatarCollision : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayLeft = new Vector3(Left(), pos.y, Camera.main.transform.position.z);
-		Vector3 rayLeftUp = new Vector3(Left(), Top(), Camera.main.transform.position.z);
-		Vector3 rayLeftDown = new Vector3(Left(), Bottom(), Camera.main.transform.position.z);
+		Vector3 rayLeftUp = new Vector3(Left(), Top() - 0.2f, Camera.main.transform.position.z);
+		Vector3 rayLeftDown = new Vector3(Left(), Bottom() + 0.2f, Camera.main.transform.position.z);
 
         Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
 
@@ -99,8 +99,8 @@ public class AvatarCollision : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayRight = new Vector3(pos.x + 0.5f, pos.y, Camera.main.transform.position.z);
-		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f, Camera.main.transform.position.z);
-		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f, Camera.main.transform.position.z);
+		Vector3 rayRightUp = new Vector3(pos.x + 0.5f, pos.y+0.5f - 0.2f, Camera.main.transform.position.z);
+		Vector3 rayRightDown = new Vector3(pos.x + 0.5f, pos.y-0.5f +0.2f, Camera.main.transform.position.z);
 
         Vector3[] points = { rayRight, rayRightUp, rayRightDown};
 
