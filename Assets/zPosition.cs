@@ -97,22 +97,22 @@ public class zPosition : MonoBehaviour {
     /// <returns><c>true</c>, if floating, <c>false</c> otherwise.</returns>
     bool isFloating() {
         RaycastHit hit;
-        bool floating = false;
+        bool floating = true;
         Vector3 pos = transform.position;
 
         Vector3 left = new Vector3(pos.x - (width / 2), pos.y, pos.z);
         Vector3 right = new Vector3(pos.x + (width / 2), pos.y, pos.z);
 
-        Vector3[] points = { left, pos, right };
+        Vector3[] points = {pos, left, right };
         //if the player is falling or jumping, don't bother with all this noise.
         if (rb.velocity.y != 0)
 			return false;
 
         for(int i = 0; i < points.Length; i++)
         {
-            if(Physics.Raycast(this.transform.position, new Vector3(0, -1, 0), out hit, 1.0f))
+            if(Physics.Raycast(points[i], new Vector3(0, -1, 0), out hit, 1.0f))
             {
-                floating = true;
+                floating = false;
             }
         }
 		//Send raycast down, one unit long. If no collision, player is floating in mid air
