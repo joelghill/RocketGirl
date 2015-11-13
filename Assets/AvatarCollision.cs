@@ -81,8 +81,8 @@ public class AvatarCollision : MonoBehaviour {
         Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
 
         Vector3 rayLeft2 = new Vector3(Left(), pos.y, pos.z);
-        Vector3 rayLeftUp2 = new Vector3(Left(), Top(), pos.z);
-        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() ,pos.z);
+        Vector3 rayLeftUp2 = new Vector3(Left(), Top() - 0.2f, pos.z);
+        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() + 0.2f,pos.z);
 
         Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
 
@@ -100,14 +100,14 @@ public class AvatarCollision : MonoBehaviour {
 		
 		Vector3 rayRight = new Vector3(Right(), pos.y, Camera.main.transform.position.z);
 		Vector3 rayRightUp = new Vector3(Right(), Top() - 0.2f, Camera.main.transform.position.z);
-		Vector3 rayRightDown = new Vector3(Right(), Top() +0.2f, Camera.main.transform.position.z);
+		Vector3 rayRightDown = new Vector3(Right(), Bottom() + 0.2f, Camera.main.transform.position.z);
 
         Vector3[] points = { rayRight, rayRightUp, rayRightDown};
 
         //second set of points
-        Vector3 rayRight2 = new Vector3(pos.x + 0.5f, pos.y, pos.z);
-        Vector3 rayRightUp2 = new Vector3(pos.x + 0.5f, pos.y + 0.5f,pos.z);
-        Vector3 rayRightDown2 = new Vector3(pos.x + 0.5f, pos.y - 0.5f, pos.z);
+		Vector3 rayRight2 = new Vector3(Right(), pos.y, pos.z);
+		Vector3 rayRightUp2 = new Vector3(Right(), Top() - 0.2f,pos.z);
+		Vector3 rayRightDown2 = new Vector3(Right(), Bottom() + 0.2f, pos.z);
 
         Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
 
@@ -129,16 +129,16 @@ public class AvatarCollision : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
         //first set of points
-		Vector3 rayBottom = new Vector3(pos.x, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.3f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.3f, pos.y - (transform.lossyScale.y)/5, Camera.main.transform.position.z);
+		Vector3 rayBottom = new Vector3(pos.x, Bottom(), Camera.main.transform.position.z);
+		Vector3 rayBottomLeft = new Vector3(pos.x-0.3f, Bottom(), Camera.main.transform.position.z);
+		Vector3 rayBottomRight = new Vector3(pos.x+0.3f, Bottom(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
 
         //second set of points
-        Vector3 rayBottom2 = new Vector3(pos.x, pos.y, pos.z);
-        Vector3 rayBottomLeft2 = new Vector3(pos.x - 0.4f, pos.y, pos.z);
-        Vector3 rayBottomRight2 = new Vector3(pos.x + 0.4f, pos.y, pos.z);
+		Vector3 rayBottom2 = new Vector3(pos.x, Bottom(), pos.z);
+		Vector3 rayBottomLeft2 = new Vector3(Left () - 0.2f, Bottom(), pos.z);
+		Vector3 rayBottomRight2 = new Vector3(Right () + 0.2f, Bottom(), pos.z);
 
         Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
 

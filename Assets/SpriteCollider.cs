@@ -25,6 +25,7 @@ public class SpriteCollider : MonoBehaviour {
 	public bool getVertCollision(GameObject other, float y){
         //get tag
         Avatar otherAvatar = other.GetComponent<Avatar>();
+		AvatarCollision otherCollision = other.GetComponent<AvatarCollision>();
 
         if (otherAvatar == null) return false;
 
@@ -50,7 +51,8 @@ public class SpriteCollider : MonoBehaviour {
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
 			//if moving up, no collision
-			if(otherAvatar.DeltaY() > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
+			if(otherAvatar.DeltaY() > 0 || (otherCollision.Bottom ()+1f 
+			                                < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
 				collide = false;
                 break;
 			}
