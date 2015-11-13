@@ -50,14 +50,14 @@ public class AvatarCollision : MonoBehaviour {
 		Vector3 pos = this.transform.position;
 		
 		Vector3 rayTop = new Vector3(pos.x, Top(), Camera.main.transform.position.z);
-		Vector3 rayTopLeft = new Vector3(Left()-0.3f, Top(), Camera.main.transform.position.z);
-		Vector3 rayTopRight = new Vector3(Right()+ 0.3f, Top(), Camera.main.transform.position.z);
+		Vector3 rayTopLeft = new Vector3(Left()+0.2f, Top(), Camera.main.transform.position.z);
+		Vector3 rayTopRight = new Vector3(Right()- 0.2f, Top(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
 
         Vector3 rayTop2 = new Vector3(pos.x, Top(), pos.z);
-        Vector3 rayTopLeft2 = new Vector3(Left(), Top(), pos.z);
-        Vector3 rayTopRight2 = new Vector3(Right(), Top(), pos.z);
+		Vector3 rayTopLeft2 = new Vector3(Left()+0.2f, Top(), pos.z);
+		Vector3 rayTopRight2 = new Vector3(Right()-0.2f, Top(), pos.z);
 
         Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
 
@@ -130,15 +130,15 @@ public class AvatarCollision : MonoBehaviour {
 		
         //first set of points
 		Vector3 rayBottom = new Vector3(pos.x, Bottom(), Camera.main.transform.position.z);
-		Vector3 rayBottomLeft = new Vector3(pos.x-0.3f, Bottom(), Camera.main.transform.position.z);
-		Vector3 rayBottomRight = new Vector3(pos.x+0.3f, Bottom(), Camera.main.transform.position.z);
+		Vector3 rayBottomLeft = new Vector3(Left () + 0.2f, Bottom(), Camera.main.transform.position.z);
+		Vector3 rayBottomRight = new Vector3(Right () - 0.2f, Bottom(), Camera.main.transform.position.z);
 
         Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
 
         //second set of points
 		Vector3 rayBottom2 = new Vector3(pos.x, Bottom(), pos.z);
-		Vector3 rayBottomLeft2 = new Vector3(Left () - 0.2f, Bottom(), pos.z);
-		Vector3 rayBottomRight2 = new Vector3(Right () + 0.2f, Bottom(), pos.z);
+		Vector3 rayBottomLeft2 = new Vector3(Left () + 0.2f, Bottom(), pos.z);
+		Vector3 rayBottomRight2 = new Vector3(Right () - 0.2f, Bottom(), pos.z);
 
         Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
 
