@@ -131,7 +131,7 @@ public class Avatar : MonoBehaviour, IControllable {
 			wallGlide = false;
         }
 
-        if (avaCol.isGrounded())
+        if (avaCol.collideBottom())
         {
             if(body.velocity.y < 0)
             {
@@ -156,7 +156,7 @@ public class Avatar : MonoBehaviour, IControllable {
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
-		if (avaCol.isGrounded()) {
+		if (avaCol.collideBottom()) {
 			
             donejumping = false;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
@@ -199,7 +199,7 @@ public class Avatar : MonoBehaviour, IControllable {
             anim.SetBool("Falling", true);
         }
 
-        if (avaCol.isGrounded())
+        if (avaCol.collideBottom())
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", false);
