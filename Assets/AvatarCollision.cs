@@ -3,6 +3,8 @@ using System.Collections;
 
 public class AvatarCollision : MonoBehaviour {
 
+    public enum CollisionDirection {HORIZONTAL, VERTICAL};
+
 	protected Vector3 VertColPos;
 	protected Vector3 HorColPos;
 	protected float height;
@@ -12,6 +14,8 @@ public class AvatarCollision : MonoBehaviour {
 
     public float xMargin = 0;
     public float yMargin = 0;
+
+
 
 	// Use this for initialization
 	void Start () {
@@ -62,7 +66,7 @@ public class AvatarCollision : MonoBehaviour {
         Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
 
         //check collision
-        return twoLevelCollisionCheck(points, points2, transform.up);
+        return twoLevelCollisionCheck(points, points2, transform.up, CollisionDirection.VERTICAL);
     }
 
 	
@@ -87,7 +91,7 @@ public class AvatarCollision : MonoBehaviour {
         Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
 
         //check collision
-        return twoLevelCollisionCheck(points, points2, transform.right*(-1));
+        return twoLevelCollisionCheck(points, points2, transform.right*(-1), CollisionDirection.HORIZONTAL);
     }
 	
 	/*
@@ -112,7 +116,7 @@ public class AvatarCollision : MonoBehaviour {
         Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
 
         //check collision
-        return twoLevelCollisionCheck(points, points2, transform.right);
+        return twoLevelCollisionCheck(points, points2, transform.right, CollisionDirection.HORIZONTAL);
 
     }
 	
@@ -143,7 +147,7 @@ public class AvatarCollision : MonoBehaviour {
         Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
 
         //check collision
-        return twoLevelCollisionCheck(points, points2, transform.up * (-1));
+        return twoLevelCollisionCheck(points, points2, transform.up * (-1), CollisionDirection.VERTICAL);
 	}
 
     /// <summary>
@@ -186,7 +190,7 @@ public class AvatarCollision : MonoBehaviour {
     /// <param name="secondPoints">Second set. Usually at player</param>
     /// <param name="secondaryDirection"> Direction to send secondary rays from. Usually left, right, up or down.</param>
     /// <returns></returns>
-    public GameObject twoLevelCollisionCheck(Vector3[] firstPoints, Vector3[] secondPoints, Vector3 secondaryDirection)
+    public GameObject twoLevelCollisionCheck(Vector3[] firstPoints, Vector3[] secondPoints, Vector3 secondaryDirection, CollisionDirection orientation)
     {
         //The allowed distance of the ray for secondary collision check.
         float distance;
@@ -202,6 +206,8 @@ public class AvatarCollision : MonoBehaviour {
             distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         }
 
+
+
         //check intial point list for valid collsion
         object[] o = checkCollisionList(firstPoints, Camera.main.transform.forward);
         GameObject collide = null;
@@ -214,10 +220,26 @@ public class AvatarCollision : MonoBehaviour {
             {
                 GameObject ob = (GameObject)o[i];
                 SpriteCollider sc = ob.GetComponent<SpriteCollider>();
-                if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
+                /*if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
                 {
                     collide = ob;
                     break;
+                }*/
+                if(orientation == CollisionDirection.VERTICAL)
+                {
+                    if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
+                    {
+                        collide = ob;
+                        break;
+                    }
+                }
+                else // then horizonal
+                {
+                    if (sc != null && sc.getHorzCollision(gameObject))
+                    {
+                        collide = ob;
+                        break;
+                    }
                 }
                     
             }
@@ -234,10 +256,21 @@ public class AvatarCollision : MonoBehaviour {
                 {
                     GameObject ob = (GameObject)o[i];
                     SpriteCollider sc = ob.GetComponent<SpriteCollider>();
-                    if (sc.getVertCollision(this.gameObject, transform.position.y))
+                    if(orientation == CollisionDirection.VERTICAL)
                     {
-                        collide = ob;
-                        break;
+                        if (sc.getVertCollision(gameObject, transform.position.y))
+                        {
+                            collide = ob;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (sc.getHorzCollision(gameObject))
+                        {
+                            collide = ob;
+                            break;
+                        }
                     }
 
                 }
