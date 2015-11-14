@@ -47,7 +47,7 @@ public class SpriteCollider : MonoBehaviour {
 			//get transform
 			Transform otherT =other.transform;
 			//get rigidbody
-			Rigidbody rb = other.GetComponent<Rigidbody>();
+			//Rigidbody rb = other.GetComponent<Rigidbody>();
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
 			//if moving up, no collision
