@@ -260,8 +260,8 @@ public class Avatar : MonoBehaviour, IControllable {
         resolveCollisions();
         adjustPosition();
         adjustFallSpeed();
-		print(avaCol.collideBottom ().ToString());
-        //setAnimations();
+		//print(avaCol.collideBottom ().ToString());
+        setAnimations();
 	}
 
     void FixedUpdate()
