@@ -15,6 +15,8 @@ public class AvatarCollision : MonoBehaviour {
     public float xMargin = 0;
     public float yMargin = 0;
 
+    public bool debugMode = false;
+
 
 
 	// Use this for initialization
@@ -51,19 +53,9 @@ public class AvatarCollision : MonoBehaviour {
 
     public GameObject collideTop()
 	{
-		Vector3 pos = this.transform.position;
-		
-		Vector3 rayTop = new Vector3(pos.x, Top(), Camera.main.transform.position.z);
-		Vector3 rayTopLeft = new Vector3(Left()+0.2f, Top(), Camera.main.transform.position.z);
-		Vector3 rayTopRight = new Vector3(Right()- 0.2f, Top(), Camera.main.transform.position.z);
 
-        Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
-
-        Vector3 rayTop2 = new Vector3(pos.x, Top(), pos.z);
-		Vector3 rayTopLeft2 = new Vector3(Left()+0.2f, Top(), pos.z);
-		Vector3 rayTopRight2 = new Vector3(Right()-0.2f, Top(), pos.z);
-
-        Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
+        Vector3[] points = getTopPrimaryPoints();
+        Vector3[] points2 = getTopSecondaryPoints();
 
         //check collision
         return twoLevelCollisionCheck(points, points2, transform.up, CollisionDirection.VERTICAL);
@@ -75,20 +67,9 @@ public class AvatarCollision : MonoBehaviour {
      * collision is detected.
      */
 	public GameObject collideLeft(){
-		
-		Vector3 pos = this.transform.position;
-		
-		Vector3 rayLeft = new Vector3(Left(), pos.y, Camera.main.transform.position.z);
-		Vector3 rayLeftUp = new Vector3(Left(), Top() - 0.2f, Camera.main.transform.position.z);
-		Vector3 rayLeftDown = new Vector3(Left(), Bottom() + 0.2f, Camera.main.transform.position.z);
 
-        Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
-
-        Vector3 rayLeft2 = new Vector3(Left(), pos.y, pos.z);
-        Vector3 rayLeftUp2 = new Vector3(Left(), Top() - 0.2f, pos.z);
-        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() + 0.2f,pos.z);
-
-        Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
+        Vector3[] points = getLeftPrimaryPoints();
+        Vector3[] points2 = getLeftSecondaryPoints();
 
         //check collision
         return twoLevelCollisionCheck(points, points2, transform.right*(-1), CollisionDirection.HORIZONTAL);
@@ -99,22 +80,9 @@ public class AvatarCollision : MonoBehaviour {
      * collision is detected.
      */
 	public GameObject collideRight(){
-		
-		Vector3 pos = this.transform.position;
-		
-		Vector3 rayRight = new Vector3(Right(), pos.y, Camera.main.transform.position.z);
-		Vector3 rayRightUp = new Vector3(Right(), Top() - 0.2f, Camera.main.transform.position.z);
-		Vector3 rayRightDown = new Vector3(Right(), Bottom() + 0.2f, Camera.main.transform.position.z);
 
-        Vector3[] points = { rayRight, rayRightUp, rayRightDown};
-
-        //second set of points
-		Vector3 rayRight2 = new Vector3(Right(), pos.y, pos.z);
-		Vector3 rayRightUp2 = new Vector3(Right(), Top() - 0.2f,pos.z);
-		Vector3 rayRightDown2 = new Vector3(Right(), Bottom() + 0.2f, pos.z);
-
-        Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
-
+        Vector3[] points = getRightPrimaryPoints();
+        Vector3[] points2 = getRightSecondaryPoints();
         //check collision
         return twoLevelCollisionCheck(points, points2, transform.right, CollisionDirection.HORIZONTAL);
 
@@ -129,22 +97,9 @@ public class AvatarCollision : MonoBehaviour {
      /// <returns>True or false</returns>
 	public GameObject collideBottom()
 	{
-        //avatar position
-		Vector3 pos = this.transform.position;
-		
-        //first set of points
-		Vector3 rayBottom = new Vector3(pos.x, Bottom(), Camera.main.transform.position.z);
-		Vector3 rayBottomLeft = new Vector3(Left () + 0.2f, Bottom(), Camera.main.transform.position.z);
-		Vector3 rayBottomRight = new Vector3(Right () - 0.2f, Bottom(), Camera.main.transform.position.z);
 
-        Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
-
-        //second set of points
-		Vector3 rayBottom2 = new Vector3(pos.x, Bottom(), pos.z);
-		Vector3 rayBottomLeft2 = new Vector3(Left () + 0.2f, Bottom(), pos.z);
-		Vector3 rayBottomRight2 = new Vector3(Right () - 0.2f, Bottom(), pos.z);
-
-        Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
+        Vector3[] points =getBottomPrimaryPoints();
+        Vector3[] points2 = getBottomSecondaryPoints();
 
         //check collision
         return twoLevelCollisionCheck(points, points2, transform.up * (-1), CollisionDirection.VERTICAL);
@@ -258,7 +213,7 @@ public class AvatarCollision : MonoBehaviour {
                     SpriteCollider sc = ob.GetComponent<SpriteCollider>();
                     if(orientation == CollisionDirection.VERTICAL)
                     {
-                        if (sc.getVertCollision(gameObject, transform.position.y))
+                        if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
                         {
                             collide = ob;
                             break;
@@ -282,6 +237,111 @@ public class AvatarCollision : MonoBehaviour {
         }
         //shouldn't actually get to this point....
         return collide;
+    }
+
+    void drawDebugLine(Vector3 start, Vector3 end, Color color)
+    {
+        if (!debugMode) return;
+
+
+
+    }
+
+    private Vector3[] getTopPrimaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+
+        Vector3 rayTop = new Vector3(pos.x, Top(), Camera.main.transform.position.z);
+        Vector3 rayTopLeft = new Vector3(Left() + 0.2f, Top(), Camera.main.transform.position.z);
+        Vector3 rayTopRight = new Vector3(Right() - 0.2f, Top(), Camera.main.transform.position.z);
+
+        Vector3[] points = { rayTop, rayTopLeft, rayTopRight };
+        return points;
+    }
+
+    private Vector3[] getTopSecondaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+
+        Vector3 rayTop2 = new Vector3(pos.x, Top(), pos.z);
+        Vector3 rayTopLeft2 = new Vector3(Left() + 0.2f, Top(), pos.z);
+        Vector3 rayTopRight2 = new Vector3(Right() - 0.2f, Top(), pos.z);
+
+        Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
+        return points2;
+    }
+
+    private Vector3[] getLeftPrimaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+
+        Vector3 rayLeft = new Vector3(Left(), pos.y, Camera.main.transform.position.z);
+        Vector3 rayLeftUp = new Vector3(Left(), Top() - 0.2f, Camera.main.transform.position.z);
+        Vector3 rayLeftDown = new Vector3(Left(), Bottom() + 0.2f, Camera.main.transform.position.z);
+
+        Vector3[] points = { rayLeft, rayLeftUp, rayLeftDown };
+        return points;
+    }
+
+    private Vector3[] getLeftSecondaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+        Vector3 rayLeft2 = new Vector3(Left(), pos.y, pos.z);
+        Vector3 rayLeftUp2 = new Vector3(Left(), Top() - 0.2f, pos.z);
+        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() + 0.2f, pos.z);
+
+        Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
+        return points2;
+    }
+
+    private Vector3[] getRightPrimaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+
+        Vector3 rayRight = new Vector3(Right(), pos.y, Camera.main.transform.position.z);
+        Vector3 rayRightUp = new Vector3(Right(), Top() - 0.2f, Camera.main.transform.position.z);
+        Vector3 rayRightDown = new Vector3(Right(), Bottom() + 0.2f, Camera.main.transform.position.z);
+
+        Vector3[] points = { rayRight, rayRightUp, rayRightDown };
+        return points;
+    }
+
+    private Vector3[] getRightSecondaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+        //second set of points
+        Vector3 rayRight2 = new Vector3(Right(), pos.y, pos.z);
+        Vector3 rayRightUp2 = new Vector3(Right(), Top() - 0.2f, pos.z);
+        Vector3 rayRightDown2 = new Vector3(Right(), Bottom() + 0.2f, pos.z);
+
+        Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
+        return points2;
+    }
+
+    private Vector3[] getBottomPrimaryPoints()
+    {
+        //avatar position
+        Vector3 pos = this.transform.position;
+
+        //first set of points
+        Vector3 rayBottom = new Vector3(pos.x, Bottom(), Camera.main.transform.position.z);
+        Vector3 rayBottomLeft = new Vector3(Left() + 0.2f, Bottom(), Camera.main.transform.position.z);
+        Vector3 rayBottomRight = new Vector3(Right() - 0.2f, Bottom(), Camera.main.transform.position.z);
+
+        Vector3[] points = { rayBottom, rayBottomLeft, rayBottomRight };
+        return points;
+    }
+
+    private Vector3[] getBottomSecondaryPoints()
+    {
+        Vector3 pos = this.transform.position;
+        //second set of points
+        Vector3 rayBottom2 = new Vector3(pos.x, pos.y, pos.z);
+        Vector3 rayBottomLeft2 = new Vector3(Left() + 0.2f, pos.y, pos.z);
+        Vector3 rayBottomRight2 = new Vector3(Right() - 0.2f, pos.y, pos.z);
+
+        Vector3[] points2 = { rayBottom2, rayBottomLeft2, rayBottomRight2 };
+        return points2;
     }
 
 	// Update is called once per frame
