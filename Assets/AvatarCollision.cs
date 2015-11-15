@@ -15,7 +15,8 @@ public class AvatarCollision : MonoBehaviour {
     public float xMargin = 0;
     public float yMargin = 0;
 
-    public bool debugMode = false;
+    public bool drawPrimaryCollisionPoints = false;
+    public bool drawSecondaryCollisionPoints = false;
 
 
 
@@ -153,12 +154,12 @@ public class AvatarCollision : MonoBehaviour {
         if(secondaryDirection == transform.up || secondaryDirection == -1 * transform.up)
         {
             //vertical collision from center to bottom or top of sprite
-            distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+            distance = getVerticalCollisionDistance();
         }
         else
         {
             //horizontal collision is distance from center to left or right side.
-            distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+            distance = getHorizontalCollisionDistance();
         }
 
 
@@ -239,12 +240,98 @@ public class AvatarCollision : MonoBehaviour {
         return collide;
     }
 
-    void drawDebugLine(Vector3 start, Vector3 end, Color color)
+    private void drawPrimaryPoints()
     {
-        if (!debugMode) return;
+        if (!drawPrimaryCollisionPoints) return;
+        Vector3[] topPoints = getTopPrimaryPoints();
+        Vector3[] bottomPoints = getBottomPrimaryPoints();
+        Vector3[] rightPoints = getRightPrimaryPoints();
+        Vector3[] leftPoints = getLeftPrimaryPoints();
 
+        setZ(rightPoints, transform.position.z -1);
+        setZ(leftPoints, transform.position.z-1);
+        setZ(topPoints, transform.position.z-1);
+        setZ(bottomPoints, transform.position.z-1);
 
+        for (int i =0; i < topPoints.Length -1; i++)
+        {
+            Debug.DrawLine(topPoints[i], topPoints[i + 1], Color.red, 0.0f, true);
+            Debug.DrawLine(bottomPoints[i], bottomPoints[i + 1], Color.red, 0.0f, true);
+            Debug.DrawLine(leftPoints[i], leftPoints[i + 1], Color.red, 0.0f, true);
+            Debug.DrawLine(rightPoints[i], rightPoints[i + 1], Color.red, 0.0f, true);
+        }
 
+    }
+
+    private void drawSecondaryPoints()
+    {
+        if (!drawSecondaryCollisionPoints) return;
+        Vector3[] topPoints = getTopSecondaryPoints();
+        Vector3[] bottomPoints = getBottomSecondaryPoints();
+        Vector3[] rightPoints = getRightSecondaryPoints();
+        Vector3[] leftPoints = getLeftSecondaryPoints();
+
+        Vector3[] secondtopPoints = getTopLinePoints(topPoints);
+        Vector3[] secondbottomPoints = getBottomLinePoints(bottomPoints);
+        Vector3[] secondrightPoints = getRightLinePoints(rightPoints);
+        Vector3[] secondleftPoints = getLeftLinePoints(leftPoints);
+
+        for (int i = 0; i < topPoints.Length; i++)
+        {
+            Debug.DrawLine(topPoints[i], secondtopPoints[i], Color.white, 0.0f, true);
+            Debug.DrawLine(bottomPoints[i], secondbottomPoints[i], Color.white, 0.0f, true);
+            Debug.DrawLine(leftPoints[i], secondleftPoints[i], Color.white, 0.0f, true);
+            Debug.DrawLine(rightPoints[i], secondrightPoints[i], Color.white, 0.0f, true);
+        }
+
+    }
+
+    private Vector3[] getRightLinePoints(Vector3[] points)
+    {
+        Vector3[] secondPoints = (Vector3[])points.Clone();
+        for(int i = 0; i < secondPoints.Length; i++)
+        {
+            secondPoints[i].x = secondPoints[i].x + getHorizontalCollisionDistance();
+        }
+        return secondPoints;
+    }
+
+    private Vector3[] getBottomLinePoints(Vector3[] points)
+    {
+        Vector3[] secondPoints = (Vector3[])points.Clone();
+        for (int i = 0; i < secondPoints.Length; i++)
+        {
+            secondPoints[i].y = secondPoints[i].y - getVerticalCollisionDistance();
+        }
+        return secondPoints;
+    }
+
+    private Vector3[] getTopLinePoints(Vector3[] points)
+    {
+        Vector3[] secondPoints = (Vector3[])points.Clone();
+        for (int i = 0; i < secondPoints.Length; i++)
+        {
+            secondPoints[i].y = secondPoints[i].y + getVerticalCollisionDistance();
+        }
+        return secondPoints;
+    }
+
+    private Vector3[] getLeftLinePoints(Vector3[] points)
+    {
+        Vector3[] secondPoints = (Vector3[])points.Clone();
+        for (int i = 0; i < secondPoints.Length; i++)
+        {
+            secondPoints[i].x = secondPoints[i].x - getHorizontalCollisionDistance();
+        }
+        return secondPoints;
+    }
+
+    private void setZ(Vector3[] points, float z)
+    {
+        for(int i = 0; i < points.Length; i++)
+        {
+            points[i].z = z;
+        }
     }
 
     private Vector3[] getTopPrimaryPoints()
@@ -263,9 +350,9 @@ public class AvatarCollision : MonoBehaviour {
     {
         Vector3 pos = this.transform.position;
 
-        Vector3 rayTop2 = new Vector3(pos.x, Top(), pos.z);
-        Vector3 rayTopLeft2 = new Vector3(Left() + 0.2f, Top(), pos.z);
-        Vector3 rayTopRight2 = new Vector3(Right() - 0.2f, Top(), pos.z);
+        Vector3 rayTop2 = new Vector3(pos.x, pos.y, pos.z);
+        Vector3 rayTopLeft2 = new Vector3(Left() + 0.2f, pos.y, pos.z);
+        Vector3 rayTopRight2 = new Vector3(Right() - 0.2f, pos.y, pos.z);
 
         Vector3[] points2 = { rayTop2, rayTopLeft2, rayTopRight2 };
         return points2;
@@ -286,9 +373,9 @@ public class AvatarCollision : MonoBehaviour {
     private Vector3[] getLeftSecondaryPoints()
     {
         Vector3 pos = this.transform.position;
-        Vector3 rayLeft2 = new Vector3(Left(), pos.y, pos.z);
-        Vector3 rayLeftUp2 = new Vector3(Left(), Top() - 0.2f, pos.z);
-        Vector3 rayLeftDown2 = new Vector3(Left(), Bottom() + 0.2f, pos.z);
+        Vector3 rayLeft2 = new Vector3(pos.x, pos.y, pos.z);
+        Vector3 rayLeftUp2 = new Vector3(pos.x, Top() - 0.2f, pos.z);
+        Vector3 rayLeftDown2 = new Vector3(pos.x, Bottom() + 0.2f, pos.z);
 
         Vector3[] points2 = { rayLeft2, rayLeftUp2, rayLeftDown2 };
         return points2;
@@ -310,9 +397,9 @@ public class AvatarCollision : MonoBehaviour {
     {
         Vector3 pos = this.transform.position;
         //second set of points
-        Vector3 rayRight2 = new Vector3(Right(), pos.y, pos.z);
-        Vector3 rayRightUp2 = new Vector3(Right(), Top() - 0.2f, pos.z);
-        Vector3 rayRightDown2 = new Vector3(Right(), Bottom() + 0.2f, pos.z);
+        Vector3 rayRight2 = new Vector3(pos.x, pos.y, pos.z);
+        Vector3 rayRightUp2 = new Vector3(pos.x, Top() - 0.2f, pos.z);
+        Vector3 rayRightDown2 = new Vector3(pos.x, Bottom() + 0.2f, pos.z);
 
         Vector3[] points2 = { rayRight2, rayRightUp2, rayRightDown2 };
         return points2;
@@ -344,8 +431,21 @@ public class AvatarCollision : MonoBehaviour {
         return points2;
     }
 
-	// Update is called once per frame
-	void Update () {
-	
+    private float getVerticalCollisionDistance()
+    {
+        float distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+        return distance;
+    }
+
+    private float getHorizontalCollisionDistance()
+    {
+        float distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        return distance;
+    }
+
+    // Update is called once per frame
+    void Update () {
+        drawPrimaryPoints();
+        drawSecondaryPoints();
 	}
 }
