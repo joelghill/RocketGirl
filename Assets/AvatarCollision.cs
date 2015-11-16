@@ -18,11 +18,11 @@ public class AvatarCollision : MonoBehaviour {
     public bool drawPrimaryCollisionPoints = false;
     public bool drawSecondaryCollisionPoints = false;
 
-
+    private Bounds startBounds;
 
 	// Use this for initialization
 	void Start () {
-		height = gameObject.GetComponent<SpriteRenderer> ().bounds.size.y;
+        startBounds = gameObject.GetComponent<SpriteRenderer>().bounds;
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         position = transform.position;
 	}
@@ -47,7 +47,7 @@ public class AvatarCollision : MonoBehaviour {
 
     public float Bottom()
     {
-        return transform.position.y - (spriteRenderer.bounds.size.y / 2) + yMargin;
+        return transform.position.y - (startBounds.size.y / 2) + yMargin;
 
     }
 
@@ -183,7 +183,7 @@ public class AvatarCollision : MonoBehaviour {
                 }*/
                 if(orientation == CollisionDirection.VERTICAL)
                 {
-                    if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
+                    if (sc != null && sc.getVertCollision(gameObject, Bottom()))
                     {
                         collide = ob;
                         break;
@@ -214,7 +214,7 @@ public class AvatarCollision : MonoBehaviour {
                     SpriteCollider sc = ob.GetComponent<SpriteCollider>();
                     if(orientation == CollisionDirection.VERTICAL)
                     {
-                        if (sc != null && sc.getVertCollision(gameObject, transform.position.y))
+                        if (sc != null && sc.getVertCollision(gameObject, Bottom()))
                         {
                             collide = ob;
                             break;
@@ -433,7 +433,7 @@ public class AvatarCollision : MonoBehaviour {
 
     private float getVerticalCollisionDistance()
     {
-        float distance = gameObject.GetComponent<SpriteRenderer>().bounds.size.y / 2;
+        float distance = startBounds.size.y / 2;
         return distance;
     }
 

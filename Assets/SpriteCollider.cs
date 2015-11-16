@@ -45,17 +45,18 @@ public class SpriteCollider : MonoBehaviour {
 			Rigidbody rb = other.GetComponent<Rigidbody>();
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
-			//if moving up, no collision
-			if(rb.velocity.y > 0 || (y -.5f < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
-				collide = false;
-                break;
-			}
-			//if moving not up, and near top, collide
-			//else if(y > (getTopY()))
-			//	return true;
-			else
-				//else no collision
-				collide = true;
+                //if moving up, no collision
+                if (rb.velocity.y > 0) {
+                    collide = false;
+                    break;
+                } else if (y < transform.position.y + 0.3)
+                {
+                    return false;
+                }
+                
+                else
+                    //else no collision
+                    collide = true;
                 break;
 
 		case "Moveable":

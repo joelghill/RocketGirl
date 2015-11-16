@@ -61,11 +61,24 @@ public class Avatar : MonoBehaviour, IControllable {
 	 */
     public void move (float axis){
 
-		/*
+        GameObject right = avaCol.collideRight();
+        GameObject left = avaCol.collideLeft();
+
+        if (right)
+        {
+            AdjustPosition(right, CollisionType.RIGHT);
+        }
+
+        if (left)
+        {
+            AdjustPosition(left, CollisionType.LEFT);
+        }
+
+        /*
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-		if (axis > 0.1f && !avaCol.collideRight()) {
+        if (axis > 0.1f && !avaCol.collideRight()) {
 
 			if(body.velocity.x < axis*xSpeed){
 				body.velocity = new Vector3 (body.velocity.x + accel, body.velocity.y,0);
@@ -135,9 +148,10 @@ public class Avatar : MonoBehaviour, IControllable {
 
         if (avaCol.collideBottom())
         {
-            if(body.velocity.y < 0)
+            if (body.velocity.y <= 0)
             {
                 body.velocity = new Vector3(body.velocity.x, 0, 0);
+                AdjustPosition(avaCol.collideBottom(), CollisionType.BOTTOM);
             }
         }
 
@@ -163,7 +177,7 @@ public class Avatar : MonoBehaviour, IControllable {
             donejumping = false;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
-		} 
+        }
 
 		/*
 		 * If the player is gliding down a wall the jump will not be as high and add a bit of horizontal speed
@@ -173,7 +187,11 @@ public class Avatar : MonoBehaviour, IControllable {
 			body.velocity = new Vector3 ((xSpeed)*(-runInput), ySpeed, 0);
 			anim.SetBool("jumping",true);
 		}
-	}
+        else
+        {
+            Debug.Log("Jump pressed, however player is not grounded");
+        }
+    }
 
     public void shoot(float direction)
     {
@@ -218,17 +236,41 @@ public class Avatar : MonoBehaviour, IControllable {
 
     private void AdjustPosition(GameObject other, CollisionType type)
     {
+        Trile t = other.GetComponent<Trile>();
+        if (t == null) return;
         switch (type){
             case CollisionType.BOTTOM:
+
+                if (avaCol.Bottom() < t.topPosition())
+                {
+
+                    Vector3 pos = transform.position;
+                    float newY = transform.position.y - (avaCol.Bottom() - t.topPosition());
+                    transform.position = new Vector3(pos.x, newY, pos.z);
+                }
                 break;
             case CollisionType.TOP:
                 break;
             case CollisionType.LEFT:
+                if (avaCol.Left() < t.rightPosition())
+                {
+                    Vector3 pos = transform.position;
+                    float newX = transform.position.x - (avaCol.Left() - t.rightPosition());
+                    transform.position = new Vector3(newX, pos.y, pos.z);
+                }
                 break;
             case CollisionType.RIGHT:
+                if (avaCol.Right() > t.leftPosition())
+                {
+                    Vector3 pos = transform.position;
+                    float newX = transform.position.x - (avaCol.Right() - t.leftPosition());
+                    transform.position = new Vector3(newX, pos.y, pos.z);
+                }
                 break;
             default:
                 break;
         }
     }
+
+
 }
