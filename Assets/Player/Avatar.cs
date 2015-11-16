@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent (typeof(AvatarCollision))]
-public class Avatar : MonoBehaviour, IControllable {
+public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
     private enum CollisionType {TOP,BOTTOM,LEFT,RIGHT};
 
@@ -26,6 +27,8 @@ public class Avatar : MonoBehaviour, IControllable {
 	protected int facing;
 
     private bool donejumping;
+
+    private bool paused = false;
 
 	//prefab to spawn
 	public GameObject bulletPrefab;
@@ -60,7 +63,7 @@ public class Avatar : MonoBehaviour, IControllable {
 	 * (negative axis means reverse movement, 1.0f will give full xSpeed)
 	 */
     public void move (float axis){
-
+        if (paused) return;
         GameObject right = avaCol.collideRight();
         GameObject left = avaCol.collideLeft();
 
@@ -167,6 +170,7 @@ public class Avatar : MonoBehaviour, IControllable {
      * and when the jump is completed ( upward collision, jump button released, jump duration expended)
      */
 	public void jump(){
+        if (paused) return;
 		
 		/*
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
@@ -236,6 +240,7 @@ public class Avatar : MonoBehaviour, IControllable {
 
 	// Update is called once per frame
 	void Update () {
+        if (paused) return;
         adjustFallSpeed();
         setAnimations();
 		if ((Input.GetAxis ("Horizontal") > 0.1 || Input.GetKey ("d")) && facing == -1) {
@@ -283,5 +288,13 @@ public class Avatar : MonoBehaviour, IControllable {
         }
     }
 
+    public void onPause()
+    {
+        paused = true;
+    }
 
+    public void onResume()
+    {
+        paused = false;
+    }
 }

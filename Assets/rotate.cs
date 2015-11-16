@@ -12,15 +12,19 @@ public class rotate : MonoBehaviour {
 
 	public GameObject level;
 	public GameObject player;
-	//public double TransitionTime;
-	public GameObject[] entities;
 
-	public float[] rotationPoints;
+    public float rotationSpeed = 140f;
+    //public double TransitionTime;
+    public GameObject[] entities;
 
-	public bool transitionFlag = false;
-	public int currentPoint = 0;
-	public int currentGoal;
-    public int direction;
+	private float[] rotationPoints;
+
+	private bool transitionFlag = false;
+	private int currentPoint = 0;
+	private int currentGoal;
+    private int direction;
+
+    private float lastAngle;
 
 	// Use this for initialization
 	void Start () {
@@ -38,6 +42,7 @@ public class rotate : MonoBehaviour {
 			if(!transitionFlag){
 				transitionFlag = true;
                 this.direction = -1;
+                player.SendMessage("onPause");
 			}
 		}
 
@@ -47,6 +52,7 @@ public class rotate : MonoBehaviour {
             {
                 transitionFlag = true;
                 this.direction = 1;
+                player.SendMessage("onPause");
             }
         }
 
@@ -62,16 +68,21 @@ public class rotate : MonoBehaviour {
     public void rotateLevel(int dir)
     {
         if (dir != -1 && dir != 1) return;
+
+        //save current angle before any changes...
+        lastAngle = level.transform.rotation.eulerAngles.y;
+
         Vector3 pos = player.transform.position;
         //Debug.Log("Rotating around point:  " + pos.ToString());
-        level.transform.RotateAround(pos, transform.up, 200 * Time.deltaTime * dir);
-        player.transform.RotateAround(pos, transform.up, -200 * Time.deltaTime * dir);
+        level.transform.RotateAround(pos, transform.up, rotationSpeed * Time.deltaTime * dir);
+        player.transform.RotateAround(pos, transform.up, -1 * rotationSpeed * Time.deltaTime * dir);
 
         if (hasReachedGoal(dir))
         {
             transitionFlag = false;
             snapToGoal(dir);
             incrementCurrentIndex(dir);
+            player.SendMessage("onResume");
         }
     }
 
@@ -90,10 +101,11 @@ public class rotate : MonoBehaviour {
     /// <param name="direction"></param>
     /// <returns> True if close to goal rotatoin, false otherise</returns>
 	bool hasReachedGoal(int direction){
-		//Debug.Log ("Goal check");
-		//Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
-		//Debug.Log ("Goal Rotation:  " + getRotationGoal(direction).ToString());
-		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < 10;
+        //Debug.Log ("Goal check");
+        //Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
+        //Debug.Log ("Goal Rotation:  " + getRotationGoal(direction).ToString());
+        float deltaAngle = Mathf.Abs(lastAngle - level.transform.rotation.eulerAngles.y);
+		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < deltaAngle;
 	}
 
     /// <summary>
