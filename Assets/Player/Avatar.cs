@@ -69,11 +69,13 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
         if (right)
         {
+            Debug.Log("Collision on Right side");
             AdjustPosition(right, CollisionType.RIGHT);
         }
 
         if (left)
         {
+            //Debug.Log("Collision on Left side");
             AdjustPosition(left, CollisionType.LEFT);
         }
 
