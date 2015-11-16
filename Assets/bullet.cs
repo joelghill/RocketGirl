@@ -56,7 +56,7 @@ public class bullet : MonoBehaviour , IKillable {
         if (Physics.Raycast(hitCheck, Camera.main.transform.forward, out hit))
         {
             IDamageable<float> damageable = hit.collider.gameObject.GetComponent<IDamageable<float>>();
-			if (damageable != null && hit.collider.gameObject.tag != "Player");
+			if (damageable != null && hit.collider.gameObject.tag != "Player")
             {
                 damageable.takeDamage(power);
                 Die();
