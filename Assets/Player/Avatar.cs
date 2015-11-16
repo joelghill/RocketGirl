@@ -88,7 +88,7 @@ public class Avatar : MonoBehaviour, IControllable {
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
-			facing = 1;
+			//facing = 1;
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
 			if(body.velocity.x > axis*xSpeed){
@@ -98,7 +98,7 @@ public class Avatar : MonoBehaviour, IControllable {
 			}
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
-			facing = -1;
+			//facing = -1;
 
             //if (transform.rotation.y == 0) {
                 //transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -228,10 +228,21 @@ public class Avatar : MonoBehaviour, IControllable {
 
     }
 
+	public void adjustRotation(){
+		Vector3 targetAngles = transform.eulerAngles + 180f * Vector3.up;
+		transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, targetAngles, 100000f);
+		facing = facing * -1;
+	}
+
 	// Update is called once per frame
 	void Update () {
         adjustFallSpeed();
         setAnimations();
+		if ((Input.GetAxis ("Horizontal") > 0.1 || Input.GetKey ("d")) && facing == -1) {
+			adjustRotation();
+		} else if ((Input.GetAxis ("Horizontal") < -0.1 || Input.GetKey ("a")) && facing == 1) {
+			adjustRotation();
+		}
 	}
 
     private void AdjustPosition(GameObject other, CollisionType type)
