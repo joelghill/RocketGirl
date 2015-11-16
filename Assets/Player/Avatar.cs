@@ -197,15 +197,21 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         }
     }
 
+	//A setter function to turn off the shooting animation
+	public void shootFalse(){
+		anim.SetBool ("shooting", false);
+	}
+
     public void shoot(float direction)
     {
-        //TODO
+		anim.SetBool ("shooting", true);
 		Vector3 fireSpot = new Vector3 (transform.position.x + (0.5f)*facing, transform.position.y, transform.position.z);
 		spawnedBullet = GameObject.Instantiate(bulletPrefab, fireSpot, transform.rotation) as GameObject;
 		//add force to bullet
 		bullet bill = spawnedBullet.GetComponent<bullet> ();
 		bill.setBody(bill.GetComponent<Rigidbody> ());
 		bill.setVelocity (10*facing, 0);
+		//anim.SetBool ("shooting", false);
     }
 
     void setAnimations()
