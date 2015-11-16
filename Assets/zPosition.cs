@@ -88,7 +88,7 @@ public class zPosition : MonoBehaviour {
             if (hit1.collider.transform.position.z < transform.position.z)
             {
                 //then game object is about to move behind an object, so adjust z depth
-                transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z );
+                transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z -1 );
             }
         }
     }
@@ -113,7 +113,7 @@ public class zPosition : MonoBehaviour {
             //... and if the collider is grounded
             if (!ac.collideBottom())
             {
-                //then end function
+                //then sprite is not considered to be floating
                 return false;
             }
         }
