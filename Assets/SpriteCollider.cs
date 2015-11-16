@@ -23,12 +23,7 @@ public class SpriteCollider : MonoBehaviour {
 	/// <param name="y">y position of the raycast that collided with this object</param>
     /// <remarks>Note: In case of collision, will also correct position of other object</remarks>
 	public bool getVertCollision(GameObject other, float y){
-        //get tag
-        Avatar otherAvatar = other.GetComponent<Avatar>();
-		AvatarCollision otherCollision = other.GetComponent<AvatarCollision>();
-
-        if (otherAvatar == null) return false;
-
+		//get tag
 		string tag = this.gameObject.tag;
         bool collide;
 		//based on tag, check if collision with other at point occured
@@ -47,21 +42,21 @@ public class SpriteCollider : MonoBehaviour {
 			//get transform
 			Transform otherT =other.transform;
 			//get rigidbody
-			//Rigidbody rb = other.GetComponent<Rigidbody>();
+			Rigidbody rb = other.GetComponent<Rigidbody>();
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
-			//if moving up, no collision
-			if(otherAvatar.DeltaY() > 0 || (otherCollision.Bottom ()+1f 
-			                                < transform.position.y + GetComponent<BoxCollider>().bounds.size.y/2)){
-				collide = false;
-                break;
-			}
-			//if moving not up, and near top, collide
-			//else if(y > (getTopY()))
-			//	return true;
-			else
-				//else no collision
-				collide = true;
+                //if moving up, no collision
+                if (rb.velocity.y > 0) {
+                    collide = false;
+                    break;
+                } else if (y < transform.position.y + 0.3)
+                {
+                    return false;
+                }
+                
+                else
+                    //else no collision
+                    collide = true;
                 break;
 
 		case "Moveable":

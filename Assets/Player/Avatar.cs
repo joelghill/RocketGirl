@@ -4,22 +4,21 @@ using System.Collections;
 [RequireComponent (typeof(AvatarCollision))]
 public class Avatar : MonoBehaviour, IControllable {
 
-	//protected Rigidbody body;
+    private enum CollisionType {TOP,BOTTOM,LEFT,RIGHT};
+
+	protected Rigidbody body;
 	protected Animator anim;
 
 	public AvatarCollision avaCol;
-	public float deltaY = 0;
-	public float deltaX = 0;
-    public float xSpeed = 8;
-    public float accelY = 0.5f;
-    public float accelX = 0.5f;
+	public float ySpeed = 8;
+	public float xSpeed = 6;
+    public float accel = 0.5f;
     public float maxFall = -8.0f;
-    public float jumpSpeed = 8.0f;
 
     public GameObject amunition;
 	
 	//private float distToGround;
-	protected bool grounded;
+	protected int grounded;
 	protected float jumping;
     protected bool jumpPressed;
 	protected float runInput;
@@ -38,8 +37,8 @@ public class Avatar : MonoBehaviour, IControllable {
 	// Use this for initialization
 	void Start () {
         jumping = 0;
-        grounded = false;
-        //body = GetComponent<Rigidbody>();
+        grounded = 0;
+        body = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         avaCol = GetComponent<AvatarCollision>();
         jumpPressed = false;
@@ -48,16 +47,6 @@ public class Avatar : MonoBehaviour, IControllable {
 		//avaCol = GetComponent<AvatarCollision> ();
 		
 	}
-
-    public float DeltaY()
-    {
-        return deltaY;
-    }
-
-    public float DeltaX() {
-        return deltaX;
-    }
-
 	
 	/*
 	 * Sets the jumping animation boolean to true.
@@ -72,153 +61,137 @@ public class Avatar : MonoBehaviour, IControllable {
 	 */
     public void move (float axis){
 
-		/*
+        GameObject right = avaCol.collideRight();
+        GameObject left = avaCol.collideLeft();
+
+        if (right)
+        {
+            AdjustPosition(right, CollisionType.RIGHT);
+        }
+
+        if (left)
+        {
+            AdjustPosition(left, CollisionType.LEFT);
+        }
+
+        /*
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-		if (axis > 0.1f) {
+        if (axis > 0.1f && !avaCol.collideRight()) {
 
-			if(deltaX < axis*xSpeed){
-				deltaX = deltaX + accelX;
+			if(body.velocity.x < axis*xSpeed){
+				body.velocity = new Vector3 (body.velocity.x + accel, body.velocity.y,0);
 			}else{
-                deltaX = axis * xSpeed;
+				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
 			facing = 1;
 
-		}else if (axis < -0.1f){
-			if(deltaX > axis*xSpeed){
-				deltaX = deltaX - accelX;
+		}else if (axis < -0.1f && !avaCol.collideLeft()) {
+			if(body.velocity.x > axis*xSpeed){
+				body.velocity = new Vector3 (body.velocity.x - accel, body.velocity.y,0);
 			}else{
-                deltaX = axis * xSpeed;
+				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
-            anim.SetFloat("runSpeed", axis);
+			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
-            facing = -1;
-        }
+			facing = -1;
+
+            //if (transform.rotation.y == 0) {
+                //transform.rotation = Quaternion.Euler(0, 180, 0);
+                //Quaternion.Euler(0, 180, 0);
+            //}
+        } 
 		/*
 		 * If there is no input, sets the x velocity to 0, keeps y velocity the same
 		 * Animation Running is set to false, no change in rotation
 		 */ 
 		else{
-            deltaX = 0;
-            anim.SetFloat("runSpeed", axis);
-            anim.SetBool("Running", false);
-        }
+			body.velocity = new Vector3 (0, body.velocity.y, 0);
+			anim.SetBool("Running", false);
+		}
 
 		runInput = axis;
 	}
 
     public void doneJump()
     {
-        if(deltaY > 0)
+        if(body.velocity.y > 0)
         {
-            deltaY = 0;
+            body.velocity = new Vector3(body.velocity.x, 0, 0);
         }
     }
 
     /// <summary>
     /// Helper function to adjust fall speed.
     /// </summary>
-    private void adjustFallSpeed()
+    void adjustFallSpeed()
     {
-            deltaY = deltaY - (accelY * Time.deltaTime);
-            if ((avaCol.collideRight() && runInput > 0) || (avaCol.collideLeft() && runInput < 0))
-            {
+        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel, 0);
 
-                if (deltaY < maxFall / 2)
-                {
-                    deltaY = maxFall / 2;
-                    wallGlide = true;
-                }
+		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
 
-            }
-            else if (deltaY < maxFall)
-            {
-                deltaY = maxFall;
-                wallGlide = false;
-            }
-    }
-
-    public void adjustPosition()
-    {
-        float newX = transform.position.x + (deltaX * Time.deltaTime);
-        float newY = transform.position.y + (deltaY * Time.deltaTime);
-        float z = transform.position.z;
-        transform.position = new Vector3(newX, newY, z);
-    }
-
-    private void resolveCollisions()
-    {
-        GameObject topCollide = avaCol.collideTop();
-        GameObject bottomCollide = avaCol.collideBottom();
-        GameObject leftCollide = avaCol.collideLeft();
-        GameObject rightCollide = avaCol.collideRight();
-
-        Vector3 pos = transform.position;
-
-        float thisHeight = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
-        float thisWidth = gameObject.GetComponent<SpriteRenderer>().bounds.size.x;
-
-        if (topCollide != null && deltaY > 0)
+			if(body.velocity.y < maxFall/2)
+			{
+				body.velocity = new Vector3(body.velocity.x, maxFall/2, 0);
+				wallGlide = true;
+			}
+			
+		}else if(body.velocity.y < maxFall)
         {
-            if(deltaY > 0)
+            body.velocity = new Vector3(body.velocity.x, maxFall, 0);
+			wallGlide = false;
+        }
+
+        if (avaCol.collideBottom())
+        {
+            if (body.velocity.y <= 0)
             {
-                deltaY = 0;
+                body.velocity = new Vector3(body.velocity.x, 0, 0);
+                AdjustPosition(avaCol.collideBottom(), CollisionType.BOTTOM);
             }
         }
-        if (bottomCollide != null && deltaY < 0)
+
+        if(avaCol.collideTop() && body.velocity.y > 0)
         {
-            if(deltaY < 0)
-            {
-                deltaY = 0;
-                grounded = true;
-                transform.position = new Vector3(transform.position.x, thisHeight / 2 + 0.5f + bottomCollide.transform.position.y, pos.z);
-            }
+            body.velocity = new Vector3(body.velocity.x, 0, 0);
         }
-        else
-        {
-            grounded = false;
-        }
-        if (leftCollide != null && deltaX < 0)
-        {
-            deltaX = 0;
-            transform.position = new Vector3(thisWidth/2 + 0.5f + leftCollide.transform.position.x, transform.position.y, transform.position.z);
-        }
-        if (rightCollide != null && deltaX > 0)
-        {
-            deltaX = 0;
-            transform.position = new Vector3(rightCollide.transform.position.x - thisWidth/2 - 0.5f, transform.position.y, transform.position.z);
-        }
+
     }
 
     /*
      * Parameters are whether the jump action is executed (like the jump button, or when the AI wants to jump)
      * and when the jump is completed ( upward collision, jump button released, jump duration expended)
      */
-    public void jump(){
+	public void jump(){
 		
 		/*
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
 		if (avaCol.collideBottom()) {
+			
             donejumping = false;
-            deltaY = jumpSpeed;
+			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
-		} 
+        }
 
 		/*
 		 * If the player is gliding down a wall the jump will not be as high and add a bit of horizontal speed
 		 */ 
 		else if (wallGlide) {
 			donejumping = false;
-            deltaX = xSpeed * (-runInput);
+			body.velocity = new Vector3 ((xSpeed)*(-runInput), ySpeed, 0);
 			anim.SetBool("jumping",true);
 		}
-	}
+        else
+        {
+            Debug.Log("Jump pressed, however player is not grounded");
+        }
+    }
 
     public void shoot(float direction)
     {
@@ -234,13 +207,13 @@ public class Avatar : MonoBehaviour, IControllable {
     void setAnimations()
     {
 
-        if(deltaY > 0)
+        if(body.velocity.y > 0)
         {
             anim.SetBool("jumping", true);
             anim.SetBool("Falling", false);
         }
 
-        if(deltaY < 0)
+        if(body.velocity.y < 0)
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", true);
@@ -257,18 +230,47 @@ public class Avatar : MonoBehaviour, IControllable {
 
 	// Update is called once per frame
 	void Update () {
-        resolveCollisions();
-        adjustPosition();
         adjustFallSpeed();
-		//print(avaCol.collideBottom ().ToString());
         setAnimations();
 	}
 
-    void FixedUpdate()
+    private void AdjustPosition(GameObject other, CollisionType type)
     {
-        //adjustFallSpeed();
-        //adjustPosition();
-        //adjustYPosition();
-        //adjustXPosition();
+        Trile t = other.GetComponent<Trile>();
+        if (t == null) return;
+        switch (type){
+            case CollisionType.BOTTOM:
+
+                if (avaCol.Bottom() < t.topPosition())
+                {
+
+                    Vector3 pos = transform.position;
+                    float newY = transform.position.y - (avaCol.Bottom() - t.topPosition());
+                    transform.position = new Vector3(pos.x, newY, pos.z);
+                }
+                break;
+            case CollisionType.TOP:
+                break;
+            case CollisionType.LEFT:
+                if (avaCol.Left() < t.rightPosition())
+                {
+                    Vector3 pos = transform.position;
+                    float newX = transform.position.x - (avaCol.Left() - t.rightPosition());
+                    transform.position = new Vector3(newX, pos.y, pos.z);
+                }
+                break;
+            case CollisionType.RIGHT:
+                if (avaCol.Right() > t.leftPosition())
+                {
+                    Vector3 pos = transform.position;
+                    float newX = transform.position.x - (avaCol.Right() - t.leftPosition());
+                    transform.position = new Vector3(newX, pos.y, pos.z);
+                }
+                break;
+            default:
+                break;
+        }
     }
+
+
 }
