@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: f662ee2a00cb84907a2aa3b5cfcda24e
-timeCreated: 1432944514
-licenseType: Store
+timeCreated: 1447702868
+licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: PixelCharAnim_Gun_idle_0
@@ -41,6 +41,7 @@ TextureImporter:
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
