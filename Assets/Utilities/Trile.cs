@@ -12,7 +12,8 @@ public class Trile : MonoBehaviour {
 	public GameObject Back;
 	public GameObject Left;
 	public GameObject Right;
-	
+
+    	
 	// Use this for initialization
 	void Start () {
 		SpriteRenderer sp = this.Top.GetComponent<SpriteRenderer> ();
@@ -92,6 +93,49 @@ public class Trile : MonoBehaviour {
         Debug.Log("Apply Shader called...");
 
     }
+
+    public float Height()
+    {
+        if (Front == null) return 0.0f;
+
+        return Front.GetComponent<SpriteRenderer>().bounds.size.y;
+    }
+
+    public float Width()
+    {
+        if (Front == null) return 0.0f;
+
+        return Front.GetComponent<SpriteRenderer>().bounds.size.x;
+    }
+
+    public float topPosition()
+    {
+        Vector3 pos = transform.position;
+        if (Height() == 0) return pos.y;
+        return pos.y + (Height()/2);
+    }
+
+    public float bottomPosition()
+    {
+        Vector3 pos = transform.position;
+        if (Height() == 0) return pos.y;
+        return pos.y - (Height() / 2);
+    }
+
+    public float leftPosition()
+    {
+        Vector3 pos = transform.position;
+        if (Width() == 0) return pos.x;
+        return pos.x - (Width()/ 2);
+    }
+
+    public float rightPosition()
+    {
+        Vector3 pos = transform.position;
+        if (Width() == 0) return pos.x;
+        return pos.x + (Width() / 2);
+    }
+
 }
 
 
