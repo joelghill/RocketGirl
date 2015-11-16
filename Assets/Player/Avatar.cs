@@ -4,6 +4,8 @@ using System.Collections;
 [RequireComponent (typeof(AvatarCollision))]
 public class Avatar : MonoBehaviour, IControllable {
 
+    private enum CollisionType {TOP,BOTTOM,LEFT,RIGHT};
+
 	protected Rigidbody body;
 	protected Animator anim;
 
@@ -213,4 +215,20 @@ public class Avatar : MonoBehaviour, IControllable {
         adjustFallSpeed();
         setAnimations();
 	}
+
+    private void AdjustPosition(GameObject other, CollisionType type)
+    {
+        switch (type){
+            case CollisionType.BOTTOM:
+                break;
+            case CollisionType.TOP:
+                break;
+            case CollisionType.LEFT:
+                break;
+            case CollisionType.RIGHT:
+                break;
+            default:
+                break;
+        }
+    }
 }
