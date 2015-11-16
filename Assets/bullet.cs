@@ -1,12 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class bullet : MonoBehaviour , IKillable {
+public class bullet : MonoBehaviour , IKillable, IPauseable {
     public float speed = 5;
     bool hostile = false;
     public float power = 10;
     public Rigidbody rb;
 	public SpriteRenderer render;
+
+    private Vector3 savedVelocity;
+    private bool paused = false;
+
 	// Use this for initialization
 	void Start () {
         //if (rb == null)
@@ -21,6 +26,7 @@ public class bullet : MonoBehaviour , IKillable {
 	
 	// Update is called once per frame
 	void Update () {
+        if (paused) return;
         onHit();
 	}
 
@@ -62,5 +68,18 @@ public class bullet : MonoBehaviour , IKillable {
                 Die();
             }
         }
+    }
+
+    public void onPause()
+    {
+        paused = true;
+        savedVelocity = rb.velocity;
+        rb.velocity = new Vector3(0, 0, 0);
+    }
+
+    public void onResume()
+    {
+        paused = false;
+        rb.velocity = savedVelocity;
     }
 }
