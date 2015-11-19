@@ -46,16 +46,19 @@ public class SpriteCollider : MonoBehaviour {
 			float otherHeight = other.GetComponent<SpriteRenderer> ().bounds.size.y;
 
                 //if moving up, no collision
-                if (rb.velocity.y > 0) {
+                if (rb.velocity.y > 0)
+                {
                     collide = false;
                     break;
-                } else if (y < transform.position.y + 0.2)
+                }
+                else if (y < transform.position.y + 0.1)
                 {
                     return false;
                 }
-                
+
                 else
                     //else no collision
+                    Debug.Log("Detected one way tile but no collision");
                     collide = true;
                 break;
 
