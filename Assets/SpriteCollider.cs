@@ -48,18 +48,21 @@ public class SpriteCollider : MonoBehaviour {
                 //if moving up, no collision
                 if (rb.velocity.y > 0)
                 {
-                    collide = false;
+					print (rb.velocity.y.ToString());
+					Debug.Log("Detected one way tile but no collision");
+                    return false;
                     break;
                 }
                 else if (y < transform.position.y + 0.1)
                 {
+					
+				Debug.Log("Detected one way tile but no collision; y lower than tile");
                     return false;
                 }
 
                 else
                     //else no collision
-                    Debug.Log("Detected one way tile but no collision");
-                    collide = true;
+                    return true;
                 break;
 
 		case "Moveable":
