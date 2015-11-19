@@ -49,7 +49,7 @@ public class SpriteCollider : MonoBehaviour {
                 if (rb.velocity.y > 0) {
                     collide = false;
                     break;
-                } else if (y < transform.position.y + 0.3)
+                } else if (y < transform.position.y + 0.2)
                 {
                     return false;
                 }
