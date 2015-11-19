@@ -212,7 +212,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		//add force to bullet
 		bullet bill = spawnedBullet.GetComponent<bullet> ();
 		bill.setBody(bill.GetComponent<Rigidbody> ());
-		bill.setVelocity (10*facing, 0);
+		bill.setVelocity ((10 * facing) + ((body.velocity.x)/2), 0);
 		//anim.SetBool ("shooting", false);
     }
 
