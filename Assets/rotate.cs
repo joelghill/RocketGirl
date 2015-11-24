@@ -69,6 +69,7 @@ public class rotate : MonoBehaviour {
     {
         if (dir != -1 && dir != 1) return;
 
+
         //save current angle before any changes...
         lastAngle = level.transform.rotation.eulerAngles.y;
 
@@ -83,6 +84,7 @@ public class rotate : MonoBehaviour {
             snapToGoal(dir);
             incrementCurrentIndex(dir);
             player.SendMessage("onResume");
+            return;
         }
     }
 
