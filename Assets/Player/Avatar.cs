@@ -86,7 +86,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         if (axis > 0.1f && !avaCol.collideRight()) {
 
 			if(body.velocity.x < axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x + accel, body.velocity.y,0);
+				body.velocity = new Vector3 (body.velocity.x + accel*Time.deltaTime, body.velocity.y,0);
 			}else{
 				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
@@ -97,7 +97,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
 			if(body.velocity.x > axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x - accel, body.velocity.y,0);
+				body.velocity = new Vector3 (body.velocity.x - accel*Time.deltaTime, body.velocity.y,0);
 			}else{
 				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
@@ -135,7 +135,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     /// </summary>
     void adjustFallSpeed()
     {
-        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel, 0);
+        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel*Time.deltaTime, 0);
 
 		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
 
