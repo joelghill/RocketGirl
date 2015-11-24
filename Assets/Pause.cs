@@ -24,4 +24,16 @@ public class Pause : MonoBehaviour {
 
 	}
 
+	public Texture aTexture;
+
+	void OnGUI() {
+		if (isPause) {
+			if (!aTexture) {
+				Debug.LogError ("Assign a Texture in the inspector.");
+				return;
+			}
+			GUI.DrawTexture (new Rect (10, 10, 60, 60), aTexture, ScaleMode.ScaleToFit, true, 10.0F);
+		}
+	}
+
 }
