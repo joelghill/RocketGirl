@@ -31,7 +31,13 @@ public class EventObject : MonoBehaviour, IEvent {
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        //if not facing same direction as camera, is not active
+        if (transform.forward != Camera.main.transform.forward &&
+            transform.forward != -1*Camera.main.transform.forward)
+        {
+            return;
+        }
+            if (other.gameObject.tag == "Player")
         {
             onSpriteCollisionEnter(other.gameObject);
         }
