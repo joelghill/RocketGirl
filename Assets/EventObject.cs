@@ -12,6 +12,7 @@ public class EventObject : MonoBehaviour, IEvent {
         if(eventCollider == null)
         {
             eventCollider = gameObject.GetComponent<BoxCollider2D>();
+           
         }
         if(eventCollider != null && !eventCollider.isTrigger)
         {
@@ -49,6 +50,9 @@ public class EventObject : MonoBehaviour, IEvent {
     public void onSpriteCollisionEnter(GameObject other)
     {
         Debug.Log("SHOW MESSAGE");
+        //adjust position of message board
+        Vector3 pos = transform.position;
+        message.transform.position = new Vector3(pos.x, pos.y + 2, Camera.main.transform.position.z + 5);
         message.show();
         //throw new NotImplementedException();
     }
