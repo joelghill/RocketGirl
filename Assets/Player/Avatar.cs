@@ -206,7 +206,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
     public void shoot(float direction)
     {
-		anim.SetBool ("shooting", true);
+		//anim.SetBool ("shooting", true);
 		Vector3 fireSpot = new Vector3 (transform.position.x + (0.5f)*facing, transform.position.y, transform.position.z);
 		spawnedBullet = GameObject.Instantiate(bulletPrefab, fireSpot, transform.rotation) as GameObject;
 		//add force to bullet
