@@ -26,6 +26,8 @@ public class rotate : MonoBehaviour {
 
     private float lastAngle;
 
+	private AvatarCollision playerCol;
+
 	// Use this for initialization
 	void Start () {
 
@@ -34,19 +36,21 @@ public class rotate : MonoBehaviour {
 		rotationPoints [1] = 90;
 		rotationPoints [2] = 180;
 		rotationPoints [3] = 270;
+		playerCol = player.GetComponent<AvatarCollision> ();
+
 	}
 
 	void Update () {
 
 		if (Input.GetKeyDown(KeyCode.B)) {
-			if(!transitionFlag){
+			if(!transitionFlag && playerCol.collideBottom()){
 				transitionFlag = true;
                 this.direction = -1;
                 player.SendMessage("onPause");
 			}
 		}
 
-        if (Input.GetKeyDown(KeyCode.N))
+		if (Input.GetKeyDown(KeyCode.N) && playerCol.collideBottom())
         {
             if (!transitionFlag)
             {
