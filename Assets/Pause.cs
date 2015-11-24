@@ -4,10 +4,14 @@ using System.Collections;
 public class Pause : MonoBehaviour {
 
 	private bool isPause;
+	private GameObject pauseGUI;
 
 	// Use this for initialization
 	void Start () {
 		isPause = false;
+		pauseGUI = GameObject.Find ("Pause");
+		pauseGUI.transform.localScale = 
+			new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
 	}
 	
 	// Update is called once per frame
@@ -16,24 +20,17 @@ public class Pause : MonoBehaviour {
 		if( Input.GetKeyDown(KeyCode.Escape))
 		{
 			isPause = !isPause;
-			if(isPause)
+			if(isPause){
+				pauseGUI.transform.localScale = 
+					new Vector3 (transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 				Time.timeScale = 0;
-			else
+			} else {
+				pauseGUI.transform.localScale = 
+					new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
 				Time.timeScale = 1;
-		}
-
-	}
-
-	public Texture aTexture;
-
-	void OnGUI() {
-		if (isPause) {
-			if (!aTexture) {
-				Debug.LogError ("Assign a Texture in the inspector.");
-				return;
 			}
-			GUI.DrawTexture (new Rect (10, 10, 60, 60), aTexture, ScaleMode.ScaleToFit, true, 10.0F);
 		}
+
 	}
 
 }

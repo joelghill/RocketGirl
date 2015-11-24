@@ -48,7 +48,6 @@ public class SpriteCollider : MonoBehaviour {
                 //if moving up, no collision
                 if (rb.velocity.y > 0)
                 {
-					print (rb.velocity.y.ToString());
 					Debug.Log("Detected one way tile but no collision");
                     return false;
                     break;
