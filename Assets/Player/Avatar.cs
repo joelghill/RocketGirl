@@ -15,6 +15,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 	public float xSpeed = 6;
     public float accel = 0.5f;
     public float maxFall = -8.0f;
+	public float wallJumpForce = 15;
 
     public GameObject amunition;
 	
@@ -190,7 +191,8 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		 */ 
 		else if (wallGlide) {
 			donejumping = false;
-			body.velocity = new Vector3 ((xSpeed)*(-runInput), ySpeed, 0);
+			wallGlide = false;
+			body.velocity = new Vector3 ((wallJumpForce)*(-runInput), ySpeed, 0);
 			anim.SetBool("jumping",true);
 		}
         else
