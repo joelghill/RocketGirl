@@ -9,9 +9,8 @@ public class Pause : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		isPause = false;
-		pauseGUI = GameObject.Find ("Pause");
-		pauseGUI.transform.localScale = 
-			new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
+		//pauseGUI = GameObject.Find ("Pause");
+		//pauseGUI.transform.localScale = new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
 	}
 	
 	// Update is called once per frame
@@ -19,14 +18,13 @@ public class Pause : MonoBehaviour {
 
 		if( Input.GetKeyDown(KeyCode.Escape))
 		{
+            Debug.Log("Pause!");
 			isPause = !isPause;
 			if(isPause){
-				pauseGUI.transform.localScale = 
-					new Vector3 (transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
+				//pauseGUI.transform.localScale = new Vector3 (transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
 				Time.timeScale = 0;
 			} else {
-				pauseGUI.transform.localScale = 
-					new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
+				//pauseGUI.transform.localScale = new Vector3 (transform.lossyScale.x, 0, transform.lossyScale.z);
 				Time.timeScale = 1;
 			}
 		}

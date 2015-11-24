@@ -9,6 +9,8 @@ using System.Collections;
 
 public class SpriteCollider : MonoBehaviour {
 
+
+
 	public float margin;
 	// Use this for initialization
 	void Start () {
@@ -21,7 +23,6 @@ public class SpriteCollider : MonoBehaviour {
 	/// <returns><c>true</c>, if vert collision was gotten, <c>false</c> otherwise.</returns>
 	/// <param name="other"> The other game object to check collsion against.</param>
 	/// <param name="y">y position of the raycast that collided with this object</param>
-    /// <remarks>Note: In case of collision, will also correct position of other object</remarks>
 	public bool getVertCollision(GameObject other, float y){
 		//get tag
 		string tag = this.gameObject.tag;
