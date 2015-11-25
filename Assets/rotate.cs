@@ -42,7 +42,8 @@ public class rotate : MonoBehaviour {
 
 	void Update () {
 
-		if (Input.GetKeyDown(KeyCode.B)) {
+		//if (Input.GetKeyDown(KeyCode.B)) {
+		if (Input.GetButtonDown("Fire1")) {
 			if(!transitionFlag && playerCol.collideBottom()){
 				transitionFlag = true;
                 this.direction = -1;
@@ -50,7 +51,7 @@ public class rotate : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetKeyDown(KeyCode.N) && playerCol.collideBottom())
+		if (Input.GetButtonDown("Fire2") && playerCol.collideBottom())
         {
             if (!transitionFlag)
             {

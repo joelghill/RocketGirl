@@ -29,7 +29,8 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 		float axis = Input.GetAxis ("Horizontal");
 		if (Input.GetKey ("d")) {
 			axis = 1.0f;
-		} else if (Input.GetKey ("a")) {
+		}
+		if (Input.GetKey ("a")) {
 			axis = -1.0f;
 		}
 
