@@ -94,6 +94,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
+			anim.SetFloat ("Dir", 0);
 			//facing = 1;
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
@@ -104,6 +105,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			}
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
+			anim.SetFloat ("Dir", 1);
 			//facing = -1;
 
             //if (transform.rotation.y == 0) {
