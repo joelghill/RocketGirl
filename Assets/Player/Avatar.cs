@@ -95,6 +95,9 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
 			anim.SetFloat ("runSpeed", axis);
 			anim.SetFloat ("Dir", 0);
+			if(transform.lossyScale.x < 0){
+				transform.localScale = new Vector3 (transform.lossyScale.x * -1, transform.lossyScale.y, transform.lossyScale.z);
+			}
 			//facing = 1;
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
@@ -106,6 +109,9 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
 			anim.SetFloat ("Dir", 1);
+			if(transform.lossyScale.x > 0){
+				transform.localScale = new Vector3 (transform.lossyScale.x * -1, transform.lossyScale.y, transform.lossyScale.z);
+			}
 			//facing = -1;
 
             //if (transform.rotation.y == 0) {
@@ -256,10 +262,11 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         if (paused) return;
         adjustFallSpeed();
         setAnimations();
+		print (transform.lossyScale.x.ToString ());
 		if ((Input.GetAxis ("Horizontal") > 0.1 || Input.GetKey ("d")) && facing == -1) {
-			adjustRotation();
+			//adjustRotation();
 		} else if ((Input.GetAxis ("Horizontal") < -0.1 || Input.GetKey ("a")) && facing == 1) {
-			adjustRotation();
+			//adjustRotation();
 		}
 	}
 
