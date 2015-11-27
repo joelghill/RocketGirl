@@ -3,6 +3,8 @@ using System.Collections;
 
 public class MenuButton : MonoBehaviour {
 
+	public string command;
+
 	private Renderer rend;
 	private bool selected;
 	private GameObject[] buttons;
@@ -17,7 +19,9 @@ public class MenuButton : MonoBehaviour {
 	}
 
 	void OnMouseEnter() {
-		//setSelected ();
+		for (int i = 0; i < buttons.Length; i++) {
+				buttons[i].GetComponent<MenuButton>().selected = false;
+		}
 		selected = true;
 	}
 
@@ -25,24 +29,41 @@ public class MenuButton : MonoBehaviour {
 		selected = false;
 	}
 
-	public void setSelected(int x){
-		for (int i = 0; i < buttons.Length; i++) {
-			if(i == x){
-				buttons[i].GetComponent<MenuButton>().selected = true;
-			} else {
-				buttons[i].GetComponent<MenuButton>().selected = false;
-			}
-		}
-		//selected = true;
+	void OnMouseUp(){
+		if(selected)
+			execute ();
 	}
 
-	int getSelected(){
-		for (int i = 0; i < buttons.Length; i++) {
-			if(buttons[i].GetComponent<MenuButton>().selected){
-				return i;
-			}
+	public void select(){
+		selected = true;
+	}
+
+	public void deselect(){
+		selected = false;
+	}
+
+	public bool getSelect(){
+		return selected;
+	}
+
+	void execute(){
+
+		switch (command){
+			
+		case "Start":
+			Application.LoadLevel(1);
+			break;
+			
+		case "Quit":
+			Application.Quit();
+			break;
+			
+		default:
+			Debug.Log("Set a vaild button command in the inspector (Start, Quit)");
+			break;
+			
 		}
-		return -1;
+
 	}
 	
 	// Update is called once per frame
@@ -54,22 +75,8 @@ public class MenuButton : MonoBehaviour {
 			rend.material.color = Color.white;
 		}
 
-		//if (Input.GetAxis ("Vertical") < -0.1f || Input.GetAxis ("Vertical") > 0.1f && !horizontal) {
-		if(Input.GetKeyDown("s")){
-
-			print(selected.ToString());
-			horizontal = true;
-
-			if(getSelected() == -1){
-				setSelected(0);
-			} else if(getSelected() == 0){
-				setSelected(1);
-				//buttons[0].GetComponent<MenuButton>().selected = false;
-			}else if(getSelected() == 1){
-				setSelected(0);
-				//buttons[1].GetComponent<MenuButton>().selected = false;
-			}
-
+		if (Input.GetButtonDown("Jump") && selected){
+			execute();
 		}
 
 	}
