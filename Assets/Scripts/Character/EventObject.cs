@@ -19,11 +19,6 @@ public class EventObject : MonoBehaviour, IEvent {
             eventCollider.isTrigger = true;
         }
 
-        if(message != null)
-        {
-            message.enabled = false;
-        }
-
         //adjust position of message board
         Vector3 pos = transform.position;
         message.transform.position = new Vector3(pos.x, pos.y + 2, Camera.main.transform.position.z +5);
@@ -37,7 +32,7 @@ public class EventObject : MonoBehaviour, IEvent {
         {
             return;
         }
-            if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             onSpriteCollisionEnter(other.gameObject);
         }
