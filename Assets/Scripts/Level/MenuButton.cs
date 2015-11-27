@@ -6,32 +6,39 @@ public class MenuButton : MonoBehaviour {
 	private Renderer rend;
 	private bool selected;
 	private GameObject[] buttons;
+	private bool horizontal;
 
 	// Use this for initialization
 	void Start () {
 		rend = GetComponent<Renderer> ();
 		selected = false;
 		buttons = GameObject.FindGameObjectsWithTag("Button");
+		horizontal = false;
 	}
 
 	void OnMouseEnter() {
-		setSelected ();
+		//setSelected ();
+		selected = true;
 	}
 
 	void OnMouseExit() {
 		selected = false;
 	}
 
-	void setSelected(){
+	public void setSelected(int x){
 		for (int i = 0; i < buttons.Length; i++) {
-			buttons[i].GetComponent<StartGameButton>().selected = false;
+			if(i == x){
+				buttons[i].GetComponent<MenuButton>().selected = true;
+			} else {
+				buttons[i].GetComponent<MenuButton>().selected = false;
+			}
 		}
-		selected = true;
+		//selected = true;
 	}
 
 	int getSelected(){
 		for (int i = 0; i < buttons.Length; i++) {
-			if(buttons[i].GetComponent<StartGameButton>().selected){
+			if(buttons[i].GetComponent<MenuButton>().selected){
 				return i;
 			}
 		}
@@ -47,14 +54,20 @@ public class MenuButton : MonoBehaviour {
 			rend.material.color = Color.white;
 		}
 
-		if (Input.GetAxis ("Vertical") < -0.1f || Input.GetAxis ("Vertical") > 0.1f) {
+		//if (Input.GetAxis ("Vertical") < -0.1f || Input.GetAxis ("Vertical") > 0.1f && !horizontal) {
+		if(Input.GetKeyDown("s")){
+
+			print(selected.ToString());
+			horizontal = true;
 
 			if(getSelected() == -1){
-				buttons[0].GetComponent<StartGameButton>().setSelected();
+				setSelected(0);
 			} else if(getSelected() == 0){
-				buttons[1].GetComponent<StartGameButton>().setSelected();
+				setSelected(1);
+				//buttons[0].GetComponent<MenuButton>().selected = false;
 			}else if(getSelected() == 1){
-				buttons[0].GetComponent<StartGameButton>().setSelected();
+				setSelected(0);
+				//buttons[1].GetComponent<MenuButton>().selected = false;
 			}
 
 		}
