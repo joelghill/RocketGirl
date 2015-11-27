@@ -13,6 +13,8 @@ public class LevelController : MonoBehaviour {
 
     public AudioSource music;
 
+    public GameObject player;
+
     Color textC;
     Color imageC;
 
@@ -27,7 +29,7 @@ public class LevelController : MonoBehaviour {
         imageC = backgoundImage.color;
         if(music != null)
         {
-           
+     
         }
         StartCoroutine(WaitForLoad());
     }
@@ -36,6 +38,13 @@ public class LevelController : MonoBehaviour {
     {
         yield return new WaitForSeconds(waitTime);
         fadeIn = true;
+    }
+
+    IEnumerator WaitForEnd()
+    {
+        show();
+        yield return new WaitForSeconds(waitTime+1);
+        Application.LoadLevel(Application.loadedLevel);
     }
 
     // Update is called once per frame
@@ -50,7 +59,15 @@ public class LevelController : MonoBehaviour {
         {
             fadeIn = false;
             hide();
-        }   
+        }  
+        
+        if(player != null)
+        {
+            if(player.transform.position.y < -5.0f)
+            {
+                StartCoroutine(WaitForEnd());
+            }
+        }
     }
 
     public void hide()
