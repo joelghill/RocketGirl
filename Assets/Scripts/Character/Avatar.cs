@@ -45,6 +45,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         body = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         avaCol = GetComponent<AvatarCollision>();
+		avaCol.spriteRenderer = GetComponent<SpriteRenderer> ();
         jumpPressed = false;
 		wallGlide = false;
 		facing = 1;

@@ -3,7 +3,9 @@ using System.Collections;
 
 public class CollectCoin : MonoBehaviour {
 
+	//This should be false if the coin starts rotated 90 from the camera
 	public bool enabled = true;
+
 	private Collider col;
 	private CoinsRemaining coin;
 
