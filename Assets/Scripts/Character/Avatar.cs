@@ -84,13 +84,18 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-        if (axis > 0.1f && !avaCol.collideRight()) {
 
-			if(body.velocity.x < axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x + accel*Time.deltaTime, body.velocity.y,0);
-			}else{
-				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+        float velY = body.velocity.y;
+        if (axis > 0.1f && !avaCol.collideRight()) {
+            var locVel = transform.InverseTransformDirection(body.velocity);
+            if (locVel.x < axis*xSpeed){
+                locVel = ( new Vector3 (locVel.x + accel*Time.deltaTime, locVel.y,0));
+			}else
+            {
+                locVel = (new Vector3 (axis * xSpeed, locVel.y, 0));
 			}
+            body.velocity = transform.TransformDirection(locVel);
+            //Debug.Log(body.velocity);
             anim.SetBool("Running", true);
 
 			anim.SetFloat ("runSpeed", axis);
@@ -101,12 +106,15 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			//facing = 1;
 
 		}else if (axis < -0.1f && !avaCol.collideLeft()) {
-			if(body.velocity.x > axis*xSpeed){
-				body.velocity = new Vector3 (body.velocity.x - accel*Time.deltaTime, body.velocity.y,0);
-			}else{
-				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
+            var locVel = transform.InverseTransformDirection(body.velocity);
+            if (locVel.x > axis*xSpeed){
+                locVel = (new Vector3 (locVel.x - accel*Time.deltaTime, locVel.y, 0));
+			}else
+            {
+                locVel = (new Vector3 (axis * xSpeed, locVel.y, 0));
 			}
-			anim.SetFloat("runSpeed", axis);
+            body.velocity = transform.TransformDirection(locVel);
+            anim.SetFloat("runSpeed", axis);
             anim.SetBool("Running", true);
 			anim.SetFloat ("Dir", 1);
 			if(transform.lossyScale.x > 0){
@@ -135,7 +143,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     {
         if(body.velocity.y > 0)
         {
-            body.velocity = new Vector3(body.velocity.x, 0, 0);
+            body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
         }
     }
 
@@ -144,19 +152,19 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     /// </summary>
     void adjustFallSpeed()
     {
-        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel*Time.deltaTime, 0);
+        body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel*Time.deltaTime, body.velocity.z);
 
 		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
 
 			if(body.velocity.y < maxFall/2)
 			{
-				body.velocity = new Vector3(body.velocity.x, maxFall/2, 0);
+				body.velocity = new Vector3(body.velocity.x, maxFall/2, body.velocity.z);
 				wallGlide = true;
 			}
 			
 		}else if(body.velocity.y < maxFall)
         {
-            body.velocity = new Vector3(body.velocity.x, maxFall, 0);
+            body.velocity = new Vector3(body.velocity.x, maxFall, body.velocity.z);
 			wallGlide = false;
         }
 
@@ -164,14 +172,14 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         {
             if (body.velocity.y <= 0)
             {
-                body.velocity = new Vector3(body.velocity.x, 0, 0);
+                body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
                 AdjustPosition(avaCol.collideBottom(), CollisionType.BOTTOM);
             }
         }
 
         if(avaCol.collideTop() && body.velocity.y > 0)
         {
-            body.velocity = new Vector3(body.velocity.x, 0, 0);
+            body.velocity = new Vector3(body.velocity.x, 0, body.velocity.z);
         }
 
     }
@@ -190,7 +198,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		if (avaCol.collideBottom()) {
 			
             donejumping = false;
-			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
+			body.velocity = new Vector3 (body.velocity.x, ySpeed, body.velocity.z);
 			anim.SetBool("jumping",true);
         }
 
@@ -200,7 +208,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		else if (wallGlide) {
 			donejumping = false;
 			wallGlide = false;
-			body.velocity = new Vector3 ((wallJumpForce)*(-runInput), ySpeed, 0);
+			body.velocity = new Vector3 ((wallJumpForce)*(-runInput), ySpeed, body.velocity.z);
 			anim.SetBool("jumping",true);
 		}
         else

@@ -76,12 +76,12 @@ public class rotate : MonoBehaviour {
 
 
         //save current angle before any changes...
-        lastAngle = level.transform.rotation.eulerAngles.y;
+        lastAngle = player.transform.rotation.eulerAngles.y;
 
         Vector3 pos = player.transform.position;
         //Debug.Log("Rotating around point:  " + pos.ToString());
-        level.transform.RotateAround(pos, transform.up, rotationSpeed * Time.deltaTime * dir);
-        player.transform.RotateAround(pos, transform.up, -1 * rotationSpeed * Time.deltaTime * dir);
+        Camera.main.transform.RotateAround(pos, transform.up, rotationSpeed * Time.deltaTime * dir);
+        player.transform.RotateAround(pos, transform.up, rotationSpeed * Time.deltaTime * dir);
 
         if (hasReachedGoal(dir))
         {
@@ -111,8 +111,8 @@ public class rotate : MonoBehaviour {
         //Debug.Log ("Goal check");
         //Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
         //Debug.Log ("Goal Rotation:  " + getRotationGoal(direction).ToString());
-        float deltaAngle = Mathf.Abs(lastAngle - level.transform.rotation.eulerAngles.y);
-		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < deltaAngle;
+        float deltaAngle = Mathf.Abs(lastAngle - player.transform.rotation.eulerAngles.y);
+		return Mathf.Abs(player.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < deltaAngle;
 	}
 
     /// <summary>
@@ -122,9 +122,9 @@ public class rotate : MonoBehaviour {
 	void snapToGoal(int direction){
 		//Debug.Log("Snap to goal called");
 		//Debug.Log ("Rotation goal is:  " + getRotationGoal ());
-		float levelsnap = getRotationGoal (direction) - this.transform.rotation.eulerAngles.y;
-		this.transform.RotateAround (player.transform.position, transform.up, levelsnap);
-		player.transform.RotateAround(player.transform.position, transform.up, (-1*levelsnap));
+		float levelsnap = getRotationGoal (direction) - player.transform.rotation.eulerAngles.y;
+		Camera.main.transform.RotateAround (player.transform.position, transform.up, levelsnap);
+		player.transform.RotateAround(player.transform.position, transform.up, (levelsnap));
 	}
 
 

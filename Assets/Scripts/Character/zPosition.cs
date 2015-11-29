@@ -33,23 +33,25 @@ public class zPosition : MonoBehaviour {
 
         //movement cases...
         //if moving right
-        if(rb.velocity.x > 0)
+
+        var locVel = rb.velocity;
+        if (locVel.x > 0)
         {
             adjustDepth(right, new Vector3(right.x - (float)0.4, right.y, right.z));
         }
         //else if moving left
-        else if(rb.velocity.x < 0)
+        else if(locVel.x < 0)
         {
             adjustDepth(left, new Vector3(left.x + (float)0.4, left.y, left.z));
         }
 
         //if moving up
-        if (rb.velocity.y > 0)
+        if (locVel.y > 0)
         {
             adjustDepth(top, new Vector3(top.x, top.y - (float)0.4, top.z));
         }
         //if moving down
-        else if (rb.velocity.y < 0)
+        else if (locVel.y < 0)
         {
             adjustDepth(bottom, new Vector3(bottom.x, bottom.y + (float)0.4, bottom.z));
 
@@ -60,8 +62,9 @@ public class zPosition : MonoBehaviour {
             if (allowFloat) return;
 			//send out raycast into screen from feet of player
 			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
-			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
-					this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
+			if(Physics.Raycast (below, transform.forward, out hit)){
+                var locPos = hit.transform.position;
+					transform.position = new Vector3(locPos.x, locPos.y +1, locPos.z);        
 			}
 		}
 	}
@@ -126,7 +129,7 @@ public class zPosition : MonoBehaviour {
 
         for(int i = 0; i < points.Length; i++)
         {
-            if(Physics.Raycast(points[i], new Vector3(0, -1, 0), out hit, 1.0f))
+            if(Physics.Raycast(points[i], -1*transform.up, out hit, 1.0f))
             {
                 floating = false;
             }
