@@ -230,13 +230,13 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     void setAnimations()
     {
 
-        if(body.velocity.y > 0)
+        if(body.velocity.y > 6)
         {
             anim.SetBool("jumping", true);
             anim.SetBool("Falling", false);
         }
 
-        if(body.velocity.y < 0)
+        if(body.velocity.y <= 6)
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", true);
