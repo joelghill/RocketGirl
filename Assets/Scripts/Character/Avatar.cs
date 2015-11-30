@@ -304,6 +304,10 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         }
     }
 
+	public bool getPause(){
+		return paused;
+	}
+
     public void onPause()
     {
         paused = true;
