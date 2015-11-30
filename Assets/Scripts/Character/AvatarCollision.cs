@@ -41,13 +41,13 @@ public class AvatarCollision : MonoBehaviour {
 
     public float Top()
     {
-        return transform.position.y + (spriteRenderer.bounds.size.y / 2) - yMargin;
+        return transform.position.y + (spriteRenderer.bounds.size.y / 2) + yMargin;
 
     }
 
     public float Bottom()
     {
-        return transform.position.y - (startBounds.size.y / 2) + yMargin;
+        return transform.position.y - (startBounds.size.y / 2) - yMargin;
 
     }
 
@@ -433,7 +433,7 @@ public class AvatarCollision : MonoBehaviour {
 
     private float getVerticalCollisionDistance()
     {
-        float distance = startBounds.size.y / 2;
+        float distance = startBounds.size.y / 2 + yMargin;
         return distance;
     }
 
