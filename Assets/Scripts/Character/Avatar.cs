@@ -9,6 +9,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
 	protected Rigidbody body;
 	protected Animator anim;
+	protected AudioSource sound;
 
 	public AvatarCollision avaCol;
 	public float ySpeed = 8;
@@ -49,7 +50,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         jumpPressed = false;
 		wallGlide = false;
 		facing = 1;
-		//avaCol = GetComponent<AvatarCollision> ();
+		sound = GetComponent<AudioSource> ();
 		
 	}
 	
@@ -193,6 +194,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
             donejumping = false;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
+			sound.Play();
         }
 
 		/*

@@ -47,7 +47,8 @@ public class CoinsRemaining : MonoBehaviour {
 				}
 
 			} else if (coins == totalCoins && soundPlayed && !win.isPlaying) {
-				// After jingle go to next level
+				int currentLevel = Application.loadedLevel;
+				Application.LoadLevel(currentLevel+1);
 			}
 		} else {
 			text.text = "No Coins In Level";

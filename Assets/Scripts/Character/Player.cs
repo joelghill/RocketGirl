@@ -7,8 +7,6 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
     public IControllable avatar;
     public float health = 100;
 
-	private AudioSource sound;
-
     float direction = 1f;
     // Use this for initialization
     void Start () {
@@ -16,8 +14,6 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         {
             avatar = gameObject.GetComponent<IControllable>();
         }
-
-		sound = gameObject.GetComponent<AudioSource> ();
 
 	}
 	
@@ -60,7 +56,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 	void playerShoot(){
 		if (Input.GetKeyDown ("e")) {
 			avatar.shoot(0);
-			sound.Play();
+			//sound.Play();
 		}
 	}
 
