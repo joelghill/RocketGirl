@@ -10,6 +10,7 @@ public class CollectCoin : MonoBehaviour {
 	private Collider col;
 	private CoinsRemaining coin;
 	private AudioSource ding;
+	private Avatar playerAva;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,7 @@ public class CollectCoin : MonoBehaviour {
 		coin = GameObject.Find ("Coins Remaining").GetComponent<CoinsRemaining> ();
 		ding = GetComponent<AudioSource> ();
 		collected = false;
+		playerAva = GameObject.FindGameObjectWithTag ("Player").GetComponent<Avatar> ();
 	}
 
 	void OnTriggerEnter() {
@@ -33,8 +35,16 @@ public class CollectCoin : MonoBehaviour {
 	void Update () {
 
 		if (Input.GetButtonDown ("Fire1") || Input.GetButtonDown ("Fire2") && !collected) {
-			col.enabled = !col.enabled;
+			if(col.enabled){
+				col.enabled = false;
+				enabled = false;
+			} else {
+				enabled = true;
+			}
 		}
-	
+
+		if (enabled && !col.enabled && !playerAva.getPause() && !collected) {
+			col.enabled = true;
+		}
 	}
 }
