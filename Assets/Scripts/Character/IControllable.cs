@@ -7,4 +7,5 @@ public interface IControllable {
     void jump();
     void doneJump();
     void shoot(float direction);
+    bool isGrounded();
 }

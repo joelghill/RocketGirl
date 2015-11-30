@@ -21,7 +21,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     public GameObject amunition;
 	
 	//private float distToGround;
-	protected int grounded;
+	protected bool grounded;
 	protected float jumping;
     protected bool jumpPressed;
 	protected float runInput;
@@ -42,7 +42,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 	// Use this for initialization
 	void Start () {
         jumping = 0;
-        grounded = 0;
+        grounded = false;
         body = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
         avaCol = GetComponent<AvatarCollision>();
@@ -53,6 +53,11 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		sound = GetComponent<AudioSource> ();
 		
 	}
+
+    public bool isGrounded()
+    {
+        return grounded;
+    }
 	
 	/*
 	 * Sets the jumping animation boolean to true.
@@ -167,6 +172,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
             if (body.velocity.y <= 0)
             {
                 body.velocity = new Vector3(body.velocity.x, 0, 0);
+                grounded = true;
                 AdjustPosition(avaCol.collideBottom(), CollisionType.BOTTOM);
             }
         }
@@ -189,11 +195,12 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		 * Checks if the character is grounded. If yes, and the jump button is pressed, set animations accordingly
 		 * and set the y velocity upwards.
 		 */ 
-		if (avaCol.collideBottom()) {
+		if (grounded == true) {
 			
             donejumping = false;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
 			anim.SetBool("jumping",true);
+            grounded = false;
 			sound.Play();
         }
 
@@ -244,7 +251,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
             anim.SetBool("Falling", true);
         }
 
-        if (avaCol.collideBottom())
+        if (grounded == true)
         {
             anim.SetBool("jumping", false);
             anim.SetBool("Falling", false);

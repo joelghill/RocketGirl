@@ -26,7 +26,7 @@ public class rotate : MonoBehaviour {
 
     private float lastAngle;
 
-	private AvatarCollision playerCol;
+	private Player playerComponent;
 
 	// Use this for initialization
 	void Start () {
@@ -36,7 +36,7 @@ public class rotate : MonoBehaviour {
 		rotationPoints [1] = 90;
 		rotationPoints [2] = 180;
 		rotationPoints [3] = 270;
-		playerCol = player.GetComponent<AvatarCollision> ();
+		playerComponent = player.GetComponent<Player> ();
 
 	}
 
@@ -44,14 +44,15 @@ public class rotate : MonoBehaviour {
 
 		//if (Input.GetKeyDown(KeyCode.B)) {
 		if (Input.GetButtonDown("Fire1")) {
-			if(!transitionFlag && playerCol.collideBottom()){
+			if(!transitionFlag && playerComponent.isGrounded())
+            {
 				transitionFlag = true;
                 this.direction = -1;
                 player.SendMessage("onPause");
 			}
 		}
 
-		if (Input.GetButtonDown("Fire2") && playerCol.collideBottom())
+		if (Input.GetButtonDown("Fire2") && playerComponent.isGrounded())
         {
             if (!transitionFlag)
             {

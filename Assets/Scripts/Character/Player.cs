@@ -16,6 +16,11 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         }
 
 	}
+
+    public bool isGrounded()
+    {
+        return avatar.isGrounded();
+    }
 	
 	void playerMove(){
 
