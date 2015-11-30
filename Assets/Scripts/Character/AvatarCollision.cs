@@ -9,7 +9,7 @@ public class AvatarCollision : MonoBehaviour {
 	protected Vector3 HorColPos;
 	protected float height;
 
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     private Vector3 position;
 
     public float xMargin = 0;
