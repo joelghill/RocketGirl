@@ -16,9 +16,8 @@ public class Pause : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if( Input.GetButtonDown("Cancel"))
+		if(Input.GetButtonDown("Cancel") || Input.GetButtonDown("Submit"))
 		{
-            Debug.Log("Pause!");
 			isPause = !isPause;
 			if(isPause){
 				//pauseGUI.transform.localScale = new Vector3 (transform.lossyScale.x, transform.lossyScale.y, transform.lossyScale.z);
