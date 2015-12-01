@@ -22,7 +22,10 @@ public class CollectCoin : MonoBehaviour {
 		playerAva = GameObject.FindGameObjectWithTag ("Player").GetComponent<Avatar> ();
 	}
 
-	void OnTriggerEnter() {
+	void OnTriggerEnter(Collider c) {
+
+        if (c.gameObject.tag != "Player") return;
+
 		ding.Play ();
 		col.enabled = false;
 		collected = true;
