@@ -113,7 +113,10 @@ public class rotate : MonoBehaviour {
         //Debug.Log ("Current Rotation:  " + level.transform.rotation.eulerAngles.y);
         //Debug.Log ("Goal Rotation:  " + getRotationGoal(direction).ToString());
         float deltaAngle = Mathf.Abs(lastAngle - level.transform.rotation.eulerAngles.y);
-		return Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal (direction)) < deltaAngle;
+        float minSnap = 5.00f;
+        float snapshot = Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal(direction));
+        
+		return snapshot < deltaAngle && snapshot < minSnap;
 	}
 
     /// <summary>
