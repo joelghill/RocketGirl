@@ -9,12 +9,12 @@ using System.Collections;
 
 public class SpriteCollider : MonoBehaviour {
 
-
+	private CollectCoin coin;
 
 	public float margin;
 	// Use this for initialization
 	void Start () {
-	
+		coin = GetComponent<CollectCoin> ();
 	}
 
 	/// <summary>
@@ -29,6 +29,11 @@ public class SpriteCollider : MonoBehaviour {
         bool collide;
 		//based on tag, check if collision with other at point occured
 		switch (tag) {
+
+		case "Coin":
+			coin.OnCoinCollision(other);
+			collide = false;
+			break;
 
 		case "None":
 			//never register collision
@@ -87,6 +92,10 @@ public class SpriteCollider : MonoBehaviour {
 		string tag = this.gameObject.tag;
 		//based on tag, check if collision with other at point occured
 		switch (tag) {
+
+		case "Coin":
+			coin.OnCoinCollision(other);
+			return false;
 			
 		case "None":
 			//never register collision

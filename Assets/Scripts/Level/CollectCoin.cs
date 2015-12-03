@@ -22,14 +22,18 @@ public class CollectCoin : MonoBehaviour {
 		playerAva = GameObject.FindGameObjectWithTag ("Player").GetComponent<Avatar> ();
 	}
 
-	void OnTriggerEnter(Collider c) {
+	public void OnCoinCollision(GameObject c) {
 
         if (c.gameObject.tag != "Player") return;
 
 		ding.Play ();
+		//Since remaining coins are counted by tag, tag must be changed from coin
+		gameObject.tag = "None";
 		col.enabled = false;
 		collected = true;
 		transform.localScale = new Vector3 (0, 0, 0);
+		//Adds a second delay to destroy the object to allow the ding to play
+		//This is why shrinking the transform and changing the tag are nescessary
 		Destroy (gameObject, 1.0f);
 		coin.addCoin ();
 	}
@@ -37,17 +41,5 @@ public class CollectCoin : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetButtonDown ("Fire1") || Input.GetButtonDown ("Fire2") && !collected) {
-			if(col.enabled){
-				col.enabled = false;
-				enabled = false;
-			} else {
-				enabled = true;
-			}
-		}
-
-		if (enabled && !col.enabled && !playerAva.getPause() && !collected) {
-			col.enabled = true;
-		}
 	}
 }

@@ -27,7 +27,7 @@ public class CoinsRemaining : MonoBehaviour {
 	}
 
 	public void addCoin(){
-		coins = coins + 1;
+		coins = totalCoins - GameObject.FindGameObjectsWithTag ("Coin").Length;
 	}
 
 	void OnGUI(){
