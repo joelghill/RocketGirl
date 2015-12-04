@@ -65,7 +65,8 @@ public class LevelController : MonoBehaviour {
         {
             if(player.transform.position.y < -5.0f)
             {
-                StartCoroutine(WaitForEnd());
+                //StartCoroutine(WaitForEnd());
+				player.GetComponent<Player>().respawn();
             }
         }
     }

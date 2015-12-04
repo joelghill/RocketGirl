@@ -6,6 +6,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 
     public IControllable avatar;
     public float health = 100;
+	private Vector3 respawnPosition;
 
     float direction = 1f;
     // Use this for initialization
@@ -14,7 +15,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         {
             avatar = gameObject.GetComponent<IControllable>();
         }
-
+		respawnPosition = transform.position;
 	}
 
     public bool isGrounded()
@@ -48,6 +49,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         if (Input.GetButtonDown("Jump"))
         {
             avatar.jump();
+			setRespawnPosition();
         }
 
         if (Input.GetButtonUp("Jump"))
@@ -56,6 +58,14 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         }
 		//jump (Input.GetButtonDown ("Jump"), Input.GetButtonUp ("Jump"));
 
+	}
+
+	void setRespawnPosition(){
+		respawnPosition = transform.position;
+	}
+
+	public void respawn(){
+		transform.position = respawnPosition;
 	}
 
 	void playerShoot(){
