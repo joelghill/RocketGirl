@@ -49,7 +49,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
         if (Input.GetButtonDown("Jump"))
         {
             avatar.jump();
-			setRespawnPosition();
+			//setRespawnPosition();
         }
 
         if (Input.GetButtonUp("Jump"))
@@ -60,8 +60,8 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 
 	}
 
-	void setRespawnPosition(){
-		respawnPosition = transform.position;
+	public void setRespawnPosition(Vector3 pos){
+		respawnPosition = pos;
 	}
 
 	public void respawn(){
