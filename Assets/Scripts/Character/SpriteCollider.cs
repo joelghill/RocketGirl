@@ -68,7 +68,7 @@ public class SpriteCollider : MonoBehaviour {
                 else{
                     if(other.GetComponent<Player>() != null){
 						other.GetComponent<Player>().setRespawnPosition(new Vector3(transform.position.x,
-					                                                            this.transform.position.y+otherHeight, 
+					                                                            this.transform.position.y+otherHeight+0.5f, 
 					                                                            this.transform.position.z));
 					}
 
