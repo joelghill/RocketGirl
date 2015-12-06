@@ -5,6 +5,7 @@ public class zPosition : MonoBehaviour {
 
     Rigidbody rb;
     AvatarCollision ac;
+	Avatar avatar;
     public bool allowFloat = false;
 
     private float height;
@@ -14,6 +15,7 @@ public class zPosition : MonoBehaviour {
 	void Start () {
 		rb = gameObject.GetComponent<Rigidbody> ();
         ac = gameObject.GetComponent<AvatarCollision>();
+		avatar = gameObject.GetComponent<Avatar>();
 	}
 	
 	// Update is called once per frame
@@ -23,24 +25,24 @@ public class zPosition : MonoBehaviour {
         //get game object bounds
         height = GetComponent<SpriteRenderer>().bounds.size.y;
         width = GetComponent<SpriteRenderer>().bounds.size.x;
-        Vector3 pos = transform.position;
+		Vector3 pos = Camera.main.transform.position;//transform.position
 
         //points to send rays from 
         Vector3 top = new Vector3(pos.x, pos.y + (height / 2), Camera.main.transform.position.z);
         Vector3 bottom = new Vector3(pos.x, pos.y - (height / 2),Camera.main.transform.position.z);
-        Vector3 left = new Vector3(pos.x - 0.4f, pos.y,Camera.main.transform.position.z);
-        Vector3 right = new Vector3(pos.x + 0.4f, pos.y,Camera.main.transform.position.z);
+        Vector3 left = new Vector3(pos.x - 0.5f, pos.y,Camera.main.transform.position.z);
+        Vector3 right = new Vector3(pos.x + 0.5f, pos.y,Camera.main.transform.position.z);
 
         //movement cases...
         //if moving right
         if(rb.velocity.x > 0)
         {
-            adjustDepth(right, new Vector3(right.x - (float)0.4, right.y, right.z));
+            adjustDepth(right, new Vector3(right.x - (float)0.6, right.y, right.z));
         }
         //else if moving left
         else if(rb.velocity.x < 0)
         {
-            adjustDepth(left, new Vector3(left.x + (float)0.4, left.y, left.z));
+            adjustDepth(left, new Vector3(left.x + (float)0.6, left.y, left.z));
         }
 
         //if moving up
@@ -55,15 +57,16 @@ public class zPosition : MonoBehaviour {
 
         }
 
-        RaycastHit hit;
+		RaycastHit hit;
 		if (this.isFloating()) {
-            if (allowFloat) return;
+			if (allowFloat) return;
 			//send out raycast into screen from feet of player
 			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
 			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
-					this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
+				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
 			}
 		}
+
 	}
 
     /// <summary>
@@ -79,13 +82,14 @@ public class zPosition : MonoBehaviour {
         // If colliding at the outside point
         if (Physics.Raycast(outside, rayDir, out hit1))
         {
+			if(hit1.collider.gameObject.tag == "Player") return;
             // check for collision closer to center of game object
             bool otherCollide = Physics.Raycast(inside, rayDir, out hit2);
             // if there is a collision and the player is not front, then return;
-            if (otherCollide && hit2.collider.transform.position.z < transform.position.z - 0.5f) return;
+            if (otherCollide && hit2.collider.transform.position.z - 0.5f < transform.position.z) return;
 
             //else continue and check if outside point is behind object
-            if (hit1.collider.transform.position.z < transform.position.z-0.5f)
+            if (hit1.collider.transform.position.z - 0.5f < transform.position.z)
             {
                 //then game object is about to move behind an object, so adjust z depth
                 transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z -1 );

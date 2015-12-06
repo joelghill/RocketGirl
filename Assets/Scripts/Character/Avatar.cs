@@ -151,7 +151,9 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
     /// </summary>
     void adjustFallSpeed()
     {
+
         body.velocity = new Vector3(body.velocity.x, body.velocity.y - accel*Time.deltaTime, 0);
+		//if(grounded) body.velocity = new Vector3(body.velocity.x, 0, 0);
 
 		if ((avaCol.collideRight () && runInput > 0) || (avaCol.collideLeft () && runInput < 0)) {
 
@@ -284,7 +286,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
                 {
 
                     Vector3 pos = transform.position;
-                    float newY = transform.position.y - (avaCol.Bottom() - t.topPosition());
+					float newY = transform.position.y - (avaCol.Bottom() - t.topPosition());
                     transform.position = new Vector3(pos.x, newY, pos.z);
                 }
                 break;

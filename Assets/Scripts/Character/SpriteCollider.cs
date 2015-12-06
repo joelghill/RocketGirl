@@ -45,7 +45,9 @@ public class SpriteCollider : MonoBehaviour {
             break;
 
 		case "SemiSolid":
+			//return true;
 			//get transform
+
 			Transform otherT =other.transform;
 			//get rigidbody
 			Rigidbody rb = other.GetComponent<Rigidbody>();
@@ -58,12 +60,12 @@ public class SpriteCollider : MonoBehaviour {
                     return false;
                     break;
                 }
-                else if (y < transform.position.y )
-                {
+               // else if (y < transform.position.y )
+               // {
 					
-				Debug.Log("Detected one way tile but no collision; y lower than tile");
-                    return false;
-                }
+					//Debug.Log("Detected one way tile but no collision; y lower than tile");
+                  ///  return false;
+               // }
 
                 else{
                     if(other.GetComponent<Player>() != null){
