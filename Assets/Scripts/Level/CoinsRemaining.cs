@@ -52,8 +52,14 @@ public class CoinsRemaining : MonoBehaviour {
 			if (coins == totalCoins && !soundPlayed) {
 				win.Play ();
 				soundPlayed = true;
-				playerAva.onPause ();
-				playerAva.GetComponent<Rigidbody> ().velocity = new Vector3 (0, 0, 0);
+				if(playerAva != null){
+					playerAva.onPause ();
+					playerAva.GetComponent<Rigidbody> ().velocity = new Vector3 (0, 0, 0);
+				} else {
+					playerAva = GameObject.Find ("DudeGuy").GetComponent<Avatar>();
+					playerAva.onPause ();
+					playerAva.GetComponent<Rigidbody> ().velocity = new Vector3 (0, 0, 0);
+				}
 
 				for (int i = 0; i < levelMusic.Length; i++) {
 					if (levelMusic [i].isPlaying) {
