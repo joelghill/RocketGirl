@@ -22,7 +22,7 @@ public class CoinsRemaining : MonoBehaviour {
 		win = GetComponent<AudioSource> ();
 		soundPlayed = false;
 		playerAva = GameObject.FindGameObjectWithTag ("Player").GetComponent<Avatar> ();
-		levelMusic = GameObject.Find ("level").GetComponents<AudioSource> ();
+		levelMusic = GameObject.FindGameObjectWithTag ("level").GetComponents<AudioSource> ();
 		gameWon = false;
 	}
 
