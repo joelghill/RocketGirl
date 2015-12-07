@@ -27,6 +27,16 @@ public class zPosition : MonoBehaviour {
         width = GetComponent<SpriteRenderer>().bounds.size.x;
 		Vector3 pos = Camera.main.transform.position;//transform.position
 
+		RaycastHit hit;
+		if (this.isFloating()) {
+			if (allowFloat) return;
+			//send out raycast into screen from feet of player
+			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
+			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
+				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
+			}
+		}
+
         //points to send rays from 
         Vector3 top = new Vector3(pos.x, pos.y + (height / 2), Camera.main.transform.position.z);
         Vector3 bottom = new Vector3(pos.x, pos.y - (height / 2),Camera.main.transform.position.z);
@@ -57,16 +67,6 @@ public class zPosition : MonoBehaviour {
 
         }
 
-		RaycastHit hit;
-		if (this.isFloating()) {
-			if (allowFloat) return;
-			//send out raycast into screen from feet of player
-			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
-			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
-				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
-			}
-		}
-
 	}
 
     /// <summary>
@@ -85,11 +85,12 @@ public class zPosition : MonoBehaviour {
 			if(hit1.collider.gameObject.tag == "Player") return;
             // check for collision closer to center of game object
             bool otherCollide = Physics.Raycast(inside, rayDir, out hit2);
+			//if(hit1.collider.gameObject.tag != "Player") return;
             // if there is a collision and the player is not front, then return;
             if (otherCollide && hit2.collider.transform.position.z < transform.position.z) return;
 
             //else continue and check if outside point is behind object
-            if (hit1.collider.transform.position.z < transform.position.z)
+            if (hit1.collider.transform.position.z < transform.position.z + 0.5f)
             {
                 //then game object is about to move behind an object, so adjust z depth
                 transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z -1 );
