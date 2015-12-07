@@ -47,7 +47,7 @@ public class AvatarCollision : MonoBehaviour {
 
     public float Bottom()
     {
-        return transform.position.y - (startBounds.size.y / 2) - yMargin;
+		return transform.position.y - (startBounds.size.y / 2); //+ yMargin;
 
     }
 
@@ -127,6 +127,10 @@ public class AvatarCollision : MonoBehaviour {
             else
             {
                 collide = Physics.Raycast(pointList[i], direction, out hit);
+				if(isPlayerHidden() && collide){
+					//Debug.Log("Player is hidden");
+					collide = false;
+				}
             }
             if (collide)
             {
@@ -433,7 +437,8 @@ public class AvatarCollision : MonoBehaviour {
 
     private float getVerticalCollisionDistance()
     {
-        float distance = startBounds.size.y / 2 + yMargin;
+        //float distance = startBounds.size.y / 2 + yMargin;
+		float distance = spriteRenderer.bounds.size.y / 2 + yMargin;
         return distance;
     }
 
@@ -447,5 +452,21 @@ public class AvatarCollision : MonoBehaviour {
     void Update () {
         drawPrimaryPoints();
         drawSecondaryPoints();
+	}
+
+	public bool isPlayerHidden(){
+
+		RaycastHit hit;
+		bool hidden;
+		Vector3 pos = transform.position;
+		Vector3 origin = new Vector3(pos.x, pos.y, Camera.main.transform.position.z);
+		bool collide = Physics.Raycast(origin, Camera.main.transform.forward, out hit);
+
+		if(collide){
+			if(hit.collider.gameObject == gameObject){
+				return false;
+			}
+		}
+		return true;
 	}
 }
