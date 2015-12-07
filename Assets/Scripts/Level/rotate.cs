@@ -100,7 +100,8 @@ public class rotate : MonoBehaviour {
     /// <param name="dir"> Can be 1 or 0</param>
     /// <returns> Next rotational goal in the direction specified.</returns>
 	float getRotationGoal(int dir){
-		return rotationPoints [getGoalIndex(dir)];
+		float goal =  rotationPoints [getGoalIndex(dir)];
+		return goal;
 	}
 
     /// <summary>
@@ -116,7 +117,7 @@ public class rotate : MonoBehaviour {
         float minSnap = 5.00f;
         float snapshot = Mathf.Abs(level.transform.rotation.eulerAngles.y - getRotationGoal(direction));
         
-		return snapshot < deltaAngle && snapshot < minSnap;
+		return snapshot < deltaAngle && snapshot < minSnap || hasGonePastGoal();
 	}
 
     /// <summary>
@@ -154,4 +155,31 @@ public class rotate : MonoBehaviour {
 
         return point;
     }
+
+	private bool hasGonePastGoal(){
+		float goal = getRotationGoal(direction);
+
+		// 0 is a special case
+		if(goal == 0){
+			//if counting down from 90...
+			if(direction < 0){
+				return lastAngle < 0 || lastAngle > 355;
+			}
+			//if going up from 270
+			else{
+				return lastAngle < 260;
+			}
+		//if goal is not rolling over 
+		}else{
+			//if counting down
+			if(direction < 0){
+				return lastAngle < goal && lastAngle > (goal - 10);
+			}
+			//if counting up
+			else{
+				return lastAngle > goal;
+			}
+		}
+		return false;
+	}
 }
