@@ -60,7 +60,7 @@ public class SpriteCollider : MonoBehaviour {
                     return false;
                     break;
                 }
-               	else if (other.transform.position.y - otherHeight/2 < transform.position.y + 0.1 )
+               	else if (other.transform.position.y - otherHeight/2 < transform.position.y)
                	{
 					
 					Debug.Log("Detected one way tile but no collision; y lower than tile");

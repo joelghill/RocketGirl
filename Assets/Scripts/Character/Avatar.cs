@@ -271,9 +271,15 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 	// Update is called once per frame
 	void Update () {
         if (paused) return;
-        adjustFallSpeed();
+        //adjustFallSpeed();
         setAnimations();
 	}
+
+	void FixedUpdate() {
+		if (paused) return;
+		adjustFallSpeed();
+	}
+
 
     private void AdjustPosition(GameObject other, CollisionType type)
     {
