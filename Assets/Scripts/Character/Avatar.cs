@@ -91,7 +91,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		 * Checks whether the axis is positive or negative, sets the speed of the character. 
 		 * Checks if the y rotation is correct, sets correct rotation with quaternion euler 
 		 */
-        if (axis > 0.1f && !avaCol.collideRight()) {
+        if (axis > 0.2f && !avaCol.collideRight()) {
 
 			if(body.velocity.x < axis*xSpeed){
 				body.velocity = new Vector3 (body.velocity.x + accel*Time.deltaTime, body.velocity.y,0);
@@ -107,7 +107,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			}
 			//facing = 1;
 
-		}else if (axis < -0.1f && !avaCol.collideLeft()) {
+		}else if (axis < -0.2f && !avaCol.collideLeft()) {
 			if(body.velocity.x > axis*xSpeed){
 				body.velocity = new Vector3 (body.velocity.x - accel*Time.deltaTime, body.velocity.y,0);
 			}else{
