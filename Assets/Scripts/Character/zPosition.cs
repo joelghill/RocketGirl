@@ -86,10 +86,10 @@ public class zPosition : MonoBehaviour {
             // check for collision closer to center of game object
             bool otherCollide = Physics.Raycast(inside, rayDir, out hit2);
             // if there is a collision and the player is not front, then return;
-            if (otherCollide && hit2.collider.transform.position.z - 0.5f < transform.position.z) return;
+            if (otherCollide && hit2.collider.transform.position.z < transform.position.z) return;
 
             //else continue and check if outside point is behind object
-            if (hit1.collider.transform.position.z - 0.5f < transform.position.z)
+            if (hit1.collider.transform.position.z < transform.position.z)
             {
                 //then game object is about to move behind an object, so adjust z depth
                 transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z -1 );
