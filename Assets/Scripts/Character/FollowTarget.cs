@@ -22,7 +22,7 @@ public class FollowTarget : MonoBehaviour {
             {
                 dY = target.transform.position.y;
             }
-            this.transform.position = new Vector3(this.target.transform.position.x, dY, this.transform.position.z);
+            this.transform.position = new Vector3(this.target.transform.position.x, dY, this.target.transform.position.z - 200.0f);
         } else {
 			Debug.Log("CAMERA IS NULL");
 		}
