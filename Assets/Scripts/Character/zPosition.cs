@@ -27,16 +27,6 @@ public class zPosition : MonoBehaviour {
         width = GetComponent<SpriteRenderer>().bounds.size.x;
 		Vector3 pos = Camera.main.transform.position;//transform.position
 
-		RaycastHit hit;
-		if (this.isFloating()) {
-			if (allowFloat) return;
-			//send out raycast into screen from feet of player
-			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
-			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
-				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
-			}
-		}
-
         //points to send rays from 
         Vector3 top = new Vector3(pos.x, pos.y + (height / 2), Camera.main.transform.position.z);
         Vector3 bottom = new Vector3(pos.x, pos.y - (height / 2),Camera.main.transform.position.z);
@@ -66,6 +56,17 @@ public class zPosition : MonoBehaviour {
             adjustDepth(bottom, new Vector3(bottom.x, bottom.y + (float)0.4, bottom.z));
 
         }
+
+		RaycastHit hit;
+		if (this.isFloating()) {
+			if (allowFloat) return;
+			//send out raycast into screen from feet of player
+			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
+			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
+				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
+			}
+		}
+
 
 	}
 
