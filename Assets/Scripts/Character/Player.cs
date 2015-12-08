@@ -7,6 +7,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
     public IControllable avatar;
     public float health = 100;
 	private Vector3 respawnPosition;
+	private Vector3 startSpawn;
 
     float direction = 1f;
     // Use this for initialization
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
             avatar = gameObject.GetComponent<IControllable>();
         }
 		respawnPosition = transform.position;
+		startSpawn = transform.position;
 	}
 
     public bool isGrounded()
@@ -80,6 +82,9 @@ public class Player : MonoBehaviour, IDamageable<float>, IKillable {
 		playerMove ();
 		playerJump ();
 		playerShoot ();
+		if(Input.GetKeyDown("p")){
+			transform.position = startSpawn;
+		}
     }
 
     void FixedUpdate() {
