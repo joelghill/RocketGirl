@@ -63,7 +63,7 @@ public class zPosition : MonoBehaviour {
 			//send out raycast into screen from feet of player
 			Vector3 below = new Vector3(transform.position.x, transform.position.y - 1, Camera.main.transform.position.z);
 			if(Physics.Raycast (below, Camera.main.transform.forward, out hit)){
-				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.collider.transform.position.z);
+				this.transform.position = new Vector3(transform.position.x, transform.position.y, hit.point.z);
 			}
 		}
 
@@ -91,10 +91,10 @@ public class zPosition : MonoBehaviour {
             if (otherCollide && hit2.collider.transform.position.z < transform.position.z) return;
 
             //else continue and check if outside point is behind object
-            if (hit1.collider.transform.position.z < transform.position.z + 0.5f)
+            if (hit1.point.z < transform.position.z + 0.5f)
             {
                 //then game object is about to move behind an object, so adjust z depth
-                transform.position = new Vector3(transform.position.x, transform.position.y, hit1.collider.transform.position.z -1 );
+                transform.position = new Vector3(transform.position.x, transform.position.y, hit1.point.z -1 );
             }
         }
     }

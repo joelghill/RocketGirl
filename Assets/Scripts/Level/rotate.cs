@@ -14,8 +14,6 @@ public class rotate : MonoBehaviour {
 	public GameObject player;
 
     public float rotationSpeed = 140f;
-    //public double TransitionTime;
-    public GameObject[] entities;
 
 	private float[] rotationPoints;
 
