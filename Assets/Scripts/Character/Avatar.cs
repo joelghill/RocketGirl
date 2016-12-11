@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts.Animation;
 using System.Collections;
 using System;
 
@@ -7,8 +8,9 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
     private enum CollisionType {TOP,BOTTOM,LEFT,RIGHT};
 
+    private PlayerAnimationController playerAnimationController;
+
 	protected Rigidbody body;
-	protected Animator anim;
 	protected AudioSource sound;
 
 	public AvatarCollision avaCol;
@@ -44,7 +46,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
         jumping = 0;
         grounded = false;
         body = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
+        playerAnimationController = GetComponent<PlayerAnimationController>();
         avaCol = GetComponent<AvatarCollision>();
 		avaCol.spriteRenderer = GetComponent<SpriteRenderer> ();
         jumpPressed = false;
@@ -62,8 +64,9 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 	/*
 	 * Sets the jumping animation boolean to true.
 	 */ 
-	void setJumpingAnim(){
-		anim.SetBool("jumping",true);
+	void setJumpingAnim()
+    {
+        playerAnimationController.SetJumpAnimationState(true);
 	}
 
 	/*
@@ -98,10 +101,13 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			}else{
 				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
-            anim.SetBool("Running", true);
 
-			anim.SetFloat ("runSpeed", axis);
-			anim.SetFloat ("Dir", 0);
+            this.playerAnimationController.SetRunAnimationState(true);
+
+            this.playerAnimationController.SetRunAnimationSpeed(axis);
+			
+            this.playerAnimationController.SetDirection(AnimationDirection.RIGHT);
+
 			if(transform.lossyScale.x < 0){
 				adjustRotation();
 			}
@@ -113,9 +119,13 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			}else{
 				body.velocity = new Vector3 (axis * xSpeed, body.velocity.y,0);
 			}
-			anim.SetFloat("runSpeed", axis);
-            anim.SetBool("Running", true);
-			anim.SetFloat ("Dir", 1);
+
+            this.playerAnimationController.SetRunAnimationSpeed(axis);
+
+            this.playerAnimationController.SetRunAnimationState(true);
+
+            this.playerAnimationController.SetDirection(AnimationDirection.LEFT);
+
 			if(transform.lossyScale.x > 0){
 				adjustRotation();
 			}
@@ -132,7 +142,8 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 		 */ 
 		else{
 			body.velocity = new Vector3 (0, body.velocity.y, 0);
-			anim.SetBool("Running", false);
+
+            this.playerAnimationController.SetRunAnimationState(false);
 		}
 
 		runInput = axis;
@@ -201,7 +212,8 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			
             donejumping = false;
 			body.velocity = new Vector3 (body.velocity.x, ySpeed, 0);
-			anim.SetBool("jumping",true);
+
+            this.playerAnimationController.SetJumpAnimationState(true);
             grounded = false;
 			sound.Play();
         }
@@ -213,7 +225,8 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 			donejumping = false;
 			wallGlide = false;
 			body.velocity = new Vector3 ((wallJumpForce)*(-runInput), ySpeed, 0);
-			anim.SetBool("jumping",true);
+
+            this.playerAnimationController.SetJumpAnimationState(true);
 		}
         else
         {
@@ -223,7 +236,7 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
 	// A setter function to turn off the shooting animation
 	public void shootFalse(){
-		anim.SetBool ("shooting", false);
+        this.playerAnimationController.SetShootingAnimationState(false);
 	}
 
     public void shoot(float direction)
@@ -243,21 +256,22 @@ public class Avatar : MonoBehaviour, IControllable, IPauseable {
 
         if(body.velocity.y > 6)
         {
-            anim.SetBool("jumping", true);
-            anim.SetBool("Falling", false);
+            this.playerAnimationController.SetJumpAnimationState(true);
+            this.playerAnimationController.SetFallAnimationState(false);
         }
 
         if(body.velocity.y <= 6)
         {
-            anim.SetBool("jumping", false);
-            anim.SetBool("Falling", true);
+            this.playerAnimationController.SetJumpAnimationState(false);
+            this.playerAnimationController.SetFallAnimationState(true);
+
         }
 
         if (grounded == true)
         {
-            anim.SetBool("jumping", false);
-            anim.SetBool("Falling", false);
-            anim.SetBool("Landing", true);
+            this.playerAnimationController.SetJumpAnimationState(false);
+            this.playerAnimationController.SetFallAnimationState(false);
+            this.playerAnimationController.SetLandingAnimationState(true);
         }
 
     }
