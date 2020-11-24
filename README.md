@@ -1,5 +1,5 @@
 # RocketGirl
-CMPT 306 Game design project.
+CMPT 306 Game design project. Play it here: http://joel.hillspawn.com/RocketGirl/
 
 ## Where to get software
 
