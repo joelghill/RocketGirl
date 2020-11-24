@@ -4,61 +4,73 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Rocket Girl</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="TemplateData/style.css">
     <link rel="shortcut icon" href="TemplateData/favicon.ico" />
     <script src="TemplateData/UnityProgress.js"></script>
   </head>
   <body class="template">
-    <p class="header"><span>Unity WebGL Player | </span>Rocket Girl</p>
-    <div class="template-wrap clear">
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
-      <div class="logo"></div>
-      <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-      <div class="title">Rocket Girl</div>
+    <div class="container mt-3">
+      <h1 class="text-primary">Rocket Girl</h1>
+      <p>A short but sweet tech demo of some gameplay mechanics inspired by <a href="http://fezgame.com/">FEZ</a>.</p>
+      <h3 class="text-secondary">Controls</h3>
+      <p>W, A, S, D for movement. B and N to control camera, space bar to jump. XBox Controller also supported</p>
+      <div>
+        <p class="header"><span>Unity WebGL Player | </span>Rocket Girl</p>
+        <div class="clear text-center">
+          <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600px" width="960px"></canvas>
+          <div class="logo"></div>
+          <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
+          <div class="title">Rocket Girl</div>
+        </div>
+        <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
+      </div>
     </div>
-    <p class="footer">&laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;</p>
     <script type='text/javascript'>
-  // connect to canvas
-  var Module = {
-    TOTAL_MEMORY: 268435456,
-    filePackagePrefixURL: "Release/",
-    memoryInitializerPrefixURL: "Release/",
-    preRun: [],
-    postRun: [],
-    print: (function() {
-      return function(text) {
-        console.log (text);
+      // connect to canvas
+      var Module = {
+        TOTAL_MEMORY: 268435456,
+        filePackagePrefixURL: "Release/",
+        memoryInitializerPrefixURL: "Release/",
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          return function(text) {
+            console.log (text);
+          };
+        })(),
+        printErr: function(text) {
+          console.error (text);
+        },
+        canvas: document.getElementById('canvas'),
+        progress: null,
+        setStatus: function(text) {
+          if (this.progress == null)
+          {
+            if (typeof UnityProgress != 'function')
+              return;
+            this.progress = new UnityProgress (canvas);
+          }
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.text) return;
+          this.progress.SetMessage (text);
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          if (m)
+            this.progress.SetProgress (parseInt(m[2])/parseInt(m[4]));
+          if (text === "")
+            this.progress.Clear()
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
       };
-    })(),
-    printErr: function(text) {
-      console.error (text);
-    },
-    canvas: document.getElementById('canvas'),
-    progress: null,
-    setStatus: function(text) {
-      if (this.progress == null) 
-      {
-        if (typeof UnityProgress != 'function')
-          return;
-        this.progress = new UnityProgress (canvas);
-      }
-      if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-      if (text === Module.setStatus.text) return;
-      this.progress.SetMessage (text);
-      var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-      if (m)
-        this.progress.SetProgress (parseInt(m[2])/parseInt(m[4]));
-      if (text === "") 
-        this.progress.Clear()
-    },
-    totalDependencies: 0,
-    monitorRunDependencies: function(left) {
-      this.totalDependencies = Math.max(this.totalDependencies, left);
-      Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-    }
-  };
-  Module.setStatus('Downloading (0.0/1)');
-</script>
+      Module.setStatus('Downloading (0.0/1)');
+    </script>
 <script src="Release/UnityConfig.js"></script>
 <script src="Release/fileloader.js"></script>
 <script>if (!(!Math.fround)) {
@@ -70,7 +82,7 @@
   codeXHR.open('GET', 'Release/Rocket_web.js', true);
   codeXHR.onload = function() {
     var code = codeXHR.responseText;
-    if (!Math.fround) { 
+    if (!Math.fround) {
 try {
   console.log('optimizing out Math.fround calls');
   var m = /var ([^=]+)=global\.Math\.fround;/.exec(code);
